@@ -1,0 +1,180 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.40;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.admin.ui;
+
+import java.util.HashMap;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.SWT;
+
+import server.util.EngBLLogger;
+
+import com.turquaz.admin.AdmKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.interfaces.SecureComposite;
+import com.turquaz.engine.lang.AdmLangKeys;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.EngUIMainFrame;
+
+
+public class AdmUICompanyInfo extends org.eclipse.swt.widgets.Composite implements SecureComposite
+{
+	private CLabel lblCompanyName;
+	private Text txtCompanyName;
+	private Text txtCompanyFax;
+	private CLabel lblCompanyFax;
+	private Text txtCompanyPhone;
+	private CLabel lblCompanyPhone;
+	private Text txtCompanyAddress;
+	private CLabel lblCompanyAddress;
+    Integer companyId = null;
+
+	public AdmUICompanyInfo(org.eclipse.swt.widgets.Composite parent, int style)
+	{
+		super(parent, style);
+		initGUI();
+	}
+
+	private void initGUI()
+	{
+		try
+		{
+			GridLayout thisLayout = new GridLayout();
+			this.setLayout(thisLayout);
+			thisLayout.numColumns = 2;
+			this.setSize(568, 322);
+			{
+				lblCompanyName = new CLabel(this, SWT.NONE);
+				lblCompanyName.setText(AdmLangKeys.STR_COMPANY_NAME);
+			}
+			{
+				txtCompanyName = new Text(this, SWT.NONE);
+				GridData txtCompanyNameLData = new GridData();
+				txtCompanyNameLData.widthHint = 351;
+				txtCompanyNameLData.heightHint = 16;
+				txtCompanyName.setLayoutData(txtCompanyNameLData);
+			}
+			{
+				lblCompanyAddress = new CLabel(this, SWT.NONE);
+				lblCompanyAddress.setText(AdmLangKeys.STR_COMPANY_ADDRESS); 
+				GridData lblCompanyAddressLData = new GridData();
+				lblCompanyAddressLData.verticalAlignment = GridData.BEGINNING;
+				lblCompanyAddress.setLayoutData(lblCompanyAddressLData);
+			}
+			{
+				txtCompanyAddress = new Text(this, SWT.MULTI | SWT.WRAP | SWT.H_SCROLL);
+				GridData txtCompanyAddressLData = new GridData();
+				txtCompanyAddressLData.widthHint = 350;
+				txtCompanyAddressLData.heightHint = 70;
+				txtCompanyAddress.setLayoutData(txtCompanyAddressLData);
+				txtCompanyAddress.addListener(SWT.Traverse, new org.eclipse.swt.widgets.Listener(){
+
+					public void handleEvent(org.eclipse.swt.widgets.Event arg0) {
+						if ( arg0.detail == SWT.TRAVERSE_TAB_NEXT){
+							arg0.doit = true;
+						}
+						
+					}
+					
+				});
+			}
+			{
+				lblCompanyPhone = new CLabel(this, SWT.NONE);
+				lblCompanyPhone.setText(AdmLangKeys.STR_TELEPHONE); //$NON-NLS-1$
+			}
+			{
+				txtCompanyPhone = new Text(this, SWT.NONE);
+				GridData txtCompanyPhoneLData = new GridData();
+				txtCompanyPhoneLData.widthHint = 126;
+				txtCompanyPhoneLData.heightHint = 18;
+				txtCompanyPhone.setLayoutData(txtCompanyPhoneLData);
+			}
+			{
+				lblCompanyFax = new CLabel(this, SWT.NONE);
+				lblCompanyFax.setText(AdmLangKeys.STR_FAX); //$NON-NLS-1$
+			}
+			{
+				txtCompanyFax = new Text(this, SWT.NONE);
+				GridData txtCompanyFaxLData = new GridData();
+				txtCompanyFaxLData.widthHint = 124;
+				txtCompanyFaxLData.heightHint = 17;
+				txtCompanyFax.setLayoutData(txtCompanyFaxLData);
+			}
+			this.layout();
+			postInitGUI();
+		}
+		catch (Exception e)
+		{
+            EngBLLogger.log(this.getClass(),e,getShell());
+		}
+	}
+
+	public void postInitGUI()
+	{
+		try
+		{
+            HashBag companyBag =(HashBag)EngTXCommon.doSelectTX("Adm_getCompany",null);
+			companyId = (Integer)companyBag.get(AdmKeys.ADM_COMPANY_ID);
+            txtCompanyName.setText(companyBag.get(AdmKeys.ADM_COMPANY_NAME).toString());
+			txtCompanyAddress.setText(companyBag.get(AdmKeys.ADM_COMPANY_ADDRESS).toString());
+			txtCompanyFax.setText(companyBag.get(AdmKeys.ADM_COMPANY_FAX).toString());
+			txtCompanyPhone.setText(companyBag.get(AdmKeys.ADM_COMPANY_PHONE).toString());
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getShell());
+		}
+	}
+
+	public void newForm()
+	{
+	}
+
+	public void save()
+	{
+		MessageBox msg = new MessageBox(this.getShell(), SWT.NULL);
+		try
+		{
+			HashMap argMap = new HashMap();
+			
+			argMap.put(AdmKeys.ADM_COMPANY_ID,companyId);
+			argMap.put(AdmKeys.ADM_COMPANY_NAME,txtCompanyName.getText().trim());
+			argMap.put(AdmKeys.ADM_COMPANY_ADDRESS,txtCompanyAddress.getText().trim());
+			argMap.put(AdmKeys.ADM_COMPANY_PHONE,txtCompanyPhone.getText().trim());
+			argMap.put(AdmKeys.ADM_COMPANY_FAX,txtCompanyFax.getText().trim());
+			
+			EngTXCommon.doTransactionTX("Adm_updateCompany",argMap);
+			EngUIMainFrame.shell.setText("Turquaz - " + txtCompanyName.getText().trim());
+			msg.setMessage(EngLangCommonKeys.MSG_SAVED_SUCCESS); 
+			msg.open();
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getShell());
+		}
+	}
+}@

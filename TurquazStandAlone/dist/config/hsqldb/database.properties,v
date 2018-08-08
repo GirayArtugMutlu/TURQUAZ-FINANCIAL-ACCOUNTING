@@ -1,0 +1,29 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2009.09.28.12.05.00;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@0.8 beta 7 ytl tl change
+@
+text
+@dbType=Turquaz HSQLDB
+serverAddress=
+serverPort=
+dbName=
+dbUsername=sa
+dbPassword=
+@

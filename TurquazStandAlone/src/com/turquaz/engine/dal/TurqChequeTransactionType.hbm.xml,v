@@ -1,0 +1,112 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.43;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqChequeTransactionType" 
+    table="turq_cheque_transaction_types"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="native" />
+    </id>
+
+    <property
+        name="transactionTypsName"
+        type="java.lang.String"
+        column="transaction_typs_name"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="createdBy"
+        type="java.lang.String"
+        column="created_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="creationDate"
+        type="java.sql.Date"
+        column="creation_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="updatedBy"
+        type="java.lang.String"
+        column="updated_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="lastModified"
+        type="java.sql.Date"
+        column="last_modified"
+        not-null="true"
+        length="4"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to TurqChequeRoll -->
+    <set
+        name="turqChequeRolls"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="cheque_transaction_types_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqChequeRoll"
+        />
+    </set>
+    <!-- bi-directional many-to-one association to TurqChequeTransactionTypeGroup -->
+    <many-to-one
+        name="turqChequeTransactionTypeGroup"
+        class="com.turquaz.engine.dal.TurqChequeTransactionTypeGroup"
+        not-null="true"
+    >
+        <column name="transaction_types_parent" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>
+@

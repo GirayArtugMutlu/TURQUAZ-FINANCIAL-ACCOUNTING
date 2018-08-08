@@ -1,0 +1,270 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.03.04;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Onsel Armagan
+ * @@version $Id: EngConfiguration.java,v 1.11 2005/09/02 08:16:58 cem Exp $
+ */
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
+
+import server.util.EngBLLogger;
+
+import com.turquaz.engine.bl.EngBLCommon;
+
+public class EngConfiguration
+{
+	public static final String filename2 = System.getProperty("user.home")+"\\.turquaz\\config\\turquaz.xml"; //$NON-NLS-1$
+	
+	public static String logoURL = "";
+	public Date currentDate;
+	private static EngConfiguration _instance;
+	private static Document confDoc;
+
+	private EngConfiguration()
+	{
+		try
+		{
+			currentDate = Calendar.getInstance().getTime();
+			File file = new File(System.getProperty("user.home")+"\\.turquaz\\config");
+			if(!file.exists())
+			{
+				file.mkdirs();
+			}
+			file = new File(filename2); 
+			if (!file.exists())
+	        {
+	            XMLOutputter outputter = new XMLOutputter();
+	            OutputStream output = null;
+	            output = new FileOutputStream(filename2); //$NON-NLS-1$
+	            Element root = new Element("props");
+	            outputter.output(root, output);
+	            output.close();
+	        }
+	        SAXBuilder myBuilder = new SAXBuilder();
+	        confDoc = myBuilder.build(file);
+	        if (! confDoc.hasRootElement())
+	        {
+	            Element root = new Element("props");
+				confDoc.setRootElement(root);
+	        }
+	        
+			
+			
+			
+			
+			if (findString("invoice_template") != null) { //$NON-NLS-1$
+				
+				String invoice_template = findString("invoice_template");
+				if(invoice_template.endsWith(".jasper"))
+				{
+					invoice_template = invoice_template.substring(0,invoice_template.length()-7)+".jrxml";
+					setString("invoice_template",invoice_template);		
+				}
+			}
+			
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex);
+		}
+	}
+	
+
+	public static void setString(String key, String value)
+	{
+		
+		if (_instance==null)
+			_instance=new EngConfiguration();
+		Element el = confDoc.getRootElement().getChild(key);
+		if(el==null)
+		{
+			el = new Element(key);
+			confDoc.getRootElement().addContent(el);
+		}
+		
+		
+		el.setText(value);
+		
+		
+		
+		saveChanges();
+	}
+	
+	public static boolean automaticDispatcNote(){
+		
+		if (_instance == null)
+		{
+			_instance = new EngConfiguration();
+		}
+		
+		String ADN = EngModulePrefs.getProperty(EngBLCommon.BILL_CONFIG,"automatic.dispatch.note");
+		
+		if(ADN == null)
+		{
+			return true;
+		}
+		
+		if(ADN.trim().equals("true"))
+		{
+			
+				
+			return true;
+			
+		}
+		else
+		{
+			return false;
+		}
+		
+	}
+	public static List getChildren(String key)
+	{
+		List list = new ArrayList();
+	
+		
+		List childList = confDoc.getRootElement().getChildren(key);
+		
+		Iterator it = childList.iterator();
+		while(it.hasNext())
+		{
+			Element el = (Element)it.next();
+			list.add(el.getText());			
+			
+		}
+		
+		return list;
+		
+		
+	}
+	public static void removeProperty(String key)
+	{
+		if (confDoc == null)
+		{
+			_instance = new EngConfiguration();
+		}
+	
+		confDoc.getRootElement().removeChildren(key);
+		saveChanges();
+		
+	}
+
+	public static String getString(String key)
+	{
+		if (confDoc == null)
+		{
+			_instance = new EngConfiguration();
+		}
+		return _instance.findString(key);
+	}
+
+	private String findString(String Key)
+	{
+		if (confDoc == null)
+		{
+			return null;
+		}
+		Element el = confDoc.getRootElement().getChild(Key);
+		if(el==null)
+		{
+			return null;
+		}
+		return el.getText();
+	}
+
+	public static Date getCurrentDate()
+	{
+		if (_instance == null)
+		{
+			_instance = new EngConfiguration();
+		}
+		return _instance.currentDate;
+	}
+
+	public static void setCurrentDate(Date d)
+	{
+		if (_instance == null)
+		{
+			_instance = new EngConfiguration();
+		}
+		_instance.currentDate = d;
+	}
+	
+	public static void saveChanges()
+	{
+		if(confDoc==null)
+		{
+			return;
+		}
+		try
+		{
+			Format format = Format.getPrettyFormat();
+			
+			XMLOutputter outputter = new XMLOutputter();
+			outputter.setFormat(format);
+            OutputStream output = null;
+            output = new FileOutputStream(filename2); //$NON-NLS-1$
+                 
+			
+            outputter.output(confDoc, output);
+            output.close();
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(EngConfiguration.class,ex);
+		}
+	}
+
+	public static void refreshConfig()
+	{
+		_instance = new EngConfiguration();
+	}
+}@

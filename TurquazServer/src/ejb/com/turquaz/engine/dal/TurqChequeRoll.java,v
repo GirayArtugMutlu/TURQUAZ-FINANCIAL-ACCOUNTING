@@ -1,0 +1,232 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.30;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqChequeRoll implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private Date chequeRollsDate;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private String chequeRollNo;
+
+    /** persistent field */
+    private boolean sumChequeAmounts;
+
+    /** nullable persistent field */
+    private com.turquaz.engine.dal.TurqChequeRollAccountingAccount turqChequeRollAccountingAccount;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqChequeTransactionType turqChequeTransactionType;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqBanksCard turqBanksCard;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard;
+
+    /** persistent field */
+    private Set turqChequeChequeInRolls;
+
+    /** full constructor */
+    public TurqChequeRoll(Date chequeRollsDate, String createdBy, Date creationDate, String updatedBy, Date lastModified, String chequeRollNo, boolean sumChequeAmounts, com.turquaz.engine.dal.TurqChequeRollAccountingAccount turqChequeRollAccountingAccount, com.turquaz.engine.dal.TurqChequeTransactionType turqChequeTransactionType, com.turquaz.engine.dal.TurqBanksCard turqBanksCard, com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence, com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard, Set turqChequeChequeInRolls) {
+        this.chequeRollsDate = chequeRollsDate;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.chequeRollNo = chequeRollNo;
+        this.sumChequeAmounts = sumChequeAmounts;
+        this.turqChequeRollAccountingAccount = turqChequeRollAccountingAccount;
+        this.turqChequeTransactionType = turqChequeTransactionType;
+        this.turqBanksCard = turqBanksCard;
+        this.turqEngineSequence = turqEngineSequence;
+        this.turqCurrentCard = turqCurrentCard;
+        this.turqChequeChequeInRolls = turqChequeChequeInRolls;
+    }
+
+    /** default constructor */
+    public TurqChequeRoll() {
+    }
+
+    /** minimal constructor */
+    public TurqChequeRoll(Date chequeRollsDate, String createdBy, Date creationDate, String updatedBy, Date lastModified, String chequeRollNo, boolean sumChequeAmounts, com.turquaz.engine.dal.TurqChequeTransactionType turqChequeTransactionType, com.turquaz.engine.dal.TurqBanksCard turqBanksCard, com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence, com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard, Set turqChequeChequeInRolls) {
+        this.chequeRollsDate = chequeRollsDate;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.chequeRollNo = chequeRollNo;
+        this.sumChequeAmounts = sumChequeAmounts;
+        this.turqChequeTransactionType = turqChequeTransactionType;
+        this.turqBanksCard = turqBanksCard;
+        this.turqEngineSequence = turqEngineSequence;
+        this.turqCurrentCard = turqCurrentCard;
+        this.turqChequeChequeInRolls = turqChequeChequeInRolls;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getChequeRollsDate() {
+        return this.chequeRollsDate;
+    }
+
+    public void setChequeRollsDate(Date chequeRollsDate) {
+        this.chequeRollsDate = chequeRollsDate;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public String getChequeRollNo() {
+        return this.chequeRollNo;
+    }
+
+    public void setChequeRollNo(String chequeRollNo) {
+        this.chequeRollNo = chequeRollNo;
+    }
+
+    public boolean isSumChequeAmounts() {
+        return this.sumChequeAmounts;
+    }
+
+    public void setSumChequeAmounts(boolean sumChequeAmounts) {
+        this.sumChequeAmounts = sumChequeAmounts;
+    }
+
+    public com.turquaz.engine.dal.TurqChequeRollAccountingAccount getTurqChequeRollAccountingAccount() {
+        return this.turqChequeRollAccountingAccount;
+    }
+
+    public void setTurqChequeRollAccountingAccount(com.turquaz.engine.dal.TurqChequeRollAccountingAccount turqChequeRollAccountingAccount) {
+        this.turqChequeRollAccountingAccount = turqChequeRollAccountingAccount;
+    }
+
+    public com.turquaz.engine.dal.TurqChequeTransactionType getTurqChequeTransactionType() {
+        return this.turqChequeTransactionType;
+    }
+
+    public void setTurqChequeTransactionType(com.turquaz.engine.dal.TurqChequeTransactionType turqChequeTransactionType) {
+        this.turqChequeTransactionType = turqChequeTransactionType;
+    }
+
+    public com.turquaz.engine.dal.TurqBanksCard getTurqBanksCard() {
+        return this.turqBanksCard;
+    }
+
+    public void setTurqBanksCard(com.turquaz.engine.dal.TurqBanksCard turqBanksCard) {
+        this.turqBanksCard = turqBanksCard;
+    }
+
+    public com.turquaz.engine.dal.TurqEngineSequence getTurqEngineSequence() {
+        return this.turqEngineSequence;
+    }
+
+    public void setTurqEngineSequence(com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence) {
+        this.turqEngineSequence = turqEngineSequence;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrentCard getTurqCurrentCard() {
+        return this.turqCurrentCard;
+    }
+
+    public void setTurqCurrentCard(com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    public Set getTurqChequeChequeInRolls() {
+        return this.turqChequeChequeInRolls;
+    }
+
+    public void setTurqChequeChequeInRolls(Set turqChequeChequeInRolls) {
+        this.turqChequeChequeInRolls = turqChequeChequeInRolls;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

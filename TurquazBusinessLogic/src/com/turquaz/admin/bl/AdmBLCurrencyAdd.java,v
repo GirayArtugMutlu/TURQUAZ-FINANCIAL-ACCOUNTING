@@ -1,0 +1,86 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@/*
+ * Created on Feb 28, 2005
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+package com.turquaz.admin.bl;
+
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.HashMap;
+
+import server.util.MyThreadLocal;
+import server.util.SessionInfo;
+
+import com.turquaz.admin.AdmKeys;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.dal.EngDALCommon;
+import com.turquaz.engine.dal.TurqCurrency;
+import com.turquaz.engine.dal.TurqCurrencyExchangeRate;
+
+/**
+ * @@author Cem 
+ */
+public class AdmBLCurrencyAdd
+{
+	public static void saveCurrency(HashMap argMap) throws Exception
+	{
+		String currencyName=(String)argMap.get(AdmKeys.ADM_CURRENCY_NAME);
+		String currencyAbbr=(String)argMap.get(AdmKeys.ADM_CURRENCY_ABBR);
+		String currencyCountry=(String)argMap.get(AdmKeys.ADM_CURRENCY_COUNTRY);
+		Boolean constant=(Boolean)argMap.get(EngKeys.CONSTANT);
+		BigDecimal exchangeRatio=(BigDecimal)argMap.get(EngKeys.EXCHANGE_RATIO);
+		
+		Calendar cal = Calendar.getInstance();
+		TurqCurrency newCurrency = new TurqCurrency();
+		newCurrency.setCurrenciesName(currencyName);
+		newCurrency.setCurrenciesAbbreviation(currencyAbbr);
+		newCurrency.setCurrenciesCountry(currencyCountry);
+		newCurrency.setConstant(constant);
+        
+        SessionInfo info = MyThreadLocal.getSessionInfo();            
+        String username =(String)info.get("username");
+        
+		newCurrency.setCreatedBy(username);
+		newCurrency.setUpdatedBy(username);
+        
+		newCurrency.setLastModified(cal.getTime());
+		newCurrency.setCreationDate(cal.getTime());
+		EngDALCommon.saveObject(newCurrency);
+		
+		if (constant.booleanValue())
+		{
+			TurqCurrencyExchangeRate exchangeRate=new TurqCurrencyExchangeRate();
+			
+			exchangeRate.setExchangeRatio(exchangeRatio);
+			exchangeRate.setTurqCurrencyByExchangeCurrencyId(newCurrency);
+			exchangeRate.setTurqCurrencyByBaseCurrencyId(EngDALCommon.getBaseCurrency());
+			exchangeRate.setExhangeRatesDate(cal.getTime());
+			
+			EngDALCommon.saveObject(exchangeRate);
+		}
+	}
+}@

@@ -1,0 +1,71 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@b@;
+
+
+1.1
+date	2007.01.22.17.03.04;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+" codebase="$$context" href="index.jnlp">
+ <information>
+  <title>Turquaz Muhasebe</title>
+  <vendor>Turquaz</vendor>
+  <homepage href="index.html"/>
+  <description>Turquaz Muhasebe</description>
+  <description kind="short">Turquaz Muhasebe</description>
+ </information>
+  <security>
+     <all-permissions/>
+  </security>
+ <resources>
+  <j2se version="1.4"/>
+  <jar href="turquaz-client.jar"/> 
+  <jar href="boot.jar"/>
+  <jar href="cglib2.jar"/>
+  <jar href="jasperreports.jar"/>
+  <jar href="jface.jar"/>
+  <jar href="jfacetext.jar"/>
+  <jar href="jta.jar"/>
+  <jar href="odmg.jar"/>
+  <jar href="osgi.jar"/>
+  <jar href="poi.jar"/>
+  <jar href="poi-contrib.jar"/>
+  <jar href="poi-scratchpad.jar"/>
+  <jar href="runtime.jar"/>
+  <jar href="swtcalendar.jar"/>
+  <jar href="swtjasperviewer.jar"/>
+  <jar href="swt-nl.jar"/>
+  <jar href="text.jar"/>
+  <jar href="JLzma.jar"/>    
+  <jar href="jdom.jar"/>  
+   <jar href="turquaz-commons.jar"/> 
+   <extension name="activation" href="activation.jnlp"/>
+  <nativelib href="swt-lib.jar"/>
+  
+ </resources>
+ <resources os="Windows"> 
+ 	<jar href="swt-windows.jar"/>
+ </resources>
+ <resources os="Linux"> 
+ 	<jar href="swt-unix.jar"/>
+ 	<jar href="swt-pi.jar"/> 
+ 	<jar href="swt-mozilla.jar"/> 	
+ </resources>
+ <application-desc main-class="com.turquaz.engine.EngTurquazLoader"/>
+</jnlp>@

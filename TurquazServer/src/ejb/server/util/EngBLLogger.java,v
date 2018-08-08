@@ -1,0 +1,52 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.36;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.util;
+
+import org.apache.log4j.Logger;
+
+public class EngBLLogger {
+	
+	private static Logger loger = Logger.getRootLogger();
+
+	public static void log(Class cls,Exception ex)
+	{
+		Logger loger = Logger.getLogger(cls);
+		loger.error("Exception Caught", ex);
+		ex.printStackTrace();		
+	}
+	
+	public static void log_error(String message)
+	{
+		loger.error(message);
+	}
+	
+	public static void log_warning(String message)
+	{
+		loger.warn(message);
+	}
+	
+	
+	
+
+}
+@

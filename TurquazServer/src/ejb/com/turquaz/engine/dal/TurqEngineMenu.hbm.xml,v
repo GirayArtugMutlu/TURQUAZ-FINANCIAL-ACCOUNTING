@@ -1,0 +1,90 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.28;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqEngineMenu" 
+    table="turq_engine_menu"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="assigned" />
+    </id>
+
+    <property
+        name="menuName"
+        type="java.lang.String"
+        column="menu_name"
+        not-null="true"
+        length="100"
+    />
+    <property
+        name="menuImage"
+        type="java.lang.String"
+        column="menu_image"
+        length="100"
+    />
+    <property
+        name="menuType"
+        type="int"
+        column="menu_type"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="parentId"
+        type="int"
+        column="parent_id"
+        not-null="true"
+        length="4"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TurqModuleComponent -->
+    <many-to-one
+        name="turqModuleComponent"
+        class="com.turquaz.engine.dal.TurqModuleComponent"
+        not-null="true"
+    >
+        <column name="menu_module_component" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>
+@

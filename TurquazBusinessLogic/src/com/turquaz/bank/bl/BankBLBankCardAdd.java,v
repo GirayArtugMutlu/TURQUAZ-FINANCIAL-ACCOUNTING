@@ -1,0 +1,141 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.34;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.bank.bl;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Onsel Armagan
+ * @@version $Id: BankBLBankCardAdd.java,v 1.2 2005/07/04 08:35:11 onsel Exp $
+ */
+import com.turquaz.bank.BankKeys;
+import com.turquaz.engine.dal.EngDALCommon;
+import com.turquaz.engine.dal.TurqAccountingAccount;
+import com.turquaz.engine.dal.TurqBankAccountingAccount;
+import com.turquaz.engine.dal.TurqBankAccountingType;
+import com.turquaz.engine.dal.TurqBanksCard;
+import com.turquaz.engine.dal.TurqCurrency;
+
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import server.util.MyThreadLocal;
+import server.util.SessionInfo;
+
+public class BankBLBankCardAdd
+{
+	public static void saveBankCard(HashMap argMap) throws Exception
+	{		
+		try
+		{
+			String bankName=(String)argMap.get(BankKeys.BANK_NAME);
+			String bankBranchName=(String)argMap.get(BankKeys.BANK_BRANCH_NAME);
+			String bankAccountNo=(String)argMap.get(BankKeys.BANK_ACCOUNT_NO);
+			
+			Integer currencyId =(Integer)argMap.get(BankKeys.BANK_CURRENCY);
+			TurqCurrency currency = new TurqCurrency();
+			currency.setId(currencyId);
+			
+			String definition=(String)argMap.get(BankKeys.BANK_DEFINITION);
+			String bankCode=(String)argMap.get(BankKeys.BANK_CODE);
+			Map accountingAccounts=(Map)argMap.get(BankKeys.BANK_ACCOUNTING_ACCOUNTS);
+			TurqBanksCard bankCard = registerBankCard( bankName, bankBranchName, bankAccountNo, currency, definition, bankCode);
+			saveBankAccountingAccounts(bankCard, accountingAccounts);
+			BankBLTransactionAdd.saveInitialBankTransaction(bankCard);
+			
+		}
+		catch (Exception ex)
+		{
+			
+			throw ex;
+		}
+	}
+
+	private static TurqBanksCard registerBankCard( String bankName, String bankBranchName, String bankAccountNo,
+			TurqCurrency currency, String definition, String bankCode) throws Exception
+	{
+		TurqBanksCard bankCard = new TurqBanksCard();
+		bankCard.setBankName(bankName);
+		bankCard.setBankBranchName(bankBranchName);
+		bankCard.setBankAccountNo(bankAccountNo);
+		bankCard.setTurqCurrency(currency);
+		bankCard.setBankDefinition(definition);
+		bankCard.setBankCode(bankCode);
+        
+        SessionInfo info = MyThreadLocal.getSessionInfo();            
+        String username =(String)info.get("username");
+        
+		bankCard.setCreatedBy(username); 
+		bankCard.setUpdatedBy(username); 
+		Calendar cal = Calendar.getInstance();
+		bankCard.setLastModified(cal.getTime());
+		bankCard.setCreationDate(cal.getTime());
+		EngDALCommon.saveObject( bankCard);
+		return bankCard;
+	}
+
+	public static void saveBankAccountingAccounts(TurqBanksCard bankCard, Map accounts) throws Exception
+	{
+		Iterator it = accounts.keySet().iterator();
+		while (it.hasNext())
+		{
+			Integer type = (Integer) it.next();
+			if (accounts.get(type) != null)
+			{
+				TurqBankAccountingAccount bankAccount = new TurqBankAccountingAccount();
+                
+                SessionInfo info = MyThreadLocal.getSessionInfo();            
+                String username =(String)info.get("username");
+                
+				bankAccount.setCreatedBy(username); 
+				bankAccount.setUpdatedBy(username); 
+				Calendar cal = Calendar.getInstance();
+				bankAccount.setLastModified(cal.getTime());
+				bankAccount.setCreationDate(cal.getTime());
+				bankAccount.setTurqBanksCard(bankCard);
+				TurqAccountingAccount account = new TurqAccountingAccount();
+				account.setId((Integer)accounts.get(type));
+				bankAccount.setTurqAccountingAccount(account );
+				TurqBankAccountingType accType = new TurqBankAccountingType();
+				accType.setId(type);
+				bankAccount.setTurqBankAccountingType(accType);
+				EngDALCommon.saveObject(bankAccount);
+			}
+		}
+	}
+}@

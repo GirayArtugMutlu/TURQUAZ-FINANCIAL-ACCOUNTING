@@ -1,0 +1,402 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.44;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqCurrentCard implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private String cardsCurrentCode;
+
+    /** persistent field */
+    private String cardsName;
+
+    /** persistent field */
+    private String cardsDefinition;
+
+    /** persistent field */
+    private String cardsAddress;
+
+    /** persistent field */
+    private BigDecimal cardsDiscountRate;
+
+    /** persistent field */
+    private BigDecimal cardsDiscountPayment;
+
+    /** persistent field */
+    private BigDecimal cardsCreditLimit;
+
+    /** persistent field */
+    private BigDecimal cardsRiskLimit;
+
+    /** persistent field */
+    private String cardsTaxDepartment;
+
+    /** persistent field */
+    private String cardsTaxNumber;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** nullable persistent field */
+    private Integer daysToValue;
+
+    /** persistent field */
+    private Set turqChequeRolls;
+
+    /** persistent field */
+    private Set turqInventoryTransactions;
+
+    /** persistent field */
+    private Set turqCurrentContacts;
+
+    /** persistent field */
+    private Set turqConsignments;
+
+    /** persistent field */
+    private Set turqOrders;
+
+    /** persistent field */
+    private Set turqCurrentTransactions;
+
+    /** persistent field */
+    private Set turqTradebillRolls;
+
+    /** persistent field */
+    private Set turqCurrentCardsGroups;
+
+    /** persistent field */
+    private Set turqCurrentAccountingAccounts;
+
+    /** persistent field */
+    private Set turqCurrentCardsPhones;
+
+    /** persistent field */
+    private Set turqBills;
+
+    /** full constructor */
+    public TurqCurrentCard(String cardsCurrentCode, String cardsName, String cardsDefinition, String cardsAddress, BigDecimal cardsDiscountRate, BigDecimal cardsDiscountPayment, BigDecimal cardsCreditLimit, BigDecimal cardsRiskLimit, String cardsTaxDepartment, String cardsTaxNumber, String createdBy, Date creationDate, String updatedBy, Date lastModified, Integer daysToValue, Set turqChequeRolls, Set turqInventoryTransactions, Set turqCurrentContacts, Set turqConsignments, Set turqOrders, Set turqCurrentTransactions, Set turqTradebillRolls, Set turqCurrentCardsGroups, Set turqCurrentAccountingAccounts, Set turqCurrentCardsPhones, Set turqBills) {
+        this.cardsCurrentCode = cardsCurrentCode;
+        this.cardsName = cardsName;
+        this.cardsDefinition = cardsDefinition;
+        this.cardsAddress = cardsAddress;
+        this.cardsDiscountRate = cardsDiscountRate;
+        this.cardsDiscountPayment = cardsDiscountPayment;
+        this.cardsCreditLimit = cardsCreditLimit;
+        this.cardsRiskLimit = cardsRiskLimit;
+        this.cardsTaxDepartment = cardsTaxDepartment;
+        this.cardsTaxNumber = cardsTaxNumber;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.daysToValue = daysToValue;
+        this.turqChequeRolls = turqChequeRolls;
+        this.turqInventoryTransactions = turqInventoryTransactions;
+        this.turqCurrentContacts = turqCurrentContacts;
+        this.turqConsignments = turqConsignments;
+        this.turqOrders = turqOrders;
+        this.turqCurrentTransactions = turqCurrentTransactions;
+        this.turqTradebillRolls = turqTradebillRolls;
+        this.turqCurrentCardsGroups = turqCurrentCardsGroups;
+        this.turqCurrentAccountingAccounts = turqCurrentAccountingAccounts;
+        this.turqCurrentCardsPhones = turqCurrentCardsPhones;
+        this.turqBills = turqBills;
+    }
+
+    /** default constructor */
+    public TurqCurrentCard() {
+    }
+
+    /** minimal constructor */
+    public TurqCurrentCard(String cardsCurrentCode, String cardsName, String cardsDefinition, String cardsAddress, BigDecimal cardsDiscountRate, BigDecimal cardsDiscountPayment, BigDecimal cardsCreditLimit, BigDecimal cardsRiskLimit, String cardsTaxDepartment, String cardsTaxNumber, String createdBy, Date creationDate, String updatedBy, Date lastModified, Set turqChequeRolls, Set turqInventoryTransactions, Set turqCurrentContacts, Set turqConsignments, Set turqOrders, Set turqCurrentTransactions, Set turqTradebillRolls, Set turqCurrentCardsGroups, Set turqCurrentAccountingAccounts, Set turqCurrentCardsPhones, Set turqBills) {
+        this.cardsCurrentCode = cardsCurrentCode;
+        this.cardsName = cardsName;
+        this.cardsDefinition = cardsDefinition;
+        this.cardsAddress = cardsAddress;
+        this.cardsDiscountRate = cardsDiscountRate;
+        this.cardsDiscountPayment = cardsDiscountPayment;
+        this.cardsCreditLimit = cardsCreditLimit;
+        this.cardsRiskLimit = cardsRiskLimit;
+        this.cardsTaxDepartment = cardsTaxDepartment;
+        this.cardsTaxNumber = cardsTaxNumber;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.turqChequeRolls = turqChequeRolls;
+        this.turqInventoryTransactions = turqInventoryTransactions;
+        this.turqCurrentContacts = turqCurrentContacts;
+        this.turqConsignments = turqConsignments;
+        this.turqOrders = turqOrders;
+        this.turqCurrentTransactions = turqCurrentTransactions;
+        this.turqTradebillRolls = turqTradebillRolls;
+        this.turqCurrentCardsGroups = turqCurrentCardsGroups;
+        this.turqCurrentAccountingAccounts = turqCurrentAccountingAccounts;
+        this.turqCurrentCardsPhones = turqCurrentCardsPhones;
+        this.turqBills = turqBills;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCardsCurrentCode() {
+        return this.cardsCurrentCode;
+    }
+
+    public void setCardsCurrentCode(String cardsCurrentCode) {
+        this.cardsCurrentCode = cardsCurrentCode;
+    }
+
+    public String getCardsName() {
+        return this.cardsName;
+    }
+
+    public void setCardsName(String cardsName) {
+        this.cardsName = cardsName;
+    }
+
+    public String getCardsDefinition() {
+        return this.cardsDefinition;
+    }
+
+    public void setCardsDefinition(String cardsDefinition) {
+        this.cardsDefinition = cardsDefinition;
+    }
+
+    public String getCardsAddress() {
+        return this.cardsAddress;
+    }
+
+    public void setCardsAddress(String cardsAddress) {
+        this.cardsAddress = cardsAddress;
+    }
+
+    public BigDecimal getCardsDiscountRate() {
+        return this.cardsDiscountRate;
+    }
+
+    public void setCardsDiscountRate(BigDecimal cardsDiscountRate) {
+        this.cardsDiscountRate = cardsDiscountRate;
+    }
+
+    public BigDecimal getCardsDiscountPayment() {
+        return this.cardsDiscountPayment;
+    }
+
+    public void setCardsDiscountPayment(BigDecimal cardsDiscountPayment) {
+        this.cardsDiscountPayment = cardsDiscountPayment;
+    }
+
+    public BigDecimal getCardsCreditLimit() {
+        return this.cardsCreditLimit;
+    }
+
+    public void setCardsCreditLimit(BigDecimal cardsCreditLimit) {
+        this.cardsCreditLimit = cardsCreditLimit;
+    }
+
+    public BigDecimal getCardsRiskLimit() {
+        return this.cardsRiskLimit;
+    }
+
+    public void setCardsRiskLimit(BigDecimal cardsRiskLimit) {
+        this.cardsRiskLimit = cardsRiskLimit;
+    }
+
+    public String getCardsTaxDepartment() {
+        return this.cardsTaxDepartment;
+    }
+
+    public void setCardsTaxDepartment(String cardsTaxDepartment) {
+        this.cardsTaxDepartment = cardsTaxDepartment;
+    }
+
+    public String getCardsTaxNumber() {
+        return this.cardsTaxNumber;
+    }
+
+    public void setCardsTaxNumber(String cardsTaxNumber) {
+        this.cardsTaxNumber = cardsTaxNumber;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public Integer getDaysToValue() {
+        return this.daysToValue;
+    }
+
+    public void setDaysToValue(Integer daysToValue) {
+        this.daysToValue = daysToValue;
+    }
+
+    public Set getTurqChequeRolls() {
+        return this.turqChequeRolls;
+    }
+
+    public void setTurqChequeRolls(Set turqChequeRolls) {
+        this.turqChequeRolls = turqChequeRolls;
+    }
+
+    public Set getTurqInventoryTransactions() {
+        return this.turqInventoryTransactions;
+    }
+
+    public void setTurqInventoryTransactions(Set turqInventoryTransactions) {
+        this.turqInventoryTransactions = turqInventoryTransactions;
+    }
+
+    public Set getTurqCurrentContacts() {
+        return this.turqCurrentContacts;
+    }
+
+    public void setTurqCurrentContacts(Set turqCurrentContacts) {
+        this.turqCurrentContacts = turqCurrentContacts;
+    }
+
+    public Set getTurqConsignments() {
+        return this.turqConsignments;
+    }
+
+    public void setTurqConsignments(Set turqConsignments) {
+        this.turqConsignments = turqConsignments;
+    }
+
+    public Set getTurqOrders() {
+        return this.turqOrders;
+    }
+
+    public void setTurqOrders(Set turqOrders) {
+        this.turqOrders = turqOrders;
+    }
+
+    public Set getTurqCurrentTransactions() {
+        return this.turqCurrentTransactions;
+    }
+
+    public void setTurqCurrentTransactions(Set turqCurrentTransactions) {
+        this.turqCurrentTransactions = turqCurrentTransactions;
+    }
+
+    public Set getTurqTradebillRolls() {
+        return this.turqTradebillRolls;
+    }
+
+    public void setTurqTradebillRolls(Set turqTradebillRolls) {
+        this.turqTradebillRolls = turqTradebillRolls;
+    }
+
+    public Set getTurqCurrentCardsGroups() {
+        return this.turqCurrentCardsGroups;
+    }
+
+    public void setTurqCurrentCardsGroups(Set turqCurrentCardsGroups) {
+        this.turqCurrentCardsGroups = turqCurrentCardsGroups;
+    }
+
+    public Set getTurqCurrentAccountingAccounts() {
+        return this.turqCurrentAccountingAccounts;
+    }
+
+    public void setTurqCurrentAccountingAccounts(Set turqCurrentAccountingAccounts) {
+        this.turqCurrentAccountingAccounts = turqCurrentAccountingAccounts;
+    }
+
+    public Set getTurqCurrentCardsPhones() {
+        return this.turqCurrentCardsPhones;
+    }
+
+    public void setTurqCurrentCardsPhones(Set turqCurrentCardsPhones) {
+        this.turqCurrentCardsPhones = turqCurrentCardsPhones;
+    }
+
+    public Set getTurqBills() {
+        return this.turqBills;
+    }
+
+    public void setTurqBills(Set turqBills) {
+        this.turqBills = turqBills;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

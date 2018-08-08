@@ -1,0 +1,191 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.38;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Date;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqInventoryTransactionBill implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private Date billDate;
+
+    /** persistent field */
+    private String billDefinition;
+
+    /** persistent field */
+    private int billType;
+
+    /** persistent field */
+    private String billDocumentNo;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqAccountingAccountClass turqAccountingAccountClass;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqInventoryWarehous turqInventoryWarehous;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence;
+
+    /** full constructor */
+    public TurqInventoryTransactionBill(Date billDate, String billDefinition, int billType, String billDocumentNo, String createdBy, Date creationDate, String updatedBy, Date lastModified, com.turquaz.engine.dal.TurqAccountingAccountClass turqAccountingAccountClass, com.turquaz.engine.dal.TurqInventoryWarehous turqInventoryWarehous, com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence) {
+        this.billDate = billDate;
+        this.billDefinition = billDefinition;
+        this.billType = billType;
+        this.billDocumentNo = billDocumentNo;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.turqAccountingAccountClass = turqAccountingAccountClass;
+        this.turqInventoryWarehous = turqInventoryWarehous;
+        this.turqEngineSequence = turqEngineSequence;
+    }
+
+    /** default constructor */
+    public TurqInventoryTransactionBill() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getBillDate() {
+        return this.billDate;
+    }
+
+    public void setBillDate(Date billDate) {
+        this.billDate = billDate;
+    }
+
+    public String getBillDefinition() {
+        return this.billDefinition;
+    }
+
+    public void setBillDefinition(String billDefinition) {
+        this.billDefinition = billDefinition;
+    }
+
+    public int getBillType() {
+        return this.billType;
+    }
+
+    public void setBillType(int billType) {
+        this.billType = billType;
+    }
+
+    public String getBillDocumentNo() {
+        return this.billDocumentNo;
+    }
+
+    public void setBillDocumentNo(String billDocumentNo) {
+        this.billDocumentNo = billDocumentNo;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public com.turquaz.engine.dal.TurqAccountingAccountClass getTurqAccountingAccountClass() {
+        return this.turqAccountingAccountClass;
+    }
+
+    public void setTurqAccountingAccountClass(com.turquaz.engine.dal.TurqAccountingAccountClass turqAccountingAccountClass) {
+        this.turqAccountingAccountClass = turqAccountingAccountClass;
+    }
+
+    public com.turquaz.engine.dal.TurqInventoryWarehous getTurqInventoryWarehous() {
+        return this.turqInventoryWarehous;
+    }
+
+    public void setTurqInventoryWarehous(com.turquaz.engine.dal.TurqInventoryWarehous turqInventoryWarehous) {
+        this.turqInventoryWarehous = turqInventoryWarehous;
+    }
+
+    public com.turquaz.engine.dal.TurqEngineSequence getTurqEngineSequence() {
+        return this.turqEngineSequence;
+    }
+
+    public void setTurqEngineSequence(com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence) {
+        this.turqEngineSequence = turqEngineSequence;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

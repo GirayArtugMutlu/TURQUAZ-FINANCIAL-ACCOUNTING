@@ -1,0 +1,289 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.44;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqCurrentTransaction implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private Date transactionsDate;
+
+    /** persistent field */
+    private String transactionsDocumentNo;
+
+    /** persistent field */
+    private BigDecimal transactionsTotalCredit;
+
+    /** persistent field */
+    private BigDecimal transactionsTotalDiscount;
+
+    /** persistent field */
+    private BigDecimal transactionsTotalDept;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private String transactionsDefinition;
+
+    /** persistent field */
+    private BigDecimal totalCreditInForeignCurrency;
+
+    /** persistent field */
+    private BigDecimal totalDeptInForeignCurrency;
+
+    /** persistent field */
+    private BigDecimal totalDiscountInForeignCurrency;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrentTransactionType turqCurrentTransactionType;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard;
+
+    /** persistent field */
+    private Set turqCurrentTransactionBillsByCurrentTransactionsIdOpen;
+
+    /** persistent field */
+    private Set turqCurrentTransactionBillsByCurrentTransactionsIdClose;
+
+    /** full constructor */
+    public TurqCurrentTransaction(Date transactionsDate, String transactionsDocumentNo, BigDecimal transactionsTotalCredit, BigDecimal transactionsTotalDiscount, BigDecimal transactionsTotalDept, String createdBy, Date creationDate, String updatedBy, Date lastModified, String transactionsDefinition, BigDecimal totalCreditInForeignCurrency, BigDecimal totalDeptInForeignCurrency, BigDecimal totalDiscountInForeignCurrency, com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate, com.turquaz.engine.dal.TurqCurrentTransactionType turqCurrentTransactionType, com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence, com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard, Set turqCurrentTransactionBillsByCurrentTransactionsIdOpen, Set turqCurrentTransactionBillsByCurrentTransactionsIdClose) {
+        this.transactionsDate = transactionsDate;
+        this.transactionsDocumentNo = transactionsDocumentNo;
+        this.transactionsTotalCredit = transactionsTotalCredit;
+        this.transactionsTotalDiscount = transactionsTotalDiscount;
+        this.transactionsTotalDept = transactionsTotalDept;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.transactionsDefinition = transactionsDefinition;
+        this.totalCreditInForeignCurrency = totalCreditInForeignCurrency;
+        this.totalDeptInForeignCurrency = totalDeptInForeignCurrency;
+        this.totalDiscountInForeignCurrency = totalDiscountInForeignCurrency;
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+        this.turqCurrentTransactionType = turqCurrentTransactionType;
+        this.turqEngineSequence = turqEngineSequence;
+        this.turqCurrentCard = turqCurrentCard;
+        this.turqCurrentTransactionBillsByCurrentTransactionsIdOpen = turqCurrentTransactionBillsByCurrentTransactionsIdOpen;
+        this.turqCurrentTransactionBillsByCurrentTransactionsIdClose = turqCurrentTransactionBillsByCurrentTransactionsIdClose;
+    }
+
+    /** default constructor */
+    public TurqCurrentTransaction() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getTransactionsDate() {
+        return this.transactionsDate;
+    }
+
+    public void setTransactionsDate(Date transactionsDate) {
+        this.transactionsDate = transactionsDate;
+    }
+
+    public String getTransactionsDocumentNo() {
+        return this.transactionsDocumentNo;
+    }
+
+    public void setTransactionsDocumentNo(String transactionsDocumentNo) {
+        this.transactionsDocumentNo = transactionsDocumentNo;
+    }
+
+    public BigDecimal getTransactionsTotalCredit() {
+        return this.transactionsTotalCredit;
+    }
+
+    public void setTransactionsTotalCredit(BigDecimal transactionsTotalCredit) {
+        this.transactionsTotalCredit = transactionsTotalCredit;
+    }
+
+    public BigDecimal getTransactionsTotalDiscount() {
+        return this.transactionsTotalDiscount;
+    }
+
+    public void setTransactionsTotalDiscount(BigDecimal transactionsTotalDiscount) {
+        this.transactionsTotalDiscount = transactionsTotalDiscount;
+    }
+
+    public BigDecimal getTransactionsTotalDept() {
+        return this.transactionsTotalDept;
+    }
+
+    public void setTransactionsTotalDept(BigDecimal transactionsTotalDept) {
+        this.transactionsTotalDept = transactionsTotalDept;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public String getTransactionsDefinition() {
+        return this.transactionsDefinition;
+    }
+
+    public void setTransactionsDefinition(String transactionsDefinition) {
+        this.transactionsDefinition = transactionsDefinition;
+    }
+
+    public BigDecimal getTotalCreditInForeignCurrency() {
+        return this.totalCreditInForeignCurrency;
+    }
+
+    public void setTotalCreditInForeignCurrency(BigDecimal totalCreditInForeignCurrency) {
+        this.totalCreditInForeignCurrency = totalCreditInForeignCurrency;
+    }
+
+    public BigDecimal getTotalDeptInForeignCurrency() {
+        return this.totalDeptInForeignCurrency;
+    }
+
+    public void setTotalDeptInForeignCurrency(BigDecimal totalDeptInForeignCurrency) {
+        this.totalDeptInForeignCurrency = totalDeptInForeignCurrency;
+    }
+
+    public BigDecimal getTotalDiscountInForeignCurrency() {
+        return this.totalDiscountInForeignCurrency;
+    }
+
+    public void setTotalDiscountInForeignCurrency(BigDecimal totalDiscountInForeignCurrency) {
+        this.totalDiscountInForeignCurrency = totalDiscountInForeignCurrency;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrencyExchangeRate getTurqCurrencyExchangeRate() {
+        return this.turqCurrencyExchangeRate;
+    }
+
+    public void setTurqCurrencyExchangeRate(com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate) {
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrentTransactionType getTurqCurrentTransactionType() {
+        return this.turqCurrentTransactionType;
+    }
+
+    public void setTurqCurrentTransactionType(com.turquaz.engine.dal.TurqCurrentTransactionType turqCurrentTransactionType) {
+        this.turqCurrentTransactionType = turqCurrentTransactionType;
+    }
+
+    public com.turquaz.engine.dal.TurqEngineSequence getTurqEngineSequence() {
+        return this.turqEngineSequence;
+    }
+
+    public void setTurqEngineSequence(com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence) {
+        this.turqEngineSequence = turqEngineSequence;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrentCard getTurqCurrentCard() {
+        return this.turqCurrentCard;
+    }
+
+    public void setTurqCurrentCard(com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    public Set getTurqCurrentTransactionBillsByCurrentTransactionsIdOpen() {
+        return this.turqCurrentTransactionBillsByCurrentTransactionsIdOpen;
+    }
+
+    public void setTurqCurrentTransactionBillsByCurrentTransactionsIdOpen(Set turqCurrentTransactionBillsByCurrentTransactionsIdOpen) {
+        this.turqCurrentTransactionBillsByCurrentTransactionsIdOpen = turqCurrentTransactionBillsByCurrentTransactionsIdOpen;
+    }
+
+    public Set getTurqCurrentTransactionBillsByCurrentTransactionsIdClose() {
+        return this.turqCurrentTransactionBillsByCurrentTransactionsIdClose;
+    }
+
+    public void setTurqCurrentTransactionBillsByCurrentTransactionsIdClose(Set turqCurrentTransactionBillsByCurrentTransactionsIdClose) {
+        this.turqCurrentTransactionBillsByCurrentTransactionsIdClose = turqCurrentTransactionBillsByCurrentTransactionsIdClose;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

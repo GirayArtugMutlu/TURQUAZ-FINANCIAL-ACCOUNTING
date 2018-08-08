@@ -1,0 +1,224 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.47;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.cash.ui;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+import java.util.HashMap;
+import com.cloudgarden.resource.SWTResourceManager;
+import com.turquaz.accounting.AccKeys;
+import com.turquaz.cash.CashKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.bl.EngBLCashCards;
+import com.turquaz.engine.interfaces.SaveDialogInterface;
+import com.turquaz.engine.lang.CashLangKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.EngUICommon;
+import com.turquaz.engine.ui.component.SaveDialogMenu;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.SWT;
+
+import server.util.EngBLLogger;
+
+
+
+/**
+* This code was generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* *************************************
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED
+* for this machine, so Jigloo or this code cannot be used legally
+* for any corporate or commercial purpose.
+* *************************************
+*/
+/**
+ * @@author onsel
+ * @@version $Id: CashUICashCardUpdate.java,v 1.8 2005/08/26 15:51:08 onsel Exp $
+ * 
+ */
+public class CashUICashCardUpdate extends org.eclipse.swt.widgets.Dialog implements SaveDialogInterface
+{
+	private Shell dialogShell;
+	private CashUICashCardAdd compCashCard;
+    private Integer cardId;
+    private SaveDialogMenu saveDialogMenu1;
+
+	public CashUICashCardUpdate(Shell parent, int style, Integer cardId)
+	{
+		super(parent, style);
+		this.cardId=cardId;
+	}
+
+	public void open()
+	{
+		try
+		{
+			Shell parent = getParent();
+			dialogShell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.MAX);
+			{
+				//Register as a resource user - SWTResourceManager will
+				//handle the obtaining and disposing of resources
+				SWTResourceManager.registerResourceUser(dialogShell);
+			}
+			dialogShell.setLayout(new GridLayout());
+			dialogShell.layout();
+			dialogShell.setText(CashLangKeys.TITLE_CASH_CARD_UPDATE);
+			dialogShell.setSize(563, 259);
+			{
+				GridData saveDialogMenu1LData = new GridData();
+				saveDialogMenu1LData.grabExcessHorizontalSpace = true;
+				saveDialogMenu1LData.horizontalAlignment = GridData.FILL;
+				saveDialogMenu1 = new SaveDialogMenu(dialogShell, SWT.NONE,this);
+				saveDialogMenu1.setLayoutData(saveDialogMenu1LData);
+			}
+			{
+			
+					compCashCard = new CashUICashCardAdd(dialogShell, SWT.NONE);
+				GridData compCashCardLData = new GridData();
+				compCashCardLData.widthHint = 523;
+				compCashCardLData.heightHint = 150;
+				compCashCard.setLayoutData(compCashCardLData);
+			}
+			postInitGUI();
+			dialogShell.open();
+			Display display = dialogShell.getDisplay();
+			while (!dialogShell.isDisposed())
+			{
+				if (!display.readAndDispatch())
+					display.sleep();
+			}
+		}
+		catch (Exception e)
+		{
+            EngBLLogger.log(this.getClass(),e,getParent());
+		}
+	}
+
+	public void postInitGUI()
+	{
+		EngUICommon.centreWindow(dialogShell);
+		try
+		{
+			HashMap argMap = new HashMap();
+			argMap.put(CashKeys.CASH_CARD_ID, cardId);
+			HashBag cardInfo = (HashBag) EngTXCommon.doSelectTX("Csh_initializeCashCard", argMap);
+
+			compCashCard.getTxtCardCode().setText(cardInfo.get(CashKeys.CASH_CARD_NAME).toString());
+			compCashCard.getTxtDefinition().setText(cardInfo.get(EngKeys.DEFINITION).toString());
+			compCashCard.getAccountPicker().setData(cardInfo.get(AccKeys.ACC_ACCOUNT_CODE_ID));
+			compCashCard.getAccountPicker().setText(cardInfo.get(AccKeys.ACC_ACCOUNT_CODE).toString());
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+
+	public void delete()
+	{
+		try
+		{
+			boolean okToDelete=EngUICommon.okToDelete(getParent());
+			if (okToDelete)
+			{
+				HashMap argMap = new HashMap();
+				argMap.put(CashKeys.CASH_CARD_ID, cardId);
+				EngTXCommon.doTransactionTX("Csh_deleteCashCard", argMap);
+				EngBLCashCards.RefreshContentAsistantMap();
+				EngUICommon.showDeletedSuccesfullyMessage(getParent());
+				dialogShell.close();
+			}
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getParent());	
+			
+		}
+	}
+
+	public void cancel()
+	{
+		dialogShell.close();
+	}
+
+	public void save()
+	{
+		try
+		{
+			if (compCashCard.verifyFields())
+			{				
+				HashMap argMap = new HashMap();
+				argMap.put(CashKeys.CASH_CARD_ID,cardId);
+				argMap.put(CashKeys.CASH_CARD_NAME,compCashCard.getTxtCardCode().getText().trim());
+				argMap.put(EngKeys.DEFINITION,compCashCard.getTxtDefinition().getText().trim());
+				argMap.put(AccKeys.ACC_ACCOUNT_ID,compCashCard.getAccountPicker().getId());				
+				
+				EngTXCommon.doTransactionTX("Csh_updateCashCard",argMap);
+				EngBLCashCards.RefreshContentAsistantMap();
+				EngUICommon.showUpdatedSuccesfullyMessage(getParent());
+				dialogShell.close();
+			}
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getParent());
+		}
+	}
+
+	
+
+
+
+	public String getSaveComposite() {
+		
+			return CashUICashCardAdd.class.getName();
+		
+	}
+
+	public void print() {
+		// TODO Auto-generated method stub
+		
+	}
+}@

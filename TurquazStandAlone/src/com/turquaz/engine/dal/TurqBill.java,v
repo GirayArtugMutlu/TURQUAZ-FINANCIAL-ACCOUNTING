@@ -1,0 +1,264 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.38;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqBill implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private int billsType;
+
+    /** persistent field */
+    private Date billsDate;
+
+    /** persistent field */
+    private String billsDefinition;
+
+    /** persistent field */
+    private boolean billsPrinted;
+
+    /** persistent field */
+    private boolean isOpen;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private Date dueDate;
+
+    /** persistent field */
+    private String billDocumentNo;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard;
+
+    /** persistent field */
+    private Set turqBillInGroups;
+
+    /** persistent field */
+    private Set turqOrders;
+
+    /** persistent field */
+    private Set turqBillInEngineSequences;
+
+    /** full constructor */
+    public TurqBill(int billsType, Date billsDate, String billsDefinition, boolean billsPrinted, boolean isOpen, String createdBy, Date creationDate, String updatedBy, Date lastModified, Date dueDate, String billDocumentNo, com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate, com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence, com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard, Set turqBillInGroups, Set turqOrders, Set turqBillInEngineSequences) {
+        this.billsType = billsType;
+        this.billsDate = billsDate;
+        this.billsDefinition = billsDefinition;
+        this.billsPrinted = billsPrinted;
+        this.isOpen = isOpen;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.dueDate = dueDate;
+        this.billDocumentNo = billDocumentNo;
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+        this.turqEngineSequence = turqEngineSequence;
+        this.turqCurrentCard = turqCurrentCard;
+        this.turqBillInGroups = turqBillInGroups;
+        this.turqOrders = turqOrders;
+        this.turqBillInEngineSequences = turqBillInEngineSequences;
+    }
+
+    /** default constructor */
+    public TurqBill() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public int getBillsType() {
+        return this.billsType;
+    }
+
+    public void setBillsType(int billsType) {
+        this.billsType = billsType;
+    }
+
+    public Date getBillsDate() {
+        return this.billsDate;
+    }
+
+    public void setBillsDate(Date billsDate) {
+        this.billsDate = billsDate;
+    }
+
+    public String getBillsDefinition() {
+        return this.billsDefinition;
+    }
+
+    public void setBillsDefinition(String billsDefinition) {
+        this.billsDefinition = billsDefinition;
+    }
+
+    public boolean isBillsPrinted() {
+        return this.billsPrinted;
+    }
+
+    public void setBillsPrinted(boolean billsPrinted) {
+        this.billsPrinted = billsPrinted;
+    }
+
+    public boolean isIsOpen() {
+        return this.isOpen;
+    }
+
+    public void setIsOpen(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public Date getDueDate() {
+        return this.dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public String getBillDocumentNo() {
+        return this.billDocumentNo;
+    }
+
+    public void setBillDocumentNo(String billDocumentNo) {
+        this.billDocumentNo = billDocumentNo;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrencyExchangeRate getTurqCurrencyExchangeRate() {
+        return this.turqCurrencyExchangeRate;
+    }
+
+    public void setTurqCurrencyExchangeRate(com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate) {
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+    }
+
+    public com.turquaz.engine.dal.TurqEngineSequence getTurqEngineSequence() {
+        return this.turqEngineSequence;
+    }
+
+    public void setTurqEngineSequence(com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence) {
+        this.turqEngineSequence = turqEngineSequence;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrentCard getTurqCurrentCard() {
+        return this.turqCurrentCard;
+    }
+
+    public void setTurqCurrentCard(com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    public Set getTurqBillInGroups() {
+        return this.turqBillInGroups;
+    }
+
+    public void setTurqBillInGroups(Set turqBillInGroups) {
+        this.turqBillInGroups = turqBillInGroups;
+    }
+
+    public Set getTurqOrders() {
+        return this.turqOrders;
+    }
+
+    public void setTurqOrders(Set turqOrders) {
+        this.turqOrders = turqOrders;
+    }
+
+    public Set getTurqBillInEngineSequences() {
+        return this.turqBillInEngineSequences;
+    }
+
+    public void setTurqBillInEngineSequences(Set turqBillInEngineSequences) {
+        this.turqBillInEngineSequences = turqBillInEngineSequences;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

@@ -1,0 +1,193 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.38;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@/*
+ * Copyright (C) 2004 by Friederich Kupzog Elektronik & Software This library is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License,
+ * or (at your option) any later version. This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details. You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA Author: Friederich Kupzog fkmk@@kupzog.de
+ * www.kupzog.de/fkmk
+ */
+package com.turquaz.engine.ui.component;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Tree;
+
+import com.turquaz.engine.lang.EngLangCommonKeys;
+
+import de.kupzog.ktools.kprint.boxes.PBox;
+import de.kupzog.ktools.kprint.boxes.PContainer;
+import de.kupzog.ktools.kprint.boxes.PDocument;
+import de.kupzog.ktools.kprint.boxes.PLittleTextBox;
+import de.kupzog.ktools.kprint.boxes.PTableBoxProvider;
+import de.kupzog.ktools.kprint.boxes.PTextStyle;
+import de.kupzog.ktools.kprint.gui.MsgBox;
+import de.kupzog.ktools.kprint.gui.PageSetup;
+
+public class SWTPTree
+{
+	protected Tree tree;
+	protected PTableBoxProvider boxProvider;
+	protected PContainer parent;
+
+	public SWTPTree(PContainer parent)
+	{
+		this.parent = parent;
+	}
+
+	protected void fillDocument()
+	{
+		boolean abgeschnitten = false;
+		calculatePageLengths();
+		// Zeilen
+		/**
+		 * if (j == 0) style = PBox.POS_BELOW | PBox.ROW_ALIGN;
+		 */
+		double width = parent.getPossibleWidth();
+		for (int j = 0; j < tree.getColumnCount(); j++)
+		{
+			int height = tree.getHeaderHeight();
+			int column_width = tree.getColumn(j).getWidth();
+			if (column_width < 20)
+			{
+				continue;
+			}
+			int style = PBox.POS_RIGHT | PBox.ROW_ALIGN;
+			if (j == 0)
+				style = PBox.POS_BELOW | PBox.ROW_ALIGN;
+			PBox box = boxProvider.createBox(parent, style, j, 0, column_width, height, true, tree.getColumn(j).getText());
+			((PLittleTextBox) box).getTextStyle().textAlign = PTextStyle.ALIGN_CENTER;
+			double boxWidth = Math.max(box.minCm, parent.getPossibleWidth() * box.hWeight);
+			width -= boxWidth;
+			if (width < 0)
+			{
+				box.dispose();
+				abgeschnitten = true;
+				break;
+			}
+		}
+		for (int i = 0; i < tree.getItemCount(); i++)
+		{
+			width = parent.getPossibleWidth();
+			// Spalten
+			for (int j = 0; j < tree.getColumnCount(); j++)
+			{
+				//System.out.println(" Zeile "+j);
+				int height = tree.getHeaderHeight();
+				int column_width = tree.getColumn(j).getWidth();
+				if (column_width < 20)
+				{
+					continue;
+				}
+				int style = PBox.POS_RIGHT | PBox.ROW_ALIGN;
+				if (j == 0)
+					style = PBox.POS_BELOW | PBox.ROW_ALIGN;
+				PBox box = boxProvider.createBox(parent, style, j, i, column_width, height, false, tree.getItem(i).getText(j));
+				if (tree.getColumn(j).getStyle() == SWT.RIGHT)
+				{
+					((PLittleTextBox) box).getTextStyle().textAlign = PTextStyle.ALIGN_RIGHT;
+				}
+				double boxWidth = Math.max(box.minCm, parent.getPossibleWidth() * box.hWeight);
+				width -= boxWidth;
+				if (width < 0)
+				{
+					box.dispose();
+					abgeschnitten = true;
+					break;
+				}
+			}
+		}
+		if (abgeschnitten)
+			MsgBox.show(EngLangCommonKeys.MSG_TABLE_WILL_BE_CUT); //$NON-NLS-1$
+	}
+
+	public void calculatePageLengths()
+	{
+		if (tree != null)
+		{
+			PDocument doc = (PDocument) parent;
+			double width = parent.getPossibleWidth();
+			for (int j = 0; j < tree.getColumnCount(); j++)
+			{
+				double boxWidth = Math.max(0, tree.getColumn(j).getWidth() * 0.03);
+				width -= boxWidth;
+				if (width < 0)
+				{
+					break;
+				}
+			}
+			if (width < 0)
+			{
+				doc.setPageHeight(PageSetup.paperWidth);
+				doc.setPageWidth(PageSetup.paperHeight);
+			}
+		}
+	}
+
+	/**
+	 * @@return PTableBoxProvider
+	 */
+	public PTableBoxProvider getBoxProvider()
+	{
+		return boxProvider;
+	}
+
+	/**
+	 * @@return KTableModel
+	 */
+	public Tree getTree()
+	{
+		return tree;
+	}
+
+	/**
+	 * Sets the boxProvider.
+	 * 
+	 * @@param boxProvider
+	 *             The boxProvider to set
+	 */
+	public void setBoxProvider(PTableBoxProvider boxProvider)
+	{
+		this.boxProvider = boxProvider;
+		if (this.boxProvider != null && this.tree != null)
+		{
+			fillDocument();
+		}
+	}
+
+	/**
+	 * Sets the table.
+	 * 
+	 * @@param table
+	 *             The table to set
+	 */
+	public void setTree(Tree table)
+	{
+		this.tree = table;
+		if (this.boxProvider != null && this.tree != null)
+		{
+			fillDocument();
+		}
+	}
+}@

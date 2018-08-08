@@ -1,0 +1,291 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.36.03;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@/*
+ * Created on May 23, 2005 
+ * Templates
+ */
+package com.turquaz.common;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
+import com.turquaz.engine.exceptions.TurquazException;
+import SevenZip.CoderPropID;
+import SevenZip.Compression.LZMA.Decoder;
+import SevenZip.Compression.LZMA.Encoder;
+
+/**
+ * @@author Cem 
+ * 
+ */
+public class HttpServiceResponse implements Serializable
+{
+	private final static int dictionarySize = 1 << 20;
+	private final static int kAdditionalSize = (6 << 20);
+	private final static int kCompressedAdditionalSize = (1 << 10);
+	private final static int kBufferSize = dictionarySize + kAdditionalSize;
+	private final static int kCompressedBufferSize = (kBufferSize / 2) + kCompressedAdditionalSize;
+	
+	private final static int[] propIDs =
+    {
+        CoderPropID.DictionarySize,
+                CoderPropID.MatchFinder
+    };
+	private final static int[] properties =
+    {
+        dictionarySize, Encoder.EMatchFinderType_BT4
+    };
+    
+	private static byte[] decodeProperties;
+	private static Encoder encoder=null;
+	private static Decoder decoder=null;
+	
+	private int compressionMethod=Compression.NO_COMPRESSION;
+	
+    private void initialize() throws Exception
+    {
+    	try
+    	{
+    		encoder=new Encoder();
+    		encoder.SetCoderProperties(propIDs, properties);
+    		ByteArrayOutputStream propStream = new ByteArrayOutputStream();
+			encoder.WriteCoderProperties(propStream);
+	        decodeProperties=propStream.toByteArray();
+	        
+	        decoder=new Decoder();
+			decoder.SetDecoderProperties(decodeProperties);
+    	}
+    	catch(Exception ex)
+    	{
+    		throw ex;
+    	}
+    	
+    }
+    
+    
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Throwable throwable;
+	private Object result;
+
+	public HttpServiceResponse(Throwable throwable)
+	{
+		this.throwable = throwable;
+	}
+
+	public HttpServiceResponse(Object result)
+	{
+		this.result = result;
+	}
+	
+	public HttpServiceResponse(Object result, int compression)
+	{
+		try
+		{
+			if (encoder == null)
+			{
+				initialize();
+			}
+			
+			switch(compression)
+			{
+				case Compression.LZMA:
+				{
+					//Calendar start=Calendar.getInstance();
+					ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+					ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
+					objOut.writeObject(result);
+					byte[] input = byteOut.toByteArray();
+					
+					//System.out.println(input.length);
+					
+					ByteArrayInputStream byteIn=new ByteArrayInputStream(input);
+					
+					ByteArrayOutputStream compressedStream = new ByteArrayOutputStream();	
+
+					encoder.Code(byteIn,compressedStream,null);
+					
+					byte[] compressedData=compressedStream.toByteArray();
+					
+					//System.out.println(compressedData.length);
+		
+					this.result = compressedData;
+					this.compressionMethod=compression;	
+					//Calendar end=Calendar.getInstance();
+					//System.out.println("LZMA "+(end.getTimeInMillis()-start.getTimeInMillis()));
+					break;
+				}
+				case Compression.ZIP :
+				{
+					//Calendar start=Calendar.getInstance();
+					ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+					ObjectOutputStream objOut = new ObjectOutputStream(byteOut);
+					objOut.writeObject(result);
+					byte[] input = byteOut.toByteArray();				
+					//System.out.println(input.length);
+					
+					Deflater compressor = new Deflater();
+					compressor.setLevel(Deflater.BEST_COMPRESSION);
+					compressor.setInput(input);
+					compressor.finish();
+					ByteArrayOutputStream bos = new ByteArrayOutputStream(input.length);
+					byte[] buf = new byte[1024];
+					while (!compressor.finished())
+					{
+						int count = compressor.deflate(buf);
+						bos.write(buf, 0, count);
+					}
+					try
+					{
+						bos.close();
+					}
+					catch (IOException e)
+					{
+					}
+					byte[] compressedData = bos.toByteArray();
+					//System.out.println(compressedData.length);
+					this.result =compressedData;
+					this.compressionMethod=compression;		
+					//Calendar end=Calendar.getInstance();
+					//System.out.println("ZIP "+(end.getTimeInMillis()-start.getTimeInMillis()));
+					break;
+				}
+				case Compression.NO_COMPRESSION:
+				{
+					this.result=result;
+					break;
+				}
+				default :
+				{
+					throw new TurquazException("Unrecognized compression method");
+				}
+			}
+
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			this.throwable=ex;
+		}
+	}
+
+	public Throwable getThrowable()
+	{
+		return throwable;
+	}
+
+	public void setThrowable(Throwable throwable)
+	{
+		this.throwable = throwable;
+	}
+
+	public Object getResult() throws Exception
+	{
+		try
+		{
+			if (decoder == null)
+			{
+				initialize();
+			}
+
+			switch(compressionMethod)
+			{
+				case Compression.LZMA:
+				{
+					byte[] compressedData = (byte[]) result;
+					ByteArrayInputStream byteIn=new ByteArrayInputStream(compressedData);
+					
+					ByteArrayOutputStream byteOut=new ByteArrayOutputStream();
+
+					decoder.Code(byteIn,byteOut,(long)kBufferSize,null);
+					
+					byte[] decompressedData= byteOut.toByteArray();
+					
+					ByteArrayInputStream byteIn2=new ByteArrayInputStream(decompressedData);
+					ObjectInputStream inputStream=new ObjectInputStream(byteIn2);
+					return inputStream.readObject();	
+				}
+				case Compression.ZIP:
+				{
+					byte[] compressedData = (byte[]) result;
+					Inflater decompressor = new Inflater();
+					decompressor.setInput(compressedData);
+					ByteArrayOutputStream bos = new ByteArrayOutputStream(compressedData.length);
+					byte[] buf = new byte[1024];
+					while (!decompressor.finished())
+					{					
+						int count = decompressor.inflate(buf);
+						bos.write(buf, 0, count);
+					}
+					try
+					{
+						bos.close();
+					}
+					catch (IOException e)
+					{
+					}
+					byte[] decompressedData = bos.toByteArray();
+					ByteArrayInputStream byteIn = new ByteArrayInputStream(decompressedData);
+					ObjectInputStream objIn = new ObjectInputStream(byteIn);
+					return objIn.readObject();
+				}
+				case Compression.NO_COMPRESSION:
+				{
+					return result;
+				}
+				default :
+					throw new TurquazException("Compressed with unrecognized compression method");
+				
+			}
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public void setResult(Object result)
+	{
+		this.result = result;
+	}
+
+	public boolean isExceptionThrown()
+	{
+		if (throwable != null)
+			return true;
+		return false;
+	}
+
+	public HttpServiceResponse()
+	{
+		super();
+		
+	}
+}@

@@ -1,0 +1,170 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.49;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package server.util;
+import java.util.Properties;
+
+import com.turquaz.engine.EngDatabase;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+/**
+ * @@author onsel
+ * @@version $Id: EngDALSessionFactory.java,v 1.3 2005/08/29 09:59:24 onsel Exp $ Class for initial database configuration. It creates the
+ *          necessary bindings according to hibernate.cfg.xml Initiliaze the static SessionFactory object
+ */
+public class EngDALSessionFactory
+{
+	static EngDALSessionFactory _instance;
+	public SessionFactory factory;
+	Configuration cfg;
+	static Session session = null;
+
+	/**
+	 * Default Constructor
+	 */
+	public EngDALSessionFactory()
+	{
+		Properties props = new Properties();
+		try
+		{
+			String url = "notSet://";
+			String driver = "noteSet";
+			if (EngDatabase.getString("dbType").startsWith("Turquaz"))
+			{
+				// url = "jdbc:hsqldb:hsql://"+EngConfiguration.getString("serverAddress")+":"+EngConfiguration.getString("serverPort");
+				url = "jdbc:hsqldb:database/turquaz";
+				driver = "org.hsqldb.jdbcDriver";
+				props.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+			}
+			else if (EngDatabase.getString("dbType").startsWith("Postgresql"))
+			{
+				url = "jdbc:postgresql://" + EngDatabase.getString("serverAddress") + ":"
+						+EngDatabase.getString("serverPort") + "/" +EngDatabase.getString("dbName");
+				driver = "org.postgresql.Driver";
+				props.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+				props.put("hibernate.schema", "public");
+			}
+			String username = EngDatabase.getString("dbUsername");
+			String password = EngDatabase.getString("dbPassword");
+			System.setProperty("Url", url);
+			System.setProperty("dbLogin", username);
+			System.setProperty("dbPass", password);
+			cfg = new Configuration();
+			props.put("hibernate.connection.url", url);
+			props.put("hibernate.connection.driver_class", driver);
+			props.put("hibernate.connection.username", username);
+			props.put("hibernate.connection.password", password);
+			props.put("hibernate.show_sql", "false");			
+			props.put("hibernate.cache.use_query_cache","true");
+			props.put("hibernate.query.factory_class","org.hibernate.hql.classic.ClassicQueryTranslatorFactory");
+			cfg = cfg.configure();
+			cfg.addProperties(props);
+			factory = cfg.buildSessionFactory();
+		}
+		catch (Exception ex)
+		{
+           ex.printStackTrace();
+		}
+	}
+
+	/**
+	 * @@return SessionFactory objects for opening Hibernate Sessions
+	 */
+	public static synchronized SessionFactory getSessionFactory()
+	{
+		if (_instance == null)
+		{
+			_instance = new EngDALSessionFactory();
+		}
+		return _instance.factory;
+	}
+
+	/**
+	 * @@return SessionFactory objects for opening Hibernate Sessions
+	 */
+	public static synchronized Configuration getConfiguration()
+	{
+		if (_instance == null)
+		{
+			_instance = new EngDALSessionFactory();
+		}
+		return _instance.cfg;
+	}
+
+	/**
+	 * @@return Session object whisch is created by the static SessionFactory
+	 * @@throws Exception
+	 */
+	public static synchronized Session openSession() throws Exception
+	{
+		try
+		{
+			if (_instance == null)
+			{
+				_instance = new EngDALSessionFactory();
+			}
+			
+			session = _instance.factory.openSession();
+			session.clear();
+			return session;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+	
+	public static Session getSession() throws Exception
+	{
+		try{
+			if(session==null)
+			{
+				session = openSession();
+			}
+			if(!session.isOpen())
+			{
+				session = openSession();
+			}
+			return session;
+			
+		}
+		catch(Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	/**
+	 * initialize the static EngDALSessionFactory
+	 */
+	public static synchronized void init()
+	{
+		if (_instance == null)
+		{
+			_instance = new EngDALSessionFactory();
+		}
+	}
+}
+@

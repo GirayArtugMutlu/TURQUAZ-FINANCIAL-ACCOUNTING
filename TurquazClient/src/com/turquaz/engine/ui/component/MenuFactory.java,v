@@ -1,0 +1,131 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.39;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.ui.component;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import com.turquaz.engine.ui.EngUIMainFrame;
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Huseyin Ergun
+ * @@version $Id: MenuFactory.java,v 1.2 2005/06/29 11:03:08 onsel Exp $
+ */
+public class MenuFactory
+{
+
+	
+	public static void addTabFolderMenu(final CTabFolder tabfld){
+		
+		Menu menu = new Menu(tabfld.getShell(),SWT.POP_UP);
+		
+		MenuItem mit = new MenuItem(menu,SWT.PUSH);
+		mit.setText(EngLangCommonKeys.STR_CLOSE); //$NON-NLS-1$
+		mit.addSelectionListener(new SelectionAdapter(){
+			
+			public void widgetSelected(SelectionEvent arg0)
+			{
+				CTabItem item =tabfld.getSelection();
+			    if(item != null)
+			    {
+			    	EngUIMainFrame.tabfldMainItemClosed(item);
+			    	item.dispose();
+			    	
+			    }
+				EngUIMainFrame.arrangeIcons();
+			    
+			
+			}
+			
+			});
+		
+		
+		 mit = new MenuItem(menu,SWT.PUSH);
+		mit.setText(EngLangCommonKeys.STR_CLOSE_ALL); //$NON-NLS-1$
+		mit.addSelectionListener(new SelectionAdapter(){
+			
+			public void widgetSelected(SelectionEvent arg0)
+			{
+				CTabItem items[] =tabfld.getItems();
+			    for(int i=0;i<items.length;i++)
+			    {
+			    	EngUIMainFrame.tabfldMainItemClosed(items[i]);
+			    	items[i].dispose();
+			    	
+			    }
+			    EngUIMainFrame.arrangeIcons();
+			
+			}
+			
+			});
+		
+		 mit = new MenuItem(menu,SWT.PUSH);
+			mit.setText(EngLangCommonKeys.STR_CLOSE_OTHERS); //$NON-NLS-1$
+			mit.addSelectionListener(new SelectionAdapter(){
+				
+				public void widgetSelected(SelectionEvent arg0)
+				{
+					int index = tabfld.getSelectionIndex();
+					CTabItem items[] =tabfld.getItems();
+				    for(int i=0;i<items.length;i++)
+				    {
+				    	if(i!=index)
+				    	{
+				    	EngUIMainFrame.tabfldMainItemClosed(items[i]);
+				    	items[i].dispose();
+				    	}
+				    	
+				    }
+				    EngUIMainFrame.arrangeIcons();
+				
+				}
+				
+				});
+			
+		tabfld.setMenu(menu);
+		
+		
+	}
+}
+
+
+@

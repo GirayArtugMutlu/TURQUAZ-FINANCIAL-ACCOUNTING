@@ -1,0 +1,180 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.51;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0" ?>
+
+<project name="File Viewer" default="default">
+
+	<!-- Load generally common properties, such as javac.debug -->
+	<property file="common.properties" />
+
+	<!-- General Configuration -->
+	<property name="lib.dir" location="lib" />
+	<property file="${lib.dir}/lib.properties" />
+
+	<patternset id="java.files.pattern" includes="**/*.java" />
+
+	<target name="init">
+
+		<mkdir dir="${dist.dir}" />
+
+		<condition property="os.family" value="unix">
+			<os family="unix" />
+		</condition>
+		<condition property="os.family" value="windows">
+			<os family="windows" />
+		</condition>
+
+		<path id="common.compile.classpath">
+			<fileset dir="${lib.dir}" includes="*.jar" />
+			<fileset dir="${lib.dir}/${os.family}" includes="*.jar" />
+		</path>
+	</target>
+
+	<target name="clean" description="Removes build artifacts">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
+
+
+	<target name="package-swtlib" depends="init">
+		<jar destfile="${dist.dir}/swt-lib.jar">
+			<fileset dir="${lib.dir}/windows">
+				<filename name="**/*.dll" />
+			</fileset>
+			<fileset dir="${lib.dir}/unix">
+				<filename name="**/*.so" />
+			</fileset>
+		</jar>
+	</target>
+	<target name="_packaging_generation_" depends="N10004,N10047"/>
+	
+	<target name="N10004" description="turquaz-client.jar">
+		<mkdir dir="dist" />
+		<jar destfile="dist/turquaz-client.jar">
+			<zipfileset dir="bin/client" prefix="client" />
+			<zipfileset dir="bin/com" prefix="com" />
+			<zipfileset dir="bin/de" prefix="de" />
+			<zipfileset dir="bin/fonts" prefix="fonts" />
+			<zipfileset dir="bin/gfx" prefix="gfx" />
+			<zipfileset dir="bin/icons" prefix="icons" />
+			<zipfileset dir="bin/server" prefix="server"/>
+		</jar>
+	</target>
+	<target name="N10047" description="turquaz-commons.jar">
+		<mkdir dir="dist" />
+		<jar destfile="dist/turquaz-commons.jar">
+			<zipfileset dir="../TurquazCommon/bin" />
+		</jar>
+	</target>
+
+	<target name="sign-jars" depends="_packaging_generation_">
+		<echo level="info">Signing JARS...</echo>
+
+		<signjar jar="${dist.dir}/turquaz-client.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/turquaz-commons.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/swt-windows.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/swt-lib.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/jdom.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/text.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/swt-nl.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/swtjasperviewer.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/boot.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/cglib2.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/jface.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/jfacetext.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/jta.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/log4j-1.2.8.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/odmg.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/osgi.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/poi.jar" keystore="${keystore}" alias="myself" storepass="password" />
+										
+		<signjar jar="${dist.dir}/poi-contrib.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/poi-scratchpad.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/runtime.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/swtcalendar.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar jar="${dist.dir}/swt-lib.jar" keystore="${keystore}" alias="myself" storepass="password" />
+				
+		
+		
+		<signjar  jar="${dist.dir}/JLzma.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<signjar  jar="${lib.dir}/jasperreport/jasperreports.jar" keystore="${keystore}" alias="myself" storepass="password" />
+		<copy file="${lib.dir}/jasperreport/jasperreports.jar" todir="${dist.dir}"/>
+		<copy file="${lib.dir}/jface/activation.jar" todir="${dist.dir}" />
+
+	</target>
+	<target name="package-web" depends="sign-jars" description="Package WAR">
+		<war destfile="${dist.dir}/turquaz-demo.war" webxml="${web.dir}/web.xml" compress="true">
+
+			<fileset dir="${web.dir}">
+				<include name="**/*.html" />
+				<include name="**/*.jnlp" />
+				<exclude name="**/*.xml" />
+			</fileset>
+			
+			<zipfileset dir="${web.dir}/WEB-INF/classes" prefix="WEB-INF/classes" >
+				<include name="**/*.class"/>
+			
+				<exclude name="**/*.xml" />
+			</zipfileset>
+			
+			<fileset dir="${dist.dir}">
+				<filename name="**/*.jar" />
+			</fileset>
+		</war>
+		<copy file="${dist.dir}/turquaz-demo.war" todir="D:/JBoss/server/default/deploy/" />
+	</target>
+
+	<!-- Reusable targets invoked using antcall -->
+	<target name="compile-module">
+		<!-- Inputs: module, compile.classpath, test.classpath -->
+		<echo level="info">Compiling ${module}...</echo>
+		<mkdir dir="${build.dir}/${module}" />
+		<mkdir dir="${build.dir}/${module}/classes" />
+		<property name="additional.src.dirs" value="" />
+		<javac srcdir="src/${module};${additional.src.dirs}" destdir="${build.dir}/${module}/classes" debug="${javac.debug}" classpathref="compile.classpath" />
+	</target>
+
+	<!-- Convenience targets -->
+	<target name="default" depends="package-web" />
+
+	<target name="run" depends="package-swtlib">
+
+		<echo message="${lib.dir}${os.family}" />
+
+		<java classname="org.eclipse.swt.examples.fileviewer.FileViewer" fork="true">
+
+			<jvmarg value="-Djava.library.path=${lib.dir}${os.family}" />
+			<classpath>
+				<pathelement location="${dist.dir}/turquaz-client.jar" />
+				<fileset dir="${lib.dir}" includes="*.jar" />
+				<fileset dir="${lib.dir}${os.family}" includes="*.jar" />
+			</classpath>
+		</java>
+
+
+	</target>
+
+</project>
+
+@

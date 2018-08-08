@@ -1,0 +1,44 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.36.03;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.util;
+
+
+public class MyThreadLocal {
+	
+	static ThreadLocal local = new ThreadLocal();
+	
+	public static void setSessionInfo(SessionInfo name)
+	{
+		local.set(name);
+	}
+	public static SessionInfo getSessionInfo()
+	{
+		return (SessionInfo)local.get();
+	}
+	public static void release()
+	{
+		local.set(null);
+	}
+
+}
+@

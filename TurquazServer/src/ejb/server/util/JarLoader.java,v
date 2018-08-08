@@ -1,0 +1,75 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.36;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.util;
+
+//JarLoader.java
+
+
+
+/**
+ * A JarLoader object is able to load all the jar files in a given
+ * directory containing classes of a given type. It can also be set
+ * to continuously track that directory for new jar files that are
+ * added later. 
+ * Listeners can be added to JarLoader objects which will be notified 
+ * when the list of valid jar files in that directory changes.
+ *<br>
+ * Also contains a static method for dynamically loading a given jar file.
+ *
+ * @@author Melinda Green - Superliminal Software http://www.superliminal.com
+ */
+public class JarLoader  {
+
+
+    
+    /**
+     * Creates a JarLoader to which loads from and possibly tracks jar
+     * files of a given type in a directory. 
+     * The loaded classes are available via <code>getClass(String name)</code>
+     * where "name" was presumably gotten from <code>getLoadedClassNames()</code>.
+     * @@param jarClassKey is the key to look for in each jar's manifest file.
+     * JarLoader will load one class from each jar file who's manifest file
+     * contains a key/value attribute pair of the following form:
+     * <jarClassKey>: <Class name>
+     * <br>Example: <code>new JarLoader("My-Component", MyComponent.class, "plugins", false)</code><br>
+     * will load all classes of type MyComponent identified by the 
+     * "My-Component" key in each jar file's manifest file for each jar file
+     * found in the "plugins" directory.
+     * @@param containing is a base class or interface which loaded classes 
+     * must inherit from or implement in order to be loaded.
+     * @@param dir is the directory in which to look for jar files.
+     * @@param watchDir is a flag stating whether this JarLoader should
+     * continuously monitor the given directory for changes in the list of
+     * loadable jar files found there.
+     */
+   
+
+  
+	
+	
+  
+
+}
+
+
+@

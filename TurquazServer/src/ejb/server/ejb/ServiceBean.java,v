@@ -1,0 +1,149 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.36;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.ejb;
+
+import java.rmi.RemoteException;
+import java.util.HashMap;
+
+import javax.ejb.EJBException;
+import javax.ejb.SessionBean;
+import javax.ejb.SessionContext;
+
+import javax.ejb.CreateException;
+
+import server.util.MyThreadLocal;
+import server.util.ServiceCaller;
+import server.util.SessionInfo;
+
+import com.turquaz.common.HttpServiceRequest;
+import com.turquaz.common.HttpServiceResponse;
+import com.turquaz.engine.exceptions.TurquazException;
+
+/**
+ * @@ejb.bean name="Service"
+ *           display-name="Name for Service"
+ *           description="Description for Service"
+ *           jndi-name="ejb/Service"
+ *           type="Stateless"
+ *           view-type="remote"
+ */
+public class ServiceBean implements SessionBean {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+private SessionContext context;
+	
+public ServiceBean() {
+		super();
+		
+		
+	}
+
+	public void setSessionContext(SessionContext ctx)
+		throws EJBException,
+		RemoteException {
+		this.context =ctx;
+		
+		
+
+	}
+
+	public void ejbRemove() throws EJBException, RemoteException {
+		
+
+	}
+
+	public void ejbActivate() throws EJBException, RemoteException {
+		
+
+	}
+
+	public void ejbPassivate() throws EJBException, RemoteException {
+		
+
+	}
+
+	/**
+	 * Default create method
+	 * 
+	 * @@throws CreateException
+	 * @@ejb.create-method
+	 */
+	public void ejbCreate() throws CreateException {
+		
+	}
+
+	/**
+	 * Business method
+	 * @@ejb.interface-method  view-type = "remote"
+	 */
+	public HttpServiceResponse callService(SessionInfo info,HttpServiceRequest request)throws TurquazException{
+		
+		try{
+		
+		MyThreadLocal.setSessionInfo(info);
+		
+		return ServiceCaller.CallService(request);
+		
+		}
+		catch(Exception ex)
+		{
+			try
+			{
+				context.setRollbackOnly();	
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+			if (ex.getCause() == null)
+				throw new TurquazException(ex);
+			else
+				throw new TurquazException(ex.getMessage(),ex.getCause());
+				
+		}
+	}
+	/**
+	 * Business method
+	 * @@ejb.interface-method  view-type = "remote"
+	 */
+	public Object callService(String serviceName, HashMap argMap)throws TurquazException{
+		
+		try{		
+			
+	
+	
+		return server.util.ServiceCaller.CallService(serviceName,argMap);
+		
+		}
+		catch(Throwable ex)
+		{
+				
+			context.setRollbackOnly();	
+			throw new TurquazException("Service Call Could Not Be Completed!");
+		}
+	}
+}
+@

@@ -1,0 +1,253 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.37;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.web;
+
+import javax.ejb.CreateException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.rmi.PortableRemoteObject;
+import javax.servlet.http.HttpServlet;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletConfig;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.rmi.RemoteException;
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.turquaz.common.HttpServiceRequest;
+import com.turquaz.common.HttpServiceResponse;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.exceptions.TurquazAuthenticationException;
+import com.turquaz.engine.exceptions.TurquazException;
+
+import server.auth.AuthenticationException;
+import server.auth.TurquazAuthenticator;
+import server.interfaces.Service;
+import server.interfaces.ServiceHome;
+import server.util.SessionInfo;
+
+/**
+ * Servlet Class
+ * 
+ * @@web.servlet name="Server" display-name="Name for Server"
+ *              description="Description for Server"
+ * @@web.servlet-mapping url-pattern="/Server"
+ * @@web.servlet-init-param name="A parameter" value="A value"
+ * @@web.ejb-ref name="ejb/Service" type="Session"
+ *              home="server.interfaces.ServiceHome"
+ *              remote="server.interfaces.Service" description="Reference to the
+ *              Service EJB"
+ * @@jboss.ejb-ref-jndi ref-name="ejb/Service" jndi-name="ejb/Service"
+ * @@web.security-role description = "afadf" role-name = "Echo" * 
+ * 				
+ */
+public class ServerServlet extends HttpServlet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	ServiceHome home;
+
+	public ServerServlet() {
+		super();
+		
+	}
+
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		try {
+			
+			Context context = new InitialContext();
+			
+			Object ref = context.lookup("java:/comp/env/ejb/Service");
+			home = (ServiceHome) PortableRemoteObject.narrow(ref,
+					ServiceHome.class);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new ServletException("Lookup ejb Failed");
+		}
+	}
+
+
+	
+
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		try{		
+			  //Verifiying the session existence
+	        HttpSession session = request.getSession(false);
+		
+			if(session==null)
+			{
+					
+				HttpServiceRequest serviceRequest = getHttpServiceRequest(request);
+				HashMap serviceMap = serviceRequest.getRequestMap();
+				boolean authenticated =false;
+				String username=null;
+				String pass =null;
+				if(serviceMap.keySet().contains("authenticate"))
+				{
+													
+						HashMap argMap =(HashMap)serviceMap.get("authenticate");
+						username =(String)argMap.get(EngKeys.USER);
+						authenticated = authenticate(argMap);
+						
+				}
+				else
+				{
+					writeHttpServiceResponse(response,new HttpServiceResponse(new TurquazAuthenticationException("Could not Authenticate!")));
+					return;
+				}
+				
+				if(authenticated)
+				{
+					session = request.getSession(true);				
+					SessionInfo info = new SessionInfo();
+					info.put("username",username);
+					
+					session.setAttribute("info",info);					
+					writeHttpServiceResponse(response,new HttpServiceResponse(new Boolean(true)));
+				}
+				
+				else{
+					writeHttpServiceResponse(response,new HttpServiceResponse(new TurquazException("Could not Authenticate!")));
+				}
+				return;
+				
+			}			
+	
+			HttpServiceResponse httpServiceResponse = processRequest(request);
+
+			writeHttpServiceResponse(response, httpServiceResponse);
+		
+		
+		}
+		
+		catch(Exception ex)
+		{
+			writeHttpServiceResponse(response, new HttpServiceResponse(ex));
+		}
+
+	}
+
+	private HttpServiceResponse processRequest(HttpServletRequest request)
+			throws IOException,TurquazException {
+		try{
+		
+		Service service = home.create();
+		
+		HttpServiceRequest serviceRequest = getHttpServiceRequest(request);
+		
+		SessionInfo info = (SessionInfo)request.getSession().getAttribute("info");
+		
+	
+		
+		return service.callService(info,serviceRequest);
+		
+		
+		}
+		catch(CreateException ex)
+		{
+			throw new TurquazException("Service Unavailable");
+		}
+		
+
+	}
+
+	/**
+	 * gets the request from the http stream
+	 */
+	private HttpServiceRequest getHttpServiceRequest(HttpServletRequest request)
+			throws IOException {
+		
+		
+		ObjectInputStream ois = new ObjectInputStream(request.getInputStream());
+		HttpServiceRequest httpServiceRequest = null;
+		
+		try {
+			
+			httpServiceRequest = (HttpServiceRequest) ois.readObject();
+		
+		}
+		catch (ClassNotFoundException e)
+		{
+			throw new RuntimeException(e.getLocalizedMessage());
+		}
+		ois.close();
+		
+		return httpServiceRequest;
+	}
+
+	/**
+	 * writes the response in the http stream
+	 */
+	private void writeHttpServiceResponse(HttpServletResponse response,
+			HttpServiceResponse httpServiceResponse) throws IOException {
+
+		OutputStream outputStream = response.getOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(outputStream);
+		oos.writeObject(httpServiceResponse);
+		oos.close();
+
+	}
+	private boolean authenticate(HashMap argMap)throws TurquazException,RemoteException
+	{
+	
+		try{
+			
+		
+		Service service = home.create();
+			
+		
+		TurquazAuthenticator auth = new TurquazAuthenticator(service);
+		
+		return auth.login(argMap);
+		}
+		
+		catch(CreateException ex)
+		{
+			
+			throw new TurquazException("Service Unavailable");
+		}
+		catch(AuthenticationException ex)
+		{
+			
+			throw new TurquazException("Authentication Failed!");
+		}
+		
+		
+	}
+
+}@

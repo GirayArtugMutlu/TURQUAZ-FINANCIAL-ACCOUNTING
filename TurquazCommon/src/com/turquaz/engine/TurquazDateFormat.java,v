@@ -1,0 +1,51 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.36.04;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+public class TurquazDateFormat {
+	
+	private static SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+	
+	public static String format(Date date)
+	{
+		return formatter.format(date);
+	}
+	public static Date getFirstDayOfYear()
+	{
+		Calendar cal = Calendar.getInstance();
+		cal.set(cal.get(Calendar.YEAR), 0, 1);
+		return cal.getTime();
+	}
+
+	public static Date getLastDayOfYear()
+	{
+		Calendar cal = Calendar.getInstance();
+		cal.set(cal.get(Calendar.YEAR), 11, 31);
+		return cal.getTime();
+	}
+}
+@

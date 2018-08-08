@@ -1,0 +1,53 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.36;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.bill.dal;
+
+import java.util.List;
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import server.util.EngDALSessionFactory;
+
+public class BillDALAddGroups
+{
+	public BillDALAddGroups()
+	{
+	}
+
+	public static List getBillGroups() throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "from TurqBillGroup as gr ";
+			Query q = session.createQuery(query);
+			List list = q.list();
+			
+			return list;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+}@

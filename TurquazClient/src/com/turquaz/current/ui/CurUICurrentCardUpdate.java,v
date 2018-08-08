@@ -1,0 +1,420 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.39;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.current.ui;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author  Onsel Armagan
+ * @@version  $Id: CurUICurrentCardUpdate.java,v 1.8 2005/08/26 15:51:08 onsel Exp $
+ */
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import com.turquaz.accounting.ui.comp.AccountPickerLeaf;
+import com.turquaz.admin.AdmKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.current.CurKeys;
+import com.turquaz.current.ui.CurUICurrentCardAdd;
+import org.eclipse.swt.layout.GridData;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.bl.EngBLCurrentCards;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+
+import server.util.EngBLLogger;
+
+import com.turquaz.engine.interfaces.SaveDialogInterface;
+import com.turquaz.engine.lang.CurLangKeys;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.EngUICommon;
+import com.turquaz.engine.ui.component.SaveDialogMenu;
+import com.cloudgarden.resource.SWTResourceManager;
+
+/**
+ * This code was generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used
+ * commercially (ie, by a corporation, company or business for any purpose whatever) then you should purchase a license for each developer
+ * using Jigloo. Please visit www.cloudgarden.com for details. Use of Jigloo implies acceptance of these licensing terms.
+ * ************************************* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED for this machine, so Jigloo or this code cannot be used
+ * legally for any corporate or commercial purpose. *************************************
+ */
+
+//TODO test edilmedi
+public class CurUICurrentCardUpdate extends org.eclipse.swt.widgets.Dialog implements SaveDialogInterface
+{
+	private CurUICurrentCardAdd compCurCardAdd;
+	private TableColumn tableColumnBalanceDept;
+	private TableColumn tableColumnBalanceCredit;
+	private TableColumn tableColumnTotalDept;
+	private TableColumn tableColumnTotalCredit;
+	private SaveDialogMenu saveDialogMenu1;
+	private TableColumn tableColumnTransactionType;
+	private Table tableCurrentBalances;
+	private Composite composite1;
+	private CTabItem cTabItem2;
+	private CTabItem cTabItem1;
+	private CTabFolder cTabFolder1;
+	private Shell dialogShell;
+	private boolean updated = false;
+	private Integer curCardId =null;
+	private String currentCode ="";
+
+	public CurUICurrentCardUpdate(Shell parent, int style, Integer currentCardId)
+	{
+		super(parent, style);
+		curCardId = currentCardId;
+	}
+
+	/**
+	 * Opens the Dialog Shell. Auto-generated code - any changes you make will disappear.
+	 */
+	public boolean open()
+	{
+		try
+		{
+			Shell parent = getParent();
+			dialogShell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.MAX);
+			{
+				//Register as a resource user - SWTResourceManager will
+				//handle the obtaining and disposing of resources
+				SWTResourceManager.registerResourceUser(dialogShell);
+			}
+			dialogShell.setText(CurLangKeys.TITLE_CUR_CARD_UPDATE); //$NON-NLS-1$
+			{
+				GridData saveDialogMenu1LData = new GridData();
+				saveDialogMenu1LData.grabExcessHorizontalSpace = true;
+				saveDialogMenu1LData.horizontalAlignment = GridData.FILL;
+				saveDialogMenu1 = new SaveDialogMenu(dialogShell, SWT.NONE,this);
+				saveDialogMenu1.setLayoutData(saveDialogMenu1LData);
+			}
+			
+			
+				cTabFolder1 = new CTabFolder(dialogShell, SWT.NULL);
+			cTabItem1 = new CTabItem(cTabFolder1, SWT.NULL);
+			compCurCardAdd = new CurUICurrentCardAdd(cTabFolder1, SWT.NULL);
+			cTabItem2 = new CTabItem(cTabFolder1, SWT.NULL);
+			tableCurrentBalances = new Table(cTabFolder1, SWT.NULL);
+			tableColumnTransactionType = new TableColumn(tableCurrentBalances, SWT.NULL);
+			tableColumnTotalCredit = new TableColumn(tableCurrentBalances, SWT.NULL);
+			tableColumnTotalDept = new TableColumn(tableCurrentBalances, SWT.NULL);
+			tableColumnBalanceCredit = new TableColumn(tableCurrentBalances, SWT.NULL);
+			tableColumnBalanceDept = new TableColumn(tableCurrentBalances, SWT.NULL);
+			dialogShell.setSize(736, 509);
+			GridData cTabFolder1LData = new GridData();
+			cTabFolder1LData.verticalAlignment = GridData.FILL;
+			cTabFolder1LData.horizontalAlignment = GridData.FILL;
+			cTabFolder1LData.widthHint = -1;
+			cTabFolder1LData.heightHint = -1;
+			cTabFolder1LData.horizontalIndent = 0;
+			cTabFolder1LData.horizontalSpan = 1;
+			cTabFolder1LData.verticalSpan = 1;
+			cTabFolder1LData.grabExcessHorizontalSpace = true;
+			cTabFolder1LData.grabExcessVerticalSpace = true;
+			cTabFolder1.setLayoutData(cTabFolder1LData);
+			cTabFolder1.setSize(new org.eclipse.swt.graphics.Point(678, 381));
+			cTabItem1.setControl(compCurCardAdd);
+			cTabItem1.setText(CurLangKeys.STR_CUR_CARD_INFO); //$NON-NLS-1$
+			compCurCardAdd.setSize(new org.eclipse.swt.graphics.Point(586, 374));
+			compCurCardAdd.setEnabled(true);
+			compCurCardAdd.layout();
+			cTabItem2.setControl(tableCurrentBalances);
+			cTabItem2.setText(CurLangKeys.STR_CUR_CARD_BALANCES); //$NON-NLS-1$
+			tableCurrentBalances.setHeaderVisible(true);
+			tableCurrentBalances.setLinesVisible(true);
+			tableCurrentBalances.setSize(new org.eclipse.swt.graphics.Point(662, 365));
+			tableColumnTransactionType.setText(CurLangKeys.STR_TRANSACTION_GROUP); //$NON-NLS-1$
+			tableColumnTransactionType.setWidth(100);
+			tableColumnTotalCredit.setText(EngLangCommonKeys.STR_TOTAL_CREDIT); //$NON-NLS-1$
+			tableColumnTotalCredit.setWidth(100);
+			tableColumnTotalDept.setText(EngLangCommonKeys.STR_TOTAL_DEPT); //$NON-NLS-1$
+			tableColumnTotalDept.setWidth(127);
+			tableColumnBalanceCredit.setText(EngLangCommonKeys.STR_BALANCE_CREDIT); //$NON-NLS-1$
+			tableColumnBalanceCredit.setWidth(137);
+			tableColumnBalanceDept.setText(EngLangCommonKeys.STR_BALANCE_DEPT); //$NON-NLS-1$
+			tableColumnBalanceDept.setWidth(133);
+			cTabFolder1.setSelection(0);
+			GridLayout dialogShellLayout = new GridLayout(1, true);
+			dialogShell.setLayout(dialogShellLayout);
+			dialogShellLayout.marginWidth = 5;
+			dialogShellLayout.marginHeight = 5;
+			dialogShellLayout.numColumns = 1;
+			dialogShellLayout.makeColumnsEqualWidth = true;
+			dialogShellLayout.horizontalSpacing = 5;
+			dialogShellLayout.verticalSpacing = 5;
+			dialogShell.layout();
+			postInitGUI();
+			dialogShell.open();
+			Display display = dialogShell.getDisplay();
+			while (!dialogShell.isDisposed())
+			{
+				if (!display.readAndDispatch())
+					display.sleep();
+			}
+			return updated;
+		}
+		catch (Exception e)
+		{
+            EngBLLogger.log(this.getClass(),e,getParent());
+			return true;
+		}
+	}
+
+	/** Add your post-init code in here */
+	public void postInitGUI()
+	{
+		try
+		{
+			EngUICommon.centreWindow(dialogShell);
+			
+			
+			HashMap argMap = new HashMap();
+			argMap.put(CurKeys.CUR_CARD_ID,curCardId);
+			HashBag cardInfo = (HashBag)EngTXCommon.doTransactionTX("Cur_getCurrentcardInfo",argMap);
+			
+			currentCode = cardInfo.get(CurKeys.CUR_CURRENT_CODE).toString();
+			compCurCardAdd.getTxtCurrentCode().setText(cardInfo.get(CurKeys.CUR_CURRENT_CODE).toString());
+			compCurCardAdd.getTxtCurrentName().setText(cardInfo.get(CurKeys.CUR_CURRENT_NAME).toString());
+			compCurCardAdd.getTxtCardDefinition().setText(cardInfo.get(EngKeys.DEFINITION).toString());
+			compCurCardAdd.getTxtTaxDepartmant().setText(cardInfo.get(CurKeys.CUR_TAX_DEPARTMENT).toString());
+			compCurCardAdd.getNumTextDiscountRate().setBigDecimalValue((BigDecimal)cardInfo.get(CurKeys.CUR_DISCOUNT_RATE));
+			compCurCardAdd.getDecTxtRiskLimit().setText((BigDecimal)cardInfo.get(CurKeys.CUR_RISK_LIMIT));
+			compCurCardAdd.getTxtTaxNumber().setText(cardInfo.get(CurKeys.CUR_TAX_NUMBER).toString());
+			compCurCardAdd.getDecTxtCreditLimit().setText((BigDecimal)cardInfo.get(CurKeys.CUR_RISK_LIMIT));
+			compCurCardAdd.getDecTxtDiscountAmount().setText((BigDecimal)cardInfo.get(CurKeys.CUR_DISCOUNT_PAYMENT));
+			compCurCardAdd.getTxtCardAddress().setText(cardInfo.get(CurKeys.CUR_ADDRESS).toString());
+			compCurCardAdd.getNumDueDays().setText(((Integer)cardInfo.get(CurKeys.CUR_DAYS_TO_VALUE)).intValue());
+			/** ********************************************************* */
+		
+			compCurCardAdd.getTxtContactWebSite().setText(cardInfo.get(CurKeys.CUR_CONTACT_WEBSITE).toString());
+			compCurCardAdd.getTxtContactName().setText(cardInfo.get(CurKeys.CUR_CONTACT_NAME).toString());
+			compCurCardAdd.getTxtContactAddress().setText(cardInfo.get(CurKeys.CUR_CONTACT_ADDRESS).toString());
+			compCurCardAdd.getTxtContactEmail().setText(cardInfo.get(CurKeys.CUR_CONTACT_EMAIL).toString());
+			compCurCardAdd.getTxtFaxNumber().setText(cardInfo.get(CurKeys.CUR_CONTACT_FAX_NUMBER).toString());
+			compCurCardAdd.getTxtContactPhone().setText(cardInfo.get(CurKeys.CUR_CONTACT_PHONE1).toString());
+			compCurCardAdd.getTxtContactPhone2().setText(cardInfo.get(CurKeys.CUR_CONTACT_PHONE2).toString());
+			
+			/** ************************************************ */
+			
+			compCurCardAdd.getNumTxtNumber().setText(Integer.parseInt(cardInfo.get(CurKeys.CUR_PHONE_NUMBER1).toString()));
+			compCurCardAdd.getNumTxtCityCode().setText(Integer.parseInt(cardInfo.get(CurKeys.CUR_PHONE_CITY_CODE1).toString()));
+			compCurCardAdd.getNumtxtCountryCode().setText(Integer.parseInt(cardInfo.get(CurKeys.CUR_PHONE_COUNTRY_CODE1).toString()));
+			compCurCardAdd.getNumTxtNumber2().setText(Integer.parseInt(cardInfo.get(CurKeys.CUR_PHONE_NUMBER2).toString()));
+			compCurCardAdd.getNumTxtCityCode2().setText(Integer.parseInt(cardInfo.get(CurKeys.CUR_PHONE_CITY_CODE2).toString()));
+			compCurCardAdd.getNumTxtCountryCode2().setText(Integer.parseInt(cardInfo.get(CurKeys.CUR_PHONE_COUNTRY_CODE2).toString()));
+			
+					
+			HashMap accountMap = (HashMap)cardInfo.get(CurKeys.CUR_ACCOUNTING_LIST);
+			Iterator it = accountMap.keySet().iterator();
+			
+			Map fieldMap = compCurCardAdd.getAccountingFields();
+			while (it.hasNext())
+			{
+				
+				Integer type = (Integer) it.next();
+				AccountPickerLeaf picker = (AccountPickerLeaf) fieldMap.get(type);
+				picker.setText(accountMap.get(type).toString());
+			}
+			HashMap groupMap = (HashMap)cardInfo.get(AdmKeys.ADM_GROUPS);
+			for(int i=0;i<groupMap.size();i++)
+			{
+				
+				compCurCardAdd.getCompRegisterGroup().RegisterGroup((Integer)groupMap.get(new Integer(i)));
+			}
+			HashMap balance =(HashMap)cardInfo.get(CurKeys.CUR_CARD_BALANCES);
+			fillCurrentBalances(balance);
+			compCurCardAdd.getBtnUpdateGroups().setEnabled(false);
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getParent());
+		}
+	}
+
+	
+
+	public void fillCurrentBalances(HashMap balances) throws Exception
+	{
+		try
+		{
+			TableItem item;
+			
+			BigDecimal totalCredit = new BigDecimal(0);
+			BigDecimal totalDept = new BigDecimal(0);
+			for(int i=0;i<balances.size();i++)
+			{
+				
+				HashMap balanceInfo =(HashMap)balances.get(new Integer(i));
+				
+				item = new TableItem(tableCurrentBalances, SWT.NULL);
+				
+				BigDecimal credit;
+				BigDecimal debt;
+				if (balanceInfo.get(EngKeys.DEPT_AMOUNT)!=null)
+				{
+					credit = (BigDecimal) balanceInfo.get(EngKeys.CREDIT_AMOUNT);
+					debt = (BigDecimal) balanceInfo.get(EngKeys.DEPT_AMOUNT);
+					totalCredit = totalCredit.add(credit);
+					totalDept = totalDept.add(debt);
+					if (credit.compareTo(debt) == 1)
+					{
+						item.setText(new String[]{(String)balanceInfo.get(EngKeys.TYPE_NAME), credit.toString(), debt.toString(), credit.subtract(debt).toString(),
+								"0"}); //$NON-NLS-1$
+					}
+					else
+					{
+						item.setText(new String[]{(String)balanceInfo.get(EngKeys.TYPE_NAME), credit.toString(), debt.toString(),
+								"0", debt.subtract(credit).toString()}); //$NON-NLS-1$
+					}
+				}
+				else
+				{
+					item.setText(new String[]{(String)balanceInfo.get(EngKeys.TYPE_NAME), "0", "0", "0", "0"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	/** Auto-generated main method */
+	/** Auto-generated event handler method */
+	public void delete()
+	{
+		try
+		{
+			boolean okToDelete=EngUICommon.okToDelete(getParent());
+			if (okToDelete)
+			{
+				updated = true;
+				HashMap argMap = new HashMap();
+				argMap.put(CurKeys.CUR_CARD_ID,curCardId);
+				EngTXCommon.doTransactionTX("Cur_deleteCurrentCard",argMap);
+				EngBLCurrentCards.RefreshContentAsistantMap();
+				EngUICommon.showDeletedSuccesfullyMessage(getParent());
+				this.dialogShell.close();
+			}
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getParent());
+		}
+	}
+
+	public boolean verifyFields() throws Exception
+	{
+        
+     try{
+		
+			MessageBox msg = new MessageBox(this.getParent(), SWT.NULL);
+			if (!compCurCardAdd.verifyFields(false))
+			{
+				return false;
+			}
+			
+			return true;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	/** Auto-generated event handler method */
+	public void save()
+	{
+		try
+		{
+			if (verifyFields())
+			{
+				updated = true;
+				HashMap argMap = new HashMap();
+				argMap.put(CurKeys.CUR_CURRENT_CODE,compCurCardAdd.getTxtCurrentCode().getText().trim());
+				argMap.put(CurKeys.CUR_CURRENT_NAME,compCurCardAdd.getTxtCurrentName().getText().trim());
+				argMap.put(EngKeys.DEFINITION,compCurCardAdd.getTxtCardDefinition().getText().trim());
+				argMap.put(CurKeys.CUR_ADDRESS,compCurCardAdd.getTxtCardAddress().getText().trim());
+				argMap.put(CurKeys.CUR_DISCOUNT_RATE,compCurCardAdd.getNumTextDiscountRate().getBigDecimalValue());
+				argMap.put(CurKeys.CUR_DISCOUNT_PAYMENT,compCurCardAdd.getDecTxtDiscountAmount().getBigDecimalValue());
+				argMap.put(CurKeys.CUR_CREDIT_LIMIT, compCurCardAdd.getDecTxtCreditLimit().getBigDecimalValue());
+				argMap.put(CurKeys.CUR_RISK_LIMIT,compCurCardAdd.getDecTxtRiskLimit().getBigDecimalValue());
+				argMap.put(CurKeys.CUR_TAX_DEPARTMENT,compCurCardAdd.getTxtTaxDepartmant().getText().trim());
+				argMap.put(CurKeys.CUR_TAX_NUMBER,compCurCardAdd.getTxtTaxNumber().getText().trim());
+				argMap.put(CurKeys.CUR_DAYS_TO_VALUE,new Integer(compCurCardAdd.getNumDueDays().getIntValue()));
+				argMap.put(CurKeys.CUR_ACCOUNTING_LIST,compCurCardAdd.createAccountingMap());
+				argMap.put(CurKeys.CUR_PHONE_LIST,compCurCardAdd.getPhoneList());
+				argMap.put(CurKeys.CUR_CONTACT_INFO,compCurCardAdd.getContactInfo());
+				argMap.put(CurKeys.CUR_GROUP_LIST,compCurCardAdd.getGroupList());
+				argMap.put(CurKeys.CUR_CARD_ID,curCardId);
+				
+				EngTXCommon.doTransactionTX("Cur_updateCurrentCard",argMap);
+				EngBLCurrentCards.RefreshContentAsistantMap();
+				EngUICommon.showUpdatedSuccesfullyMessage(getParent());
+				this.dialogShell.close();
+			}
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getParent());
+		}
+	}
+
+	
+	public void cancel() {
+		dialogShell.close();
+	}
+
+	public String getSaveComposite() {
+		
+		return CurUICurrentCardAdd.class.getName();
+	}
+
+	public void print() {
+		// TODO Auto-generated method stub
+		
+	}
+}@

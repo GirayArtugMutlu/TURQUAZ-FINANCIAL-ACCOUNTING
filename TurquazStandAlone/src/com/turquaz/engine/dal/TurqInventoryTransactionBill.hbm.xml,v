@@ -1,0 +1,135 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.43;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqInventoryTransactionBill" 
+    table="turq_inventory_transaction_bills"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="native" />
+    </id>
+
+    <property
+        name="billDate"
+        type="java.sql.Date"
+        column="bill_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="billDefinition"
+        type="java.lang.String"
+        column="bill_definition"
+        not-null="true"
+        length="250"
+    />
+    <property
+        name="billType"
+        type="int"
+        column="bill_type"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="billDocumentNo"
+        type="java.lang.String"
+        column="bill_document_no"
+        not-null="true"
+        length="25"
+    />
+    <property
+        name="createdBy"
+        type="java.lang.String"
+        column="created_by"
+        not-null="true"
+        length="25"
+    />
+    <property
+        name="creationDate"
+        type="java.sql.Date"
+        column="creation_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="updatedBy"
+        type="java.lang.String"
+        column="updated_by"
+        not-null="true"
+        length="25"
+    />
+    <property
+        name="lastModified"
+        type="java.sql.Date"
+        column="last_modified"
+        not-null="true"
+        length="4"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TurqAccountingAccountClass -->
+    <many-to-one
+        name="turqAccountingAccountClass"
+        class="com.turquaz.engine.dal.TurqAccountingAccountClass"
+        not-null="true"
+    >
+        <column name="warehouse_out" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqInventoryWarehous -->
+    <many-to-one
+        name="turqInventoryWarehous"
+        class="com.turquaz.engine.dal.TurqInventoryWarehous"
+        not-null="true"
+    >
+        <column name="warehouse_in" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqEngineSequence -->
+    <many-to-one
+        name="turqEngineSequence"
+        class="com.turquaz.engine.dal.TurqEngineSequence"
+        not-null="true"
+    >
+        <column name="engine_sequence" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>
+@

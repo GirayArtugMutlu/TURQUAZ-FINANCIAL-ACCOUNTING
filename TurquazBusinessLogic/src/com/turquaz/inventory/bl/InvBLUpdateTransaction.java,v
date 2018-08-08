@@ -1,0 +1,127 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author onsel
+ * @@version $Id: InvBLUpdateTransaction.java,v 1.2 2005/07/07 16:41:15 huseyin Exp $
+ */
+package com.turquaz.inventory.bl;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import org.hibernate.Session;
+
+import server.util.EngDALSessionFactory;
+
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.dal.EngDALCommon;
+import com.turquaz.engine.dal.TurqInventoryCard;
+import com.turquaz.engine.dal.TurqInventoryTransaction;
+import com.turquaz.engine.dal.TurqInventoryWarehous;
+import com.turquaz.inventory.InvKeys;
+
+public class InvBLUpdateTransaction
+{
+	public static void updateInitialTransaction(HashMap argMap) throws Exception
+	{
+		HashMap transMap=(HashMap)argMap.get(InvKeys.INV_TRANS);
+		Integer transId=(Integer)transMap.get(InvKeys.INV_TRANS_ID);
+		
+		Session session=EngDALSessionFactory.getSession();
+		TurqInventoryTransaction invTrans=(TurqInventoryTransaction)session.load(TurqInventoryTransaction.class,transId);
+
+		BigDecimal amountIn=(BigDecimal)transMap.get(InvKeys.INV_AMOUNT_IN);
+		BigDecimal totalPriceInFC=(BigDecimal)transMap.get(InvKeys.INV_TOTAL_PRICE_IN_FOREIGN_CURRENCY);
+		
+		invTrans.setAmountIn(amountIn);
+		invTrans.setTotalPriceInForeignCurrency(totalPriceInFC);
+		EngDALCommon.updateObject(invTrans);		
+	}
+    
+    public static void updateOtherTransaction (HashMap argMap) throws Exception 
+    {
+        Integer transId = (Integer)argMap.get(InvKeys.INV_TRANS_ID);
+        Integer invCardId = (Integer)argMap.get(InvKeys.INV_CARD_ID);
+        Integer invWareId = (Integer)argMap.get(InvKeys.INV_WAREHOUSE_ID);
+        
+        TurqInventoryTransaction trans = (TurqInventoryTransaction)EngDALSessionFactory.getSession().load(TurqInventoryTransaction.class,transId);
+        TurqInventoryCard invCard = (TurqInventoryCard)EngDALSessionFactory.getSession().load(TurqInventoryCard.class,invCardId);
+        TurqInventoryWarehous invWare = (TurqInventoryWarehous)EngDALSessionFactory.getSession().load(TurqInventoryWarehous.class,invWareId);   
+        
+        BigDecimal amountIn = (BigDecimal) argMap.get(EngKeys.AMOUNT_IN);
+        BigDecimal amountOut = (BigDecimal) argMap.get(EngKeys.AMOUNT_OUT);
+        
+        if (amountIn != null)
+        {
+            trans.setAmountIn(amountIn);
+        }
+        else 
+        {
+            trans.setAmountIn(new BigDecimal(0));
+        }
+        
+        if (amountOut != null)
+        {
+            trans.setAmountOut(amountOut);
+        }
+        else 
+        {
+            trans.setAmountOut(new BigDecimal(0));
+        }
+        
+        trans.setDocumentNo((String)argMap.get(EngKeys.DOCUMENT_NO));
+        trans.setTurqInventoryCard(invCard);
+        trans.setTransactionsDate((Date)argMap.get(EngKeys.DATE));
+        trans.setDefinition((String)argMap.get(EngKeys.DEFINITION));
+        trans.setTurqInventoryWarehous(invWare);
+     
+        EngDALCommon.updateObject(trans);
+    }    
+    public static void deleteOtherTransaction (HashMap argMap) throws Exception
+    {
+        Integer transId = (Integer)argMap.get(InvKeys.INV_TRANS_ID);
+        TurqInventoryTransaction trans = (TurqInventoryTransaction)EngDALSessionFactory.getSession().load(TurqInventoryTransaction.class,transId);
+        
+        
+        if (transId != null)
+        {
+            EngDALCommon.deleteObject(trans);
+        }
+    }
+}
+@

@@ -1,0 +1,116 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.34;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.current.dal;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author  Onsel Armagan
+ * @@version  $Id: CurDALCurrentCardAdd.java,v 1.1 2005/07/02 16:07:08 onsel Exp $
+ */
+import java.util.List;
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import server.util.EngDALSessionFactory;
+
+
+public class CurDALCurrentCardAdd
+{
+	public static List getCurrentGroups() throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "from TurqCurrentGroup as curGroup ";
+			Query q = session.createQuery(query);
+			List list = q.list();
+			return list;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static boolean isCurrentCodePresent(String code) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "Select count(curCard) from TurqCurrentCard as curCard " + "where curCard.cardsCurrentCode ='" + code + "'";
+			Query q = session.createQuery(query);
+			List list = q.list();
+			if (list.size() > 0)
+			{
+				Integer count = (Integer)list.get(0);
+				if(count.intValue()>0)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static boolean isCurrentNamePresent(String code) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "select count(curCard) from TurqCurrentCard as curCard " + "where curCard.cardsName ='" + code + "'";
+			Query q = session.createQuery(query);
+			List list = q.list();
+			if (list.size() > 0)
+			{
+				Integer count = (Integer)list.get(0);
+				if(count.intValue()>0)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+}@

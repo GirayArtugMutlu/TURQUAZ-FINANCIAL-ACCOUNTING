@@ -1,0 +1,158 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.admin.bl;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Onsel Armagan
+ * @@version $Id: AdmBLUsers.java,v 1.3 2005/07/04 09:05:58 onsel Exp $
+ */
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import org.hibernate.Session;
+
+import server.util.EngDALSessionFactory;
+import server.util.MyThreadLocal;
+import server.util.SessionInfo;
+
+import com.turquaz.admin.AdmKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.dal.EngDALCommon;
+import com.turquaz.engine.dal.TurqGroup;
+import com.turquaz.engine.dal.TurqUser;
+import com.turquaz.engine.dal.TurqUserGroup;
+import com.turquaz.engine.exceptions.TurquazException;
+import com.turquaz.engine.lang.AdmLangKeys;
+
+public class AdmBLUsers
+{
+	public static HashBag getUsers() throws Exception
+	{
+	
+            HashBag bag = new HashBag();
+            List userList = EngDALCommon.getUsers();
+            
+            for(int i =0;i<userList.size();i++)
+            {
+                HashMap userMap=new HashMap();
+                TurqUser user = (TurqUser)userList.get(i);
+                bag.put(AdmKeys.ADM_USERS,i,AdmKeys.ADM_USER_ID,user.getId());
+                bag.put(AdmKeys.ADM_USERS,i,AdmKeys.ADM_USER_NAME,user.getUsername());
+                bag.put(AdmKeys.ADM_USERS,i,AdmKeys.ADM_USER_REAL_NAME,user.getUsersRealName());
+                bag.put(AdmKeys.ADM_USERS,i,AdmKeys.ADM_USER_DESCRIPTION,user.getUsersDescription());
+                bag.put(AdmKeys.ADM_USERS,i,AdmKeys.ADM_USER_PASSWORD,user.getUsersPassword());
+                
+                Iterator it = user.getTurqUserGroups().iterator();
+                
+                List groupList=null;
+                while (it.hasNext())
+                {
+                    TurqUserGroup userGroup = (TurqUserGroup)it.next();
+                    groupList = new ArrayList();                    
+                    groupList.add(userGroup.getTurqGroup().getId());
+                }
+                bag.put(AdmKeys.ADM_USERS,i,AdmKeys.ADM_USER_GROUPS,groupList);
+                
+            }   
+            
+            
+            
+            return bag;
+
+	}
+	public static void deleteGroup(HashMap argMap)throws Exception
+	{
+
+			Integer groupId=(Integer)argMap.get(AdmKeys.ADM_GROUP_ID);
+           
+			Session session=EngDALSessionFactory.getSession();
+			TurqGroup group = (TurqGroup)session.load(TurqGroup.class,groupId);
+			deleteGroupPermissions(group);
+			EngDALCommon.deleteObject(group);
+
+	}
+	
+	public static void deleteUser(HashMap argMap)throws Exception
+	{
+
+			Integer userId=(Integer)argMap.get(AdmKeys.ADM_USER_ID);
+            
+			SessionInfo sessionInfo = MyThreadLocal.getSessionInfo();
+			String userName=(String)sessionInfo.get("username");
+			
+			Session session=EngDALSessionFactory.getSession();
+            TurqUser user = (TurqUser)session.load(TurqUser.class,userId);
+			
+			if (user.getUsername().equals(userName))
+			{
+				throw new TurquazException(AdmLangKeys.MSG_CAN_NOT_DELETE_YOUR_OWN_ID);
+			}
+			
+			deleteUserGroups(user);
+			deleteUserPermissions(user);
+			EngDALCommon.deleteObject(user);
+
+	}
+	private static void deleteGroupPermissions(TurqGroup user)throws Exception
+	{		
+		Iterator it=user.getTurqGroupPermissions().iterator();
+		while (it.hasNext())
+		{
+			EngDALCommon.deleteObject(it.next());
+		}
+	}
+	
+	private static void deleteUserPermissions(TurqUser user)throws Exception
+	{
+		Iterator it=user.getTurqUserPermissions().iterator();
+		while (it.hasNext())
+		{
+			EngDALCommon.deleteObject(it.next());
+		}
+	}
+	
+	public static void deleteUserGroups(TurqUser user)throws Exception
+	{
+		Iterator it=user.getTurqUserGroups().iterator();
+		while (it.hasNext())
+		{
+			EngDALCommon.deleteObject(it.next());
+		}
+	}
+}@

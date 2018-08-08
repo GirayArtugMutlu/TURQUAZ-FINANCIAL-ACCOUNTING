@@ -1,0 +1,31 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.32;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@hibernate.connection.provider_class=org.hibernate.connection.DatasourceConnectionProvider
+hibernate.connection.datasource=java:/RMakroDS
+hibernate.transaction.factory_class=org.hibernate.transaction.JTATransactionFactory
+hibernate.transaction.manager_lookup_class=org.hibernate.transaction.JBossTransactionManagerLookup
+hibernate.transaction.flush_before_completion=true
+hibernate.transaction.auto_close_session=true
+hibernate.query.factory_class=org.hibernate.hql.classic.ClassicQueryTranslatorFactory
+hibernate.cache.use_query_cache=true
+hibernate.cglib.use_reflection_optimizer=false@

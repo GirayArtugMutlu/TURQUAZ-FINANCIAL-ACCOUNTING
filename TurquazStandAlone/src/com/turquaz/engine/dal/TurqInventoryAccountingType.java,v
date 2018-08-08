@@ -1,0 +1,96 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.38;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqInventoryAccountingType implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private String typeName;
+
+    /** persistent field */
+    private String definition;
+
+    /** persistent field */
+    private Set turqInventoryAccountingAccounts;
+
+    /** full constructor */
+    public TurqInventoryAccountingType(Integer id, String typeName, String definition, Set turqInventoryAccountingAccounts) {
+        this.id = id;
+        this.typeName = typeName;
+        this.definition = definition;
+        this.turqInventoryAccountingAccounts = turqInventoryAccountingAccounts;
+    }
+
+    /** default constructor */
+    public TurqInventoryAccountingType() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTypeName() {
+        return this.typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public String getDefinition() {
+        return this.definition;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
+    }
+
+    public Set getTurqInventoryAccountingAccounts() {
+        return this.turqInventoryAccountingAccounts;
+    }
+
+    public void setTurqInventoryAccountingAccounts(Set turqInventoryAccountingAccounts) {
+        this.turqInventoryAccountingAccounts = turqInventoryAccountingAccounts;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

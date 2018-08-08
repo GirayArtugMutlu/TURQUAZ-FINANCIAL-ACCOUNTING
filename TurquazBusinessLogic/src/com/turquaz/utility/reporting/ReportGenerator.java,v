@@ -1,0 +1,103 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.37;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@/*
+ * Created on Jun 23, 2005
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+package com.turquaz.utility.reporting;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+
+import com.turquaz.admin.dal.AdmDALCompanyInfo;
+import com.turquaz.engine.dal.TurqCompany;
+import com.turquaz.engine.exceptions.TurquazException;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+
+/**
+ * @@author Cem
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+public class ReportGenerator
+{
+	public static JasperPrint generateReport(String reportName, List list, String[] fields, Map parameters) throws Exception
+	{
+		
+	/*	URL jasperURL = ReportGenerator.class.getResource("/lib/jasperreports.jar");
+		URL jdtURL = ReportGenerator.class.getResource("/lib/jdt-compiler.jar");
+		
+		String classPath = jasperURL.getPath()+";"+jdtURL.getPath();
+		
+		System.setProperty("jasper.reports.compile.class.path", classPath);
+	*/
+		
+		InputStream input=null;
+		URL url = ReportGenerator.class.getResource(reportName);
+		if(url==null)
+		{
+			if(reportName.startsWith("/"))
+			{
+				reportName =reportName.substring(1,reportName.length());
+				
+				File file = new File(reportName);
+				if(file.exists())
+				{					
+					input = new FileInputStream(file);
+				}
+				else
+				{
+					throw new TurquazException(EngLangCommonKeys.MSG_COULD_NOT_FIND_REPORT_FILE);
+				}				
+			}		
+		}	
+		else
+		{
+			input = ReportGenerator.class.getResourceAsStream(reportName);
+		}
+				
+		parameters.put("page", "Sayfa");
+
+		TurqCompany company=AdmDALCompanyInfo.getCompany();
+				
+		parameters.put("companyName",company.getCompanyName());
+		
+		HibernateQueryResultDataSource ds = new HibernateQueryResultDataSource(list, fields);
+		JasperReport jasperReport = JasperCompileManager.compileReport(input);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, ds);
+		return jasperPrint;
+	}
+}
+@

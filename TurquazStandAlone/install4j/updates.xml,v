@@ -1,0 +1,30 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2009.09.28.12.05.00;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@0.8 beta 7 ytl tl change
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<updateDescriptor baseUrl="">
+  <entry targetMediaFileId="19" updatableVersionMin="" updatableVersionMax="" fileName="turquaz_windows_0_8_7.exe" newVersion="0.8.7" newMediaFileId="19" fileSize="31241728" bundledJre="windows-x86-1.6.0_11_us_only" archive="false">
+    <comment />
+  </entry>
+</updateDescriptor>
+
+@

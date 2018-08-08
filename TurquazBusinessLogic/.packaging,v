@@ -1,0 +1,30 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@b@;
+
+
+1.1
+date	2007.01.22.16.36.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+<archive name="turquaz-server.jar" destination="lib" used="true" exploded="false">
+<folder prefix="" includes="" excludes="" project="" projectLocation="bin" name="bin" location="bin" used="true"/>
+</archive>
+</configurations>
+@

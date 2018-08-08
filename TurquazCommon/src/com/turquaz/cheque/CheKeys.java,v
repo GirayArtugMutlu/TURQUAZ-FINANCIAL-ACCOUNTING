@@ -1,0 +1,61 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.36.03;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@/*
+ * Created on Apr 1, 2005
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+package com.turquaz.cheque;
+
+/**
+ * @@author onsel
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+public class CheKeys
+{
+	public static final String CHE_CHEQUE_LIST = "chequeList";
+	public static final String CHE_SUM_TRANS ="chequeTransRows";
+	public static final String CHE_TRANS_TYPE =	"chequeTransType";
+	public static final String CHE_CHEQUES = "cheques";
+	public static final String CHE_STATUS = "chequeStatus";
+	public static final String CHE_STATUS_STRING = "chequeStatusString";
+	public final static String CHE_START_ENTER_DATE ="chequeStartEnterDate";
+	public final static String CHE_START_DUE_DATE ="chequeStartDueDate";
+	public final static String CHE_END_ENTER_DATE ="chequeEndEnterDate";
+	public final static String CHE_END_DUE_DATE ="chequeEndDueDate";
+	public final static String CHE_CHEQUE_ROLLS ="chequeRolls";
+	public final static String CHE_CHEQUE_ROLL_ID ="chequeRollId";
+	public final static String CHE_SORT="chequeSort";
+	public final static String CHE_CHEQUE_ID="chequeId";
+	public final static String CHE_PORTFOLIO_NO="chequePortfolioNo";
+	public final static String CHE_DEBTOR ="chequesDebtor";
+	public final static String CHE_PAYMENT_PLACE ="chequePaymentPlace";
+	public final static String CHE_CHEQUE_NO="chequeNo";
+	public final static String CHE_DUE_DATE="chequeDueDate";
+	public final static String CHE_ALREADY_IN_ROLL="chequeAlreadyInRoll";
+	public final static String CHE_REPORT_DATE ="cheReportDate";
+}
+@

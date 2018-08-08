@@ -1,0 +1,158 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.03.04;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0" ?>
+
+<project name="File Viewer" default="default">
+
+    <!-- Load generally common properties, such as javac.debug -->
+    <property file="common.properties"/>
+
+    <!-- General Configuration -->
+    <property name="lib.dir" location="lib"/>
+    <property file="${lib.dir}/lib.properties"/>
+           
+    <patternset id="java.files.pattern" includes="**/*.java"/>
+
+    <target name="init">
+    
+        <mkdir dir="${dist.dir}"/>
+        
+        <condition property="os.family" value="unix">
+        	<os family="unix"/>
+        </condition>
+        <condition property="os.family" value="windows">	
+        	<os family="windows"/>
+        </condition>
+
+	<path id="common.compile.classpath">
+		<fileset dir="${eclipse.dir}" includes="*.jar"/>	            
+		<fileset dir="${eclipse.dir}${os.family}" includes="*.jar"/>	            		
+	</path>
+    </target>
+
+    <target name="clean" description="Removes build artifacts">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <!-- Common -->
+    <target name="compile-common" depends="init"
+            description="Compile common module">
+        <antcall target="compile-module" inheritAll="true">
+            <param name="module" value=""/>
+            <reference refid="common.compile.classpath"
+                torefid="compile.classpath"
+                />
+        </antcall>
+    </target>
+
+    <target name="package-common" depends="compile-common">
+        <jar destfile="${dist.dir}/fileviewer.jar">
+            <fileset dir="${build.dir}/classes"/>
+            <fileset dir="src">
+              <include name="**/*.properties"/>
+              <include name="**/*.gif"/>
+	      <exclude name="**/*.java"/>
+	    </fileset>
+        </jar>
+    </target>
+    
+    <target name="package-swtlib" depends="package-common">
+        <jar destfile="${dist.dir}/swt-lib.jar">
+            <fileset dir="${eclipse.dir}windows">
+              <filename name="**/*.dll"/>
+	    </fileset>
+	    <fileset dir="${eclipse.dir}unix">
+	      <filename name="**/*.so"/>
+	    </fileset>
+        </jar>
+    </target>    
+
+    <target name="sign-jars" depends="package-swtlib">
+    	<echo level="info">Signing JARS...</echo>
+	<signjar jar="${dist.dir}/swt-lib.jar" keystore="${keystore}" alias="myself" storepass="password"/>   
+	<signjar jar="${dist.dir}/fileviewer.jar" keystore="${keystore}" alias="myself" storepass="password"/>   
+	<copy file="${eclipse.dir}/windows/swt-win32.jar" todir="${dist.dir}"/>
+	<signjar jar="${dist.dir}/swt-win32.jar" keystore="${keystore}" alias="myself" storepass="password"/>   	
+	<copy file="${eclipse.dir}/unix/swt-linux.jar" todir="${dist.dir}"/>
+	<signjar jar="${dist.dir}/swt-linux.jar" keystore="${keystore}" alias="myself" storepass="password"/>   	
+	<copy file="${eclipse.dir}/unix/swt-pi.jar" todir="${dist.dir}"/>
+	<signjar jar="${dist.dir}/swt-pi.jar" keystore="${keystore}" alias="myself" storepass="password"/>   	
+    </target>      
+    
+ 
+    
+        <target name="package-web" depends="sign-jars"
+                description="Package WAR">
+            <war destfile="${dist.dir}/fileviewer.war"
+                webxml="${web.dir}/web.xml" compress="true">
+                
+                <fileset dir="${web.dir}">
+		      <include name="**/*.html"/>
+		      <include name="**/*.jnlp"/>
+		      <exclude name="**/*.xml"/>
+	    	</fileset>
+
+                <fileset dir="${dist.dir}">
+			<filename name="**/*.jar"/>
+	    	</fileset>             
+            </war>
+    </target>
+    
+	<!-- Reusable targets invoked using antcall -->
+	<target name="compile-module">
+	    <!-- Inputs: module, compile.classpath, test.classpath -->
+	    <echo level="info">Compiling ${module}...</echo>
+	    <mkdir dir="${build.dir}/${module}"/>
+	    <mkdir dir="${build.dir}/${module}/classes"/>
+	    <property name="additional.src.dirs" value=""/>
+	    <javac srcdir="src/${module};${additional.src.dirs}"
+		destdir="${build.dir}/${module}/classes"
+		debug="${javac.debug}"
+		classpathref="compile.classpath"
+		/>
+    </target>
+
+    <!-- Convenience targets -->
+    <target name="default" depends="package-web" />
+      
+    <target name="run" depends="package-swtlib">
+    
+    <echo message="${eclipse.dir}${os.family}"/> 
+		
+       <java classname="org.eclipse.swt.examples.fileviewer.FileViewer" fork="true">
+      
+       	<jvmarg value="-Djava.library.path=${eclipse.dir}${os.family}"/> 
+         <classpath>
+           <pathelement location="${dist.dir}/fileviewer.jar"/>
+		<fileset dir="${eclipse.dir}" includes="*.jar"/>
+		<fileset dir="${eclipse.dir}${os.family}" includes="*.jar"/>	
+         </classpath>
+       </java>
+       
+
+    </target>    
+
+</project>
+
+@

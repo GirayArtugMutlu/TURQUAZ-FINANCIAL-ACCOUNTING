@@ -1,0 +1,52 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@b@;
+
+
+1.1
+date	2007.01.22.18.42.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+<archive name="turquaz-server.jar" destination="lib/turquaz" used="true" exploded="false">
+<folder prefix="" includes="" excludes="" project="TurquazBusinessLogic" projectLocation="bin" name="bin" location="../TurquazBusinessLogic/bin" used="true"/>
+</archive>
+<archive name="turquaz-commons.jar" destination="lib/turquaz" used="true" exploded="false">
+<folder prefix="" includes="" excludes="" project="TurquazCommon" projectLocation="bin" name="bin" location="../TurquazCommon/bin" used="true"/>
+</archive>
+<archive name="TurquazEJB.jar" destination="" used="true" exploded="false">
+<file prefix="META-INF" project="" projectLocation="src/ejb/META-INF/ejb-jar.xml" name="ejb-jar.xml" location="src/ejb/META-INF/ejb-jar.xml" used="true"/>
+<file prefix="META-INF" project="" projectLocation="src/ejb/META-INF/jboss.xml" name="jboss.xml" location="src/ejb/META-INF/jboss.xml" used="true"/>
+<file prefix="" project="" projectLocation="src/conf/hibernate.properties" name="hibernate.properties" location="src/conf/hibernate.properties" used="true"/>
+<file prefix="" project="" projectLocation="src/conf/hibernate.cfg.xml" name="hibernate.cfg.xml" location="src/conf/hibernate.cfg.xml" used="true"/>
+<file prefix="" project="" projectLocation="src/conf/log4j.properties" name="log4j.properties" location="src/conf/log4j.properties" used="true"/>
+</archive>
+<archive name="TurquazEJB-client.jar" destination="" used="true" exploded="false">
+<folder prefix="" includes="server/interfaces/*.class" excludes="" project="" projectLocation="bin" name="bin" location="bin" used="true"/>
+</archive>
+<archive name="TurquazServer.war" destination="" used="true" exploded="false">
+<file prefix="WEB-INF" project="" projectLocation="src/servlet/WEB-INF/web.xml" name="web.xml" location="src/servlet/WEB-INF/web.xml" used="true"/>
+<file prefix="WEB-INF" project="" projectLocation="src/servlet/WEB-INF/jboss-web.xml" name="jboss-web.xml" location="src/servlet/WEB-INF/jboss-web.xml" used="true"/>
+</archive>
+<archive name="TurquazApp.ear" destination="" used="true" exploded="false">
+<file prefix="META-INF" project="" projectLocation="src/ejb/META-INF/application.xml" name="application.xml" location="src/ejb/META-INF/application.xml" used="true"/>
+<file prefix="" project="" projectLocation="TurquazEJB.jar" name="TurquazEJB.jar" location="TurquazEJB.jar" used="true"/>
+<file prefix="" project="" projectLocation="TurquazServer.war" name="TurquazServer.war" location="TurquazServer.war" used="true"/>
+</archive>
+</configurations>
+@

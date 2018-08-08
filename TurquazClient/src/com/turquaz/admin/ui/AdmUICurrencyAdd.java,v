@@ -1,0 +1,242 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.40;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.admin.ui;
+
+import java.util.HashMap;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.SWT;
+import com.cloudgarden.resource.SWTResourceManager;
+import com.turquaz.admin.AdmKeys;
+import org.eclipse.swt.widgets.Group;
+import com.turquaz.engine.ui.component.CurrencyTextAdvanced;
+import org.eclipse.swt.widgets.Button;
+import com.turquaz.engine.EngKeys;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+
+import server.util.EngBLLogger;
+
+import com.turquaz.engine.interfaces.SecureComposite;
+import com.turquaz.engine.lang.AdmLangKeys;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.EngUICommon;
+
+
+/**
+* This code was generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* *************************************
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED
+* for this machine, so Jigloo or this code cannot be used legally
+* for any corporate or commercial purpose.
+* *************************************
+*/
+public class AdmUICurrencyAdd extends org.eclipse.swt.widgets.Composite implements SecureComposite
+{
+	{
+		//Register as a resource user - SWTResourceManager will
+		//handle the obtaining and disposing of resources
+		SWTResourceManager.registerResourceUser(this);
+	}
+	private CLabel lblCurrencyName;
+	private Text txtCurrencyName;
+	private CLabel lblCurrencyAbbr;
+	private Text txtCurrencyAbbr;
+	private CurrencyTextAdvanced txtExchangeRate;
+	private Button radioConstant;
+	private Button radioChangeable;
+	private Group groupConstant;
+	private Text txtCurrencyCountry;
+	private CLabel lblCurrencyCountry;
+
+
+	public AdmUICurrencyAdd(org.eclipse.swt.widgets.Composite parent, int style)
+	{
+		super(parent, style);
+		initGUI();
+	}
+
+	private void initGUI()
+	{
+		try
+		{
+			GridLayout thisLayout = new GridLayout();
+			this.setLayout(thisLayout);
+			thisLayout.numColumns = 2;
+			this.setSize(467, 176);
+			//START >> lblCurrencyName
+			lblCurrencyName = new CLabel(this, SWT.NONE);
+			lblCurrencyName.setText(EngLangCommonKeys.STR_CURRENCY); //$NON-NLS-1$
+			//END << lblCurrencyName
+			//START >> txtCurrencyName
+			txtCurrencyName = new Text(this, SWT.NONE);
+			GridData txtCurrencyNameLData = new GridData();
+			txtCurrencyNameLData.widthHint = 170;
+			txtCurrencyNameLData.heightHint = 17;
+			txtCurrencyName.setLayoutData(txtCurrencyNameLData);
+			//END << txtCurrencyName
+			//START >> lblCurrencyAbbr
+			lblCurrencyAbbr = new CLabel(this, SWT.NONE);
+			lblCurrencyAbbr.setText(EngLangCommonKeys.STR_CURRENCY_ABBR); //$NON-NLS-1$
+			//END << lblCurrencyAbbr
+			//START >> txtCurrencyAbbr
+			txtCurrencyAbbr = new Text(this, SWT.NONE);
+			GridData txtCurrencyAbbrLData = new GridData();
+			txtCurrencyAbbrLData.widthHint = 170;
+			txtCurrencyAbbrLData.heightHint = 17;
+			txtCurrencyAbbr.setLayoutData(txtCurrencyAbbrLData);
+			//END << txtCurrencyAbbr
+			//START >> lblCurrencyCountry
+			lblCurrencyCountry = new CLabel(this, SWT.NONE);
+			lblCurrencyCountry.setText(EngLangCommonKeys.STR_CURRENCY_COUNTRY); //$NON-NLS-1$
+			//END << lblCurrencyCountry
+			//START >> txtCurrencyCountry
+			txtCurrencyCountry = new Text(this, SWT.NONE);
+			GridData txtCurrencyCountryLData = new GridData();
+			txtCurrencyCountryLData.widthHint = 170;
+			txtCurrencyCountryLData.heightHint = 17;
+			txtCurrencyCountry.setLayoutData(txtCurrencyCountryLData);
+			//END << txtCurrencyCountry
+			{
+				groupConstant = new Group(this, SWT.NONE);
+				GridLayout groupConstantLayout = new GridLayout();
+				groupConstantLayout.numColumns = 2;
+				groupConstant.setLayout(groupConstantLayout);
+				GridData groupConstantLData = new GridData();
+				groupConstantLData.widthHint = 279;
+				groupConstantLData.heightHint = 49;
+				groupConstantLData.horizontalSpan = 2;
+				groupConstant.setLayoutData(groupConstantLData);
+				groupConstant.setText("Kur Ayarlar\u0131");
+				{
+					radioChangeable = new Button(groupConstant, SWT.RADIO | SWT.LEFT);
+					GridData radioChangeableLData = new GridData();
+					radioChangeableLData.widthHint = 107;
+					radioChangeableLData.heightHint = 15;
+					radioChangeableLData.horizontalSpan = 2;
+					radioChangeable.setLayoutData(radioChangeableLData);
+					radioChangeable.setText("Günlük Kur");
+					radioChangeable.setSelection(true);
+					radioChangeable.addSelectionListener(new SelectionAdapter() {
+						public void widgetSelected(SelectionEvent evt) {
+							txtExchangeRate.setVisible(false);
+						}
+					});
+				}
+				{
+					radioConstant = new Button(groupConstant, SWT.RADIO | SWT.LEFT);
+					GridData radioConstantLData = new GridData();
+					radioConstantLData.widthHint = 97;
+					radioConstantLData.heightHint = 19;
+					radioConstant.setLayoutData(radioConstantLData);
+					radioConstant.setText("Sabit Kur");
+					radioConstant.addSelectionListener(new SelectionAdapter() {
+						public void widgetSelected(SelectionEvent evt) {
+							txtExchangeRate.setVisible(true);
+						}
+					});
+				}
+				{
+					GridData txtExchangeRateLData = new GridData();
+					txtExchangeRateLData.widthHint = 158;
+					txtExchangeRateLData.heightHint = 17;
+					txtExchangeRate = new CurrencyTextAdvanced(groupConstant, SWT.NONE);
+					txtExchangeRate.setLayoutData(txtExchangeRateLData);
+					txtExchangeRate.setVisible(false);
+				}
+			}
+			{
+			}
+			this.layout();
+		}
+		catch (Exception e)
+		{
+            EngBLLogger.log(this.getClass(),e,getShell());
+		}
+	}
+
+	public boolean verifyFields()
+	{
+		if (txtCurrencyName.getText().equals("")) 
+		{
+			EngUICommon.showMessageBox(getShell(),AdmLangKeys.MSG_PLEASE_FILL_CURRENCY); 
+			txtCurrencyName.setFocus();
+			return false;
+		}
+		else if (txtCurrencyAbbr.getText().equals("")) //$NON-NLS-1$
+		{
+			EngUICommon.showMessageBox(getShell(),AdmLangKeys.MSG_PLEASE_FILL_CURRENCY_ABBR); 
+			txtCurrencyAbbr.setFocus();
+			return false;
+		}
+		return true;
+	}
+
+	public void save()
+	{
+		try
+		{
+			if (verifyFields())
+			{
+				HashMap argMap=new HashMap();
+				
+				argMap.put(AdmKeys.ADM_CURRENCY_NAME,txtCurrencyName.getText().trim());
+				argMap.put(AdmKeys.ADM_CURRENCY_ABBR,txtCurrencyAbbr.getText().trim());
+				argMap.put(AdmKeys.ADM_CURRENCY_COUNTRY,txtCurrencyCountry.getText().trim());
+				argMap.put(EngKeys.CONSTANT, new Boolean( radioConstant.getSelection()));
+				argMap.put(EngKeys.EXCHANGE_RATIO, txtExchangeRate.getBigDecimalValue());
+				
+				EngTXCommon.doTransactionTX("Adm_saveCurrency",argMap);
+				EngUICommon.showSavedSuccesfullyMessage(getShell());
+				newForm();
+			}
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getShell());
+		}
+	}
+
+	public void newForm()
+	{
+		clearFields();
+		txtCurrencyName.setFocus();
+	}
+
+	public void clearFields()
+	{
+		txtCurrencyAbbr.setText(""); 
+		txtCurrencyCountry.setText(""); 
+		txtCurrencyName.setText(""); 
+		txtExchangeRate.setText("");
+	}
+}@

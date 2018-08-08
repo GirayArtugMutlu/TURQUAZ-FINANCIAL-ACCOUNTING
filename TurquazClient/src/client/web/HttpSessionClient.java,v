@@ -1,0 +1,374 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.03.10;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package client.web;
+
+import com.turquaz.common.HttpServiceRequest;
+import com.turquaz.common.HttpServiceResponse;
+
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.rmi.RemoteException;
+
+/**
+ * This class handle the http protocole for the application server
+ * communication. Client classes can make http calls in parallel threads. The
+ * number of thread is limited by the field maxThreadCount. The parameters of
+ * the communication (port, host, ...)can be set by the ressource
+ * BsfModules.xml.
+ */
+public class HttpSessionClient {
+
+	private static int requestNb;
+
+	private String sessionId;
+
+	private static String AUTHENTICATED_SERVLET = "/Server";
+
+	/** Default call method is http */
+	private static final String DEFAULT_PROTOCOL = "http";
+
+	/** Default Server Host */
+	private static final String SERVER_HOST = "localhost";
+
+	/** Default Server Port */
+	private static final int SERVER_PORT = 8080;
+
+	/** Default Server File */
+	private static final String SERVER_CONTEXT = "TurquazServer";
+
+	/** Default Server File */
+	private static final int DEFAULT_THREAD_COUNT = 1;
+
+	/** BSF default mime type */
+	private static final String MIME_TYPE = "application/x-bsf";
+
+	/**
+	 * The method used to transmit the call, the default is http but it can be
+	 * https to secure the communication
+	 */
+	private String protocol;
+
+	/** Where is the server */
+	private static String host;
+
+	/**
+	 * The context used at deployment time.
+	 */
+	private String context = "turquaz";
+
+	/** Http Port used */
+	private static int port = -1;
+
+	/** The number of parallel thread used to perform the http call. */
+	private int maxThreadCount = DEFAULT_THREAD_COUNT;
+
+	/** The number of thread that are currently making a call */
+	private int curUsedThread = 0;
+
+	// Singleton attribute
+	protected static HttpSessionClient _instance = null;
+
+	/**
+	 * Default constructor
+	 */
+	protected HttpSessionClient(String app) {
+		super();
+       context = app;
+	}
+
+	/**
+	 * Performs the http call.
+	 */
+
+	public boolean loginToServer(String login, String pass, String host1, int serverPort) throws RemoteException, Throwable {
+		try {
+			String file = null;
+
+			file = getAuthenticatedServerFile();
+			HttpSessionClient.host = host1;
+
+			if (serverPort == -1) {
+				HttpSessionClient.port = SERVER_PORT;
+			} else {
+				HttpSessionClient.port = serverPort;
+			}
+
+			String protocol = (this.protocol == null) ? DEFAULT_PROTOCOL : this.protocol;
+
+			getThreadLock();
+
+			int currentRequestNb = requestNb++;
+
+			HttpServiceResponse httpResponse;
+
+			URL url = new URL(protocol, host, port, file);
+
+			HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+			httpURLConnection.setRequestMethod("POST");
+			httpURLConnection.setDoOutput(true);
+			httpURLConnection.setDoInput(true);
+			httpURLConnection.setUseCaches(false);
+			// Set the content type to be application/x-bsf
+			httpURLConnection.setRequestProperty("Content-Type", MIME_TYPE);
+
+			HttpServiceRequest loginRequest = HttpServiceRequest.getLoginServiceRequest(login, pass);
+
+			ObjectOutputStream oos = new ObjectOutputStream(httpURLConnection.getOutputStream());
+			oos.writeObject(loginRequest);
+			oos.close();
+
+			ObjectInputStream ois = new ObjectInputStream(httpURLConnection.getInputStream());
+			httpResponse = (HttpServiceResponse) ois.readObject();
+
+			if (httpResponse.getThrowable() != null) {
+				throw httpResponse.getThrowable();
+			} else {
+				sessionId = getSessionId(httpURLConnection);
+			}
+			ois.close();
+			httpURLConnection.disconnect();
+			releaseThreadLock();
+			if (sessionId != null) {
+				return true;
+			}
+			return false;
+		} 
+		catch (java.io.IOException e) 
+		{
+			if (e instanceof RemoteException) {
+				throw e;
+			} else {
+				String message = "Failure during the http remote call on http://" + host + ":" + port;
+
+				throw new RemoteException(message, e);
+			}
+		}
+		catch (ClassNotFoundException e) {
+		
+			String message = "Failure during the http remote call";
+
+			throw new RemoteException(message, e);
+		}
+		finally {
+			releaseThreadLock();
+		}
+
+	}
+
+	public String getSessionId(HttpURLConnection urlConnection) {
+
+		for (int i = 0;; i++) {
+			String headerName = urlConnection.getHeaderFieldKey(i);
+			String headerValue = urlConnection.getHeaderField(i);
+
+			if (headerName == null && headerValue == null) {
+				// No more headers
+				break;
+			}
+			if ("Set-Cookie".equalsIgnoreCase(headerName)) {
+				// Parse cookie
+				String[] fields = headerValue.split(";\\s*");
+
+				String cookieValue = fields[0];
+				if (cookieValue.startsWith("JSESSIONID")) {
+
+					return cookieValue;
+				}
+			}
+		}
+		return null;
+
+	}
+
+	public Object invokeHttp(HttpServiceRequest request) throws Throwable {
+
+		String file = null;
+
+		file = getAuthenticatedServerFile();
+
+		String protocol = (this.protocol == null) ? DEFAULT_PROTOCOL : this.protocol;
+
+		try {
+			getThreadLock();
+
+			int currentRequestNb = requestNb++;
+
+			HttpServiceResponse httpResponse;
+
+			URL url = new URL(protocol, host, port, file);
+
+			HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+			httpURLConnection.setRequestMethod("POST");
+			httpURLConnection.setDoOutput(true);
+			httpURLConnection.setDoInput(true);
+			httpURLConnection.setUseCaches(false);
+			// Set the content type to be application/x-bsf
+			httpURLConnection.setRequestProperty("Content-Type", MIME_TYPE);
+			if (sessionId != null) {
+				httpURLConnection.setRequestProperty("Cookie", sessionId);
+			}
+
+			ObjectOutputStream oos = new ObjectOutputStream(httpURLConnection.getOutputStream());
+			oos.writeObject(request);
+			oos.close();
+
+			ObjectInputStream ois = new ObjectInputStream(httpURLConnection.getInputStream());
+			httpResponse = (HttpServiceResponse) ois.readObject();
+
+			ois.close();
+			httpURLConnection.disconnect();
+
+			return httpResponse;
+
+		} catch (java.io.IOException e) {
+			if (e instanceof RemoteException) {
+				throw e;
+			} else {
+				String message = "Failure during the http remote call on http://" + host + ":" + port + file;
+
+				throw new RemoteException(message, e);
+			}
+		} catch (ClassNotFoundException e) {
+			String message = "Failure during the http remote call";
+
+			throw new RemoteException(message, e);
+		} finally {
+			releaseThreadLock();
+		}
+	}
+
+	/**
+	 * This method is used to limit the concurrent http call to the max fixed by
+	 * maxThreadCount and to wait the end of the first call that will return the
+	 * session id.
+	 */
+	private synchronized void getThreadLock() {
+		// We wait the return of the first call
+		while (sessionId == null && curUsedThread > 0) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e.getLocalizedMessage());
+			}
+		}
+
+		while (curUsedThread >= maxThreadCount) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e.getLocalizedMessage());
+			}
+		}
+		curUsedThread++;
+	}
+
+	private synchronized void releaseThreadLock() {
+		curUsedThread--;
+
+		notify();
+	}
+
+	/**
+	 * Singleton instanciation
+	 */
+	public static HttpSessionClient getInstance(String app) throws IllegalStateException {
+		if (_instance == null) {
+			_instance = new HttpSessionClient(app);
+		}
+		_instance.setContext(app);
+		return _instance;
+	}
+
+	public void setHost(String host) {
+		HttpSessionClient.host = host;
+	}
+
+	/**
+	 * sets the used protocol. The default one is http but you can set it to
+	 * https to use a secure communication.
+	 * 
+	 * @@param protocol
+	 */
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
+
+	/**
+	 * @@deprecated setServerContext should be used instead.
+	 * @@param serverFile
+	 *            the deployment context and the servlet. For instance
+	 *            /myApp/httpSession.
+	 */
+	public void setServerFile(String serverFile) {
+		if (!serverFile.endsWith("httpSession")) {
+			throw new RuntimeException("You must use the method setContext() instead" + " of the method setServerFile to define your remote call.");
+		}
+		String context = serverFile.substring(0, serverFile.length() - 11);
+		setContext(context);
+	}
+
+	/**
+	 * Set the context used at deployment time. For instance if the packaging of
+	 * the remoting war inside of the ear use the context myApp, you should call
+	 * setContext("myApp") on the HttpServiceFactory to reach the server.
+	 * 
+	 * @@param context
+	 */
+	public void setContext(String context) {
+		while (context.endsWith("/")) {
+			context = context.substring(0, context.length() - 1);
+		}
+		this.context = context;
+	}
+
+	/**
+	 * @@return the server file to call for an authenticated call
+	 */
+	private String getAuthenticatedServerFile() {
+		StringBuffer sb = new StringBuffer();
+		sb.append('/');
+		if (context != null) {
+			sb.append(context);
+		} else {
+			sb.append(SERVER_CONTEXT);
+		}
+		sb.append(AUTHENTICATED_SERVLET);
+		return sb.toString();
+	}
+
+	public void setPort(int port) {
+		HttpSessionClient.port = port;
+	}
+
+	public int getThreadCount() {
+		return maxThreadCount;
+	}
+
+	public void setThreadCount(int threadCount) {
+		this.maxThreadCount = threadCount;
+
+	}
+
+}@

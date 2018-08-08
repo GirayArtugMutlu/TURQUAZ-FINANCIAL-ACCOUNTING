@@ -1,0 +1,211 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.44;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqCurrencyExchangeRate" 
+    table="turq_currency_exchange_rates"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="native" />
+    </id>
+
+    <property
+        name="exhangeRatesDate"
+        type="java.sql.Date"
+        column="exhange_rates_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="exchangeRatio"
+        type="java.math.BigDecimal"
+        column="exchange_ratio"
+        not-null="true"
+        length="65535"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TurqCurrency -->
+    <many-to-one
+        name="turqCurrencyByBaseCurrencyId"
+        class="com.turquaz.engine.dal.TurqCurrency"
+        not-null="true"
+    >
+        <column name="base_currency_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqCurrency -->
+    <many-to-one
+        name="turqCurrencyByExchangeCurrencyId"
+        class="com.turquaz.engine.dal.TurqCurrency"
+        not-null="true"
+    >
+        <column name="exchange_currency_id" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to TurqAccountingTransaction -->
+    <set
+        name="turqAccountingTransactions"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="exchange_rate_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqAccountingTransaction"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqAccountingTransactionColumn -->
+    <set
+        name="turqAccountingTransactionColumns"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="exchange_rate_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqAccountingTransactionColumn"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqInventoryTransaction -->
+    <set
+        name="turqInventoryTransactions"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="exchange_rate_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqInventoryTransaction"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqChequeCheque -->
+    <set
+        name="turqChequeCheques"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="exchange_rate_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqChequeCheque"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqConsignment -->
+    <set
+        name="turqConsignments"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="exchange_rate_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqConsignment"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqCurrentTransaction -->
+    <set
+        name="turqCurrentTransactions"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="exchange_rate_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqCurrentTransaction"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqCashTransactionRow -->
+    <set
+        name="turqCashTransactionRows"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="exchange_rate_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqCashTransactionRow"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqBanksTransaction -->
+    <set
+        name="turqBanksTransactions"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="exchange_rate_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqBanksTransaction"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqBill -->
+    <set
+        name="turqBills"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="exchange_rate_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqBill"
+        />
+    </set>
+
+</class>
+</hibernate-mapping>
+@

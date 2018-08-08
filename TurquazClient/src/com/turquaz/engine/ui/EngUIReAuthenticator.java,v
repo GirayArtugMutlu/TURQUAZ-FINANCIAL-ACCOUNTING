@@ -1,0 +1,443 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.50;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.ui;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+
+/**
+ * @@author  Onsel Armagan
+ * @@version  $Id: EngUIReAuthenticator.java,v 1.6 2005/08/18 16:24:20 onsel Exp $
+ */
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Text;
+
+import client.web.HttpSessionClient;
+
+import com.turquaz.engine.EngConfiguration;
+import com.turquaz.engine.exceptions.TurquazException;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Composite;
+import com.cloudgarden.resource.SWTResourceManager;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+
+import server.util.EngBLLogger;
+
+
+/**
+* This code was generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* *************************************
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED
+* for this machine, so Jigloo or this code cannot be used legally
+* for any corporate or commercial purpose.
+* *************************************
+*/
+public class EngUIReAuthenticator extends org.eclipse.swt.widgets.Composite
+{
+	{
+		//Register as a resource user - SWTResourceManager will
+		//handle the obtaining and disposing of resources
+		SWTResourceManager.registerResourceUser(this);
+	}
+	private CLabel lblUserName;
+	private Button btnExit;
+	private MenuItem menuItem1;
+	private Menu menu1;
+	private Text txtServerPort;
+	private CLabel lblServerPort;
+	private Text txtServerAddress;
+	private Text txtUserName;
+	private CLabel lblServerAddress;
+	private Composite compEngUIMainFrame;
+	private Button btnOk;
+	private Text txtPassword;
+	private CLabel lblPassword;
+	private Label lblSeperator;
+	boolean guiReady = false;
+	boolean isAuthenticated =false;
+
+
+	public EngUIReAuthenticator(org.eclipse.swt.widgets.Composite parent, int style)
+	{
+		super(parent, style);
+		initGUI();
+	
+	}
+	public static boolean showGUI()
+	{
+		Display display = Display.getCurrent();
+		Shell shell = new Shell(display);
+		shell.addListener (SWT.Close, new Listener () {
+			public void handleEvent (Event event) {
+				
+				event.doit = false;
+			}
+		});
+		EngUIReAuthenticator inst = new EngUIReAuthenticator(shell, SWT.NULL);
+		Point size = inst.getSize();
+		shell.setText(EngLangCommonKeys.STR_APPLICATION_NAME); //$NON-NLS-1$
+		shell.setLayout(new FillLayout());
+		shell.layout();
+		if (size.x == 0 && size.y == 0)
+		{
+			inst.pack();
+			shell.pack();
+		}
+		else
+		{
+			Rectangle shellBounds = shell.computeTrim(0, 0, size.x, size.y);
+			int MENU_HEIGHT = 22;
+			if (shell.getMenuBar() != null)
+				shellBounds.height -= MENU_HEIGHT;
+			shell.setSize(shellBounds.width, shellBounds.height);
+		}
+		EngUICommon.centreWindow(shell);
+		shell.open();		
+		
+		while (!shell.isDisposed())
+		{
+			if (!display.readAndDispatch())
+				display.sleep();
+		}
+		return inst.isAuthenticated;
+	}
+
+
+	private void initGUI()
+	{
+		try
+		{	
+			{
+				menu1 = new Menu(getShell(), SWT.BAR);
+				getShell().setMenuBar(menu1);
+				menu1.setVisible(false);
+				{
+					menuItem1 = new MenuItem(menu1, SWT.PUSH);
+					menuItem1.setText("");
+					menuItem1.setAccelerator(SWT.CR);
+					menuItem1.addSelectionListener(new SelectionAdapter() {
+						public void widgetSelected(SelectionEvent evt) {
+							menuItem1WidgetSelected(evt);
+						}
+					});
+				}
+			}
+
+			GridLayout thisLayout = new GridLayout();
+			
+			this.setLayout(thisLayout);
+			thisLayout.numColumns = 2;
+			thisLayout.marginHeight = 20;
+			this.setSize(424, 189);
+			{
+				lblServerAddress = new CLabel(this, SWT.NONE);
+				lblServerAddress.setText("Sunucu Adresi");
+			}
+			{
+				GridData txtServerAddressLData = new GridData();
+				txtServerAddressLData.heightHint = 16;
+				txtServerAddressLData.grabExcessHorizontalSpace = true;
+				txtServerAddressLData.horizontalAlignment = GridData.FILL;
+				txtServerAddress = new Text(this, SWT.NONE);
+				txtServerAddress.setLayoutData(txtServerAddressLData);
+				txtServerAddress.setEnabled(false);
+			}
+			{
+				lblServerPort = new CLabel(this, SWT.NONE);
+				lblServerPort.setText("Sunucu Portu");
+			}
+			{
+				GridData txtServerPortLData = new GridData();
+				txtServerPortLData.heightHint = 16;
+				txtServerPortLData.grabExcessHorizontalSpace = true;
+				txtServerPort = new Text(this, SWT.NONE);
+				
+				txtServerPortLData.horizontalAlignment = GridData.FILL;
+				txtServerPort.setLayoutData(txtServerPortLData);
+				txtServerPort.setEnabled(false);
+			}
+			{
+				lblUserName = new CLabel(this, SWT.NONE);
+				lblUserName.setText(EngLangCommonKeys.STR_USERNAME); //$NON-NLS-1$
+			}
+			{
+				txtUserName = new Text(this, SWT.NONE);
+				GridData txtUserNameLData = new GridData();
+				txtUserNameLData.heightHint = 16;
+				txtUserNameLData.grabExcessHorizontalSpace = true;
+				txtUserNameLData.horizontalAlignment = GridData.FILL;
+				txtUserName.setLayoutData(txtUserNameLData);
+				txtUserName.setEnabled(false);
+			}
+			{
+				lblPassword = new CLabel(this, SWT.NONE);
+				lblPassword.setText(EngLangCommonKeys.STR_PASSWORD); //$NON-NLS-1$
+				GridData lblPasswordLData = new GridData();
+				lblPasswordLData.widthHint = 81;
+				lblPasswordLData.heightHint = 19;
+				lblPassword.setLayoutData(lblPasswordLData);
+			}
+			{
+				txtPassword = new Text(this, SWT.PASSWORD);
+				GridData txtPasswordLData = new GridData();
+				txtPassword.setSize(305, 16);
+				txtPasswordLData.heightHint = 16;
+				txtPasswordLData.horizontalAlignment = GridData.FILL;
+				txtPassword.setLayoutData(txtPasswordLData);
+			}
+			{
+				lblSeperator = new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
+				lblSeperator.setText(""); //$NON-NLS-1$
+				GridData label1LData = new GridData();
+				label1LData.horizontalSpan = 2;
+				label1LData.horizontalAlignment = GridData.FILL;
+				label1LData.grabExcessHorizontalSpace = true;
+				label1LData.heightHint = 2;
+				label1LData.grabExcessVerticalSpace = true;
+				lblSeperator.setLayoutData(label1LData);
+			}
+			{
+				compEngUIMainFrame = new Composite(this, SWT.NONE);
+				GridLayout composite1Layout = new GridLayout();
+				GridData composite1LData = new GridData();
+				composite1LData.widthHint = 192;
+				composite1LData.heightHint = 40;
+				composite1LData.horizontalSpan = 2;
+				composite1LData.horizontalAlignment = GridData.END;
+				compEngUIMainFrame.setLayoutData(composite1LData);
+				composite1Layout.makeColumnsEqualWidth = true;
+				composite1Layout.numColumns = 2;
+				compEngUIMainFrame.setLayout(composite1Layout);
+				{
+					btnOk = new Button(compEngUIMainFrame, SWT.PUSH | SWT.FLAT | SWT.CENTER);
+				
+					GridData btnOkLData = new GridData();
+				//	btnOk.setImage(SWTResourceManager.getImage("icons/Ok24.gif")); //$NON-NLS-1$
+					btnOk.addMouseListener(new MouseAdapter()
+					{
+						public void mouseUp(MouseEvent evt)
+						{
+							btnOkMouseUp();
+						}
+					});
+					btnOkLData.horizontalAlignment = GridData.END;
+					btnOkLData.widthHint = 74;
+					btnOkLData.verticalSpan = -1;
+					btnOk.setLayoutData(btnOkLData);
+					btnOk.setText("Ba\u011flan");
+				}
+				{
+					btnExit = new Button(compEngUIMainFrame, SWT.PUSH | SWT.FLAT | SWT.CENTER);
+					btnExit.setText("Program\u0131 Kapat");
+					btnExit.addMouseListener(new MouseAdapter() {
+						public void mouseUp(MouseEvent evt) {
+							btnExitMouseUp(evt);
+						}
+					});
+				}
+			}
+			this.layout();
+			postInitGui();
+			
+		}
+		catch (Exception e)
+		{
+            EngBLLogger.log(this.getClass(),e);
+		}
+	}
+
+	// display the strings
+	public void displayStrings()
+	{
+		lblPassword.setText(EngLangCommonKeys.STR_PASSWORD); //$NON-NLS-1$
+		lblUserName.setText(EngLangCommonKeys.STR_USERNAME); //$NON-NLS-1$
+	}
+
+	public void showMainFrame()
+	{
+		try
+		{			
+			
+			System.setProperty("user", txtUserName.getText()); //$NON-NLS-1$
+						
+					
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex);
+		}
+		
+		this.getShell().dispose();
+		
+	}
+	
+
+	public void btnOkMouseUp()
+	{
+		MessageBox msg = new MessageBox(this.getShell(), SWT.NULL);
+		try
+		{
+			HttpSessionClient client = HttpSessionClient.getInstance(EngConfiguration.getString("default-app"));
+			
+			int serverPort =-1;
+			if(txtServerPort.getText().trim().length()!=0)
+			{
+			   serverPort =Integer.parseInt(txtServerPort.getText().trim());
+			}
+			
+			boolean result =client.loginToServer(txtUserName.getText().trim(),txtPassword.getText().trim(),txtServerAddress.getText().trim(),serverPort);
+			
+			
+			if (result)
+			{
+				showMainFrame();
+				isAuthenticated=true;
+			}
+			else
+			{
+				msg.setMessage(EngLangCommonKeys.MSG_WRONG_USERNAME_OR_PASSWORD); //$NON-NLS-1$
+				msg.open();
+			}
+		}
+		catch(NumberFormatException ex)
+		{
+			EngUICommon.showMessageBox(getShell(),"Lütfen port için geçerli bir sayý giriniz!");
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getShell());
+	
+		}
+		catch(Throwable ex)
+		{
+			EngBLLogger.log(this.getClass(),new TurquazException(ex),getShell());
+		}
+	}
+
+	
+
+	public void postInitGui()
+	{
+		try
+		{
+			
+			txtPassword.setFocus();
+			String username = EngConfiguration.getString("username"); //$NON-NLS-1$
+			String serverAddress = EngConfiguration.getString("serverAddress");
+			String serverPort = EngConfiguration.getString("serverPort");
+			
+			if (username != null )
+			{
+				txtUserName.setText(username);
+			}
+						
+			if(serverAddress!=null)
+			{
+				txtServerAddress.setText(serverAddress);
+			}
+			if(serverPort!=null)
+			{
+				txtServerPort.setText(serverPort);
+			}
+						
+			
+            //checkRememberPassword.setVisible(false);
+            
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex);
+		}
+	}
+
+	public Text getTxtPassword()
+	{
+		return txtPassword;
+	}
+
+	public void setTxtPassword(Text txtPassword)
+	{
+		this.txtPassword = txtPassword;
+	}
+
+	public Text getTxtUserName()
+	{
+		return txtUserName;
+	}
+
+	public void setTxtUserName(Text txtUserName)
+	{
+		this.txtUserName = txtUserName;
+	}
+	
+	private void menuItem1WidgetSelected(SelectionEvent evt) {
+
+		btnOkMouseUp();
+		
+		
+	}
+	
+	private void btnExitMouseUp(MouseEvent evt) {
+		
+		EngUIMainFrame.closeApplication();
+
+	}
+
+}@

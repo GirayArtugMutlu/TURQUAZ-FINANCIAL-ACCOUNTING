@@ -1,0 +1,144 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.52;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package run;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.LinkedList;
+import java.util.List;
+
+public class Starter {
+	
+	/** The class loader to use for loading JMeter classes. */
+    private static URLClassLoader loader;
+    
+    /** The directory JMeter is installed in. */
+    private static String jmDir;
+    
+	 static {
+	       
+		 	List jars = new LinkedList();
+		 //	String cp = System.getProperty("java.class.path");
+    
+           
+	        /*
+	         * Does the system support UNC paths?
+	         * If so, may need to fix them up later
+	         */
+			boolean usesUNC = System.getProperty("os.name").startsWith("Windows");
+			
+	        StringBuffer classpath = new StringBuffer();
+	        File[] libDirs =
+	            new File[] {  
+	                new File("lib")
+	        };
+	       
+	        for (int a = 0; a < libDirs.length; a++)
+	        {
+	            File[] libJars = libDirs[a].listFiles(new FilenameFilter()
+	            {
+	                public boolean accept(File dir, String name)
+	                {
+	                    return name.endsWith(".jar");
+	                }
+	            });
+	            if (libJars == null){
+	            	new Throwable("Could not access "+libDirs[a]).printStackTrace();
+	            	continue;
+	            }
+	            for (int i = 0; i < libJars.length; i++)
+	            {
+	                try
+	                {
+	                	String s = libJars[i].getPath();
+	                	
+	                	// Fix path to allow the use of UNC URLs
+	                	if (usesUNC){
+							
+	                		if (s.startsWith("\\\\") &&
+							   !s.startsWith("\\\\\\")
+							   )
+							{
+								s = "\\\\" + s;
+							} 
+							else if (s.startsWith("//") &&
+							        !s.startsWith("///")
+							        )
+							 {
+							     s = "//" + s;
+							 }
+	                	} // usesUNC
+
+	                    jars.add(new URL("file", "", s));
+	                    classpath.append(System.getProperty("path.separator"));
+	                    classpath.append(s);
+	                }
+	                catch (MalformedURLException e)
+	                {
+	                    e.printStackTrace();
+	                }
+	            }
+	        }
+
+	              
+	        System.setProperty(
+	            "java.class.path",
+	            System.getProperty("java.class.path") + classpath.toString());
+	        loader = new URLClassLoader((URL[]) jars.toArray(new URL[jars.size()]),null);
+	        
+	      
+	    }
+	 private Starter()
+	 {
+		 
+	 }
+	
+	 public static void main(String args[])
+	 {
+		 Thread.currentThread().setContextClassLoader(loader);
+			 
+		try {
+			
+			Class mainFrame	 = loader.loadClass("com.turquaz.engine.EngTurquazLoaderStandAlone");
+		
+			Method startup =
+                mainFrame.getMethod(
+                    "main",
+                    new Class[] {(new String[0]).getClass()});
+			startup.invoke(null, new Object[] { args });
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+			
+	 }
+	
+	 
+
+}
+@

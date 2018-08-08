@@ -1,0 +1,318 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.49;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.accounting.ui;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author  Onsel Armagan
+ * @@version  $Id: AccUITransactionPaymentUpdateDialog.java,v 1.10 2005/08/26 15:51:08 onsel Exp $
+ */
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
+import com.cloudgarden.resource.SWTResourceManager;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import com.turquaz.accounting.AccKeys;
+import com.turquaz.accounting.ui.AccUITransactionPayment;
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.bl.EngBLUtils;
+import com.turquaz.engine.interfaces.SaveDialogInterface;
+import com.turquaz.engine.lang.AccLangKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.EngUICommon;
+import com.turquaz.engine.ui.component.SaveDialogMenu;
+import com.turquaz.engine.ui.viewers.ITableRow;
+import org.eclipse.swt.SWT;
+
+import server.util.EngBLLogger;
+
+
+/**
+* This code was generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* *************************************
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED
+* for this machine, so Jigloo or this code cannot be used legally
+* for any corporate or commercial purpose.
+* *************************************
+* @@author hakankaynar
+*/
+public class AccUITransactionPaymentUpdateDialog extends org.eclipse.swt.widgets.Dialog implements SaveDialogInterface
+{
+	private AccUITransactionPayment compTransactionPayment;
+	private SaveDialogMenu saveDialogMenu1;
+	private Shell dialogShell;
+	private boolean updated = false;
+	private HashBag transBag=null;
+	private Integer transId;
+
+	public AccUITransactionPaymentUpdateDialog(Shell parent, int style, Integer transId)
+	{
+		super(parent, style);
+		this.transId=transId;
+	}
+
+	/**
+	 * Opens the Dialog Shell. Auto-generated code - any changes you make will disappear.
+	 */
+	public boolean open()
+	{
+		try
+		{
+			Shell parent = getParent();
+			dialogShell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.MAX);
+			{
+				//Register as a resource user - SWTResourceManager will
+				//handle the obtaining and disposing of resources
+				SWTResourceManager.registerResourceUser(dialogShell);
+			}
+			dialogShell.setText(AccLangKeys.STR_UPDATE_PAYMENT_VOUCHER);
+			{
+				GridData saveDialogMenu1LData = new GridData();
+				saveDialogMenu1LData.grabExcessHorizontalSpace = true;
+				saveDialogMenu1LData.horizontalAlignment = GridData.FILL;
+				saveDialogMenu1 = new SaveDialogMenu(dialogShell, SWT.NONE,this,true,true);
+				saveDialogMenu1.setLayoutData(saveDialogMenu1LData);
+			}
+			
+				compTransactionPayment = new AccUITransactionPayment(dialogShell, SWT.NULL);
+		
+			
+			dialogShell.setSize(new org.eclipse.swt.graphics.Point(611, 406));
+			final org.eclipse.swt.graphics.Image toolDeleteImage = new org.eclipse.swt.graphics.Image(Display.getDefault(), getClass()
+					.getClassLoader().getResourceAsStream("icons/delete_edit.gif")); //$NON-NLS-1$
+			GridData compTransactionPaymentLData = new GridData();
+			compTransactionPaymentLData.verticalAlignment = GridData.FILL;
+			compTransactionPaymentLData.horizontalAlignment = GridData.FILL;
+			compTransactionPaymentLData.widthHint = -1;
+			compTransactionPaymentLData.heightHint = -1;
+			compTransactionPaymentLData.horizontalIndent = 0;
+			compTransactionPaymentLData.horizontalSpan = 1;
+			compTransactionPaymentLData.verticalSpan = 1;
+			compTransactionPaymentLData.grabExcessHorizontalSpace = true;
+			compTransactionPaymentLData.grabExcessVerticalSpace = true;
+			compTransactionPayment.setLayoutData(compTransactionPaymentLData);
+			compTransactionPayment.setSize(new org.eclipse.swt.graphics.Point(601, 353));
+			compTransactionPayment.layout();
+			GridLayout dialogShellLayout = new GridLayout(1, true);
+			dialogShell.setLayout(dialogShellLayout);
+			dialogShellLayout.marginWidth = 5;
+			dialogShellLayout.marginHeight = 5;
+			dialogShellLayout.numColumns = 1;
+			dialogShellLayout.makeColumnsEqualWidth = true;
+			dialogShellLayout.horizontalSpacing = 5;
+			dialogShellLayout.verticalSpacing = 5;
+			dialogShell.layout();
+			dialogShell.addDisposeListener(new DisposeListener()
+			{
+				public void widgetDisposed(DisposeEvent e)
+				{
+					toolDeleteImage.dispose();
+				}
+			});
+			Rectangle bounds = dialogShell.computeTrim(0, 0, 611, 406);
+			dialogShell.setSize(bounds.width, bounds.height);
+			postInitGUI();
+			dialogShell.open();
+			Display display = dialogShell.getDisplay();
+			while (!dialogShell.isDisposed())
+			{
+				if (!display.readAndDispatch())
+					display.sleep();
+			}
+			return updated;
+		}
+		catch (Exception e)
+		{
+            EngBLLogger.log(this.getClass(),e,getParent());
+			return true;
+		}
+	}
+
+	/** Add your post-init code in here */
+	public void postInitGUI()
+	{
+		try
+		{
+			
+			HashMap argMap = new HashMap();
+			argMap.put(AccKeys.ACC_TRANS_ID, transId);
+			transBag = (HashBag) EngTXCommon.doSelectTX("Acc_getAccTransactionById", argMap);
+			
+			Integer journalId = (Integer) transBag.get(AccKeys.ACC_TRANS_JOURNAL_ID);
+			Integer moduleId = (Integer) transBag.get(AccKeys.ACC_TRANS_MODULE_ID);
+			String transDefinition = (String) transBag.get(AccKeys.ACC_TRANSACTION_DEFINITION);
+			String transDocNo = (String) transBag.get(AccKeys.ACC_TRANSACTION_DOC_NO);
+			String currencyAbbr = (String) transBag.get(EngKeys.CURRENCY_ABBR);
+			Integer currencyId = (Integer) transBag.get(EngKeys.CURRENCY_ID);
+			Date transDate = (Date) transBag.get(AccKeys.ACC_TRANS_DATE);
+		
+			
+			
+			compTransactionPayment.getTxtDocumentNo().setText(transDocNo);
+			compTransactionPayment.getTxtDefinition().setText(transDefinition);
+			compTransactionPayment.getComboCurrencyType().setText(currencyAbbr);
+			Date date = new Date(transDate.getTime());
+			compTransactionPayment.getDatePickerTransactionDate().setDate(date);
+			fillTableAndCombo();
+			compTransactionPayment.calculateTotalCredit();
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+
+	public void fillTableAndCombo()
+	{
+		compTransactionPayment.tableViewer.removeAll();
+
+		HashMap rowList=(HashMap)transBag.get(AccKeys.ACC_TRANSACTION_ROWS);
+		
+		TableItem item;
+		for (int k = 0; k < rowList.size(); k++)
+		{
+			HashMap transRow = (HashMap)rowList.get(new Integer(k));
+			
+			if (((BigDecimal)transRow.get(EngKeys.DEPT_AMOUNT)).doubleValue()>0)
+			{ 
+				ITableRow row = new AccUITransactionPaymentTableRow(compTransactionPayment.tableViewer.getRowList());
+				row.setDBObject(transRow);
+				compTransactionPayment.tableViewer.addRow(row);
+			}
+			else
+			{
+				HashMap accountMap=(HashMap)transRow.get(AccKeys.ACC_ACCOUNT);
+				
+				compTransactionPayment.getComboCreditor().setText((String)accountMap.get(AccKeys.ACC_ACCOUNT_CODE));
+				compTransactionPayment.getComboCreditor().setDataMap(accountMap);
+			}
+		
+		}
+
+		//	 add last empty row
+		AccUITransactionPaymentTableRow row2 = new AccUITransactionPaymentTableRow(compTransactionPayment.tableViewer.getRowList());
+		compTransactionPayment.tableViewer.addRow(row2);
+	}
+
+	/** Auto-generated event handler method */
+	public void save()
+	{
+		try
+		{
+			if (compTransactionPayment.verifyFields())
+			{
+				updated = true;
+			
+				HashMap argMap = new HashMap();
+				argMap.put(AccKeys.ACC_TRANS_ID,transId);
+				argMap.put(AccKeys.ACC_DOCUMENT_NO,compTransactionPayment.getTxtDocumentNo().getText().trim());
+				argMap.put(AccKeys.ACC_TRANS_DATE, compTransactionPayment.getDatePickerTransactionDate().getDate());
+				argMap.put(AccKeys.ACC_DEFINITION,compTransactionPayment.getTxtDefinition().getText().trim());
+				argMap.put(EngKeys.CURRENCY_ID,compTransactionPayment.getComboCurrencyType().getData(compTransactionPayment.getComboCurrencyType().getText()));
+				argMap.put(AccKeys.ACC_TRANSACTIONS,compTransactionPayment.getTransactionColumns());
+				
+				EngTXCommon.doTransactionTX("Acc_updateTransaction",argMap);			
+				EngUICommon.showUpdatedSuccesfullyMessage(getParent());
+				dialogShell.close();
+			}
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getParent());
+		}
+	}
+
+	/** Auto-generated event handler method */
+	public void delete()
+	{
+		boolean okToDelete=EngUICommon.okToDelete(getParent());
+		if (okToDelete)
+		{
+			try
+			{
+				updated = true;
+				HashMap argMap = new HashMap();
+				argMap.put(AccKeys.ACC_TRANS_ID,transId);
+				EngTXCommon.doTransactionTX("Acc_removeAccountingTransaction",argMap);
+				EngUICommon.showDeletedSuccesfullyMessage(getParent());
+				this.dialogShell.dispose();
+			}
+			catch (Exception ex)
+			{
+                EngBLLogger.log(this.getClass(),ex,getParent());
+			}
+		}
+	}
+
+
+
+
+	public void cancel() {
+		dialogShell.close();
+		
+	}
+
+	public String getSaveComposite() {
+		
+		return AccUITransactionPayment.class.getName();
+		
+	}
+
+	public void print() {
+		try {
+			EngBLUtils.PrintAccTransaction(transId);
+		} catch (Exception e) {
+			
+			EngBLLogger.log(this.getClass(),e,getParent());
+		}
+		
+	}
+}@

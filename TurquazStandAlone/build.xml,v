@@ -1,0 +1,69 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2010.01.14.17.20.33;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@*** empty log message ***
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<project default="_packaging_generation_" name="Packaging Generator">
+<target name="_packaging_generation_" depends="N10004,N10027,N10038,N10049,N1005A,N10073"/>
+<target name="N10004" description="turquaz-standalone.jar">
+<mkdir dir="dist/lib"/>
+<jar destfile="dist/lib/turquaz-standalone.jar">
+<zipfileset dir="../TurquazServer/src/conf">
+<include name="hibernate.cfg.xml"/>
+</zipfileset>
+<zipfileset dir="bin/com" prefix="com"/>
+<zipfileset dir="bin/server" prefix="server"/>
+</jar>
+</target>
+<target name="N10027" description="turquaz-client.jar">
+<mkdir dir="dist/lib"/>
+<jar destfile="dist/lib/turquaz-client.jar">
+<zipfileset dir="../TurquazClient/bin"/>
+</jar>
+</target>
+<target name="N10038" description="turquaz-common.jar">
+<mkdir dir="dist/lib"/>
+<jar destfile="dist/lib/turquaz-common.jar">
+<zipfileset dir="../TurquazCommon/bin"/>
+</jar>
+</target>
+<target name="N10049" description="turquaz-business.jar">
+<mkdir dir="dist/lib"/>
+<jar destfile="dist/lib/turquaz-business.jar">
+<zipfileset dir="../TurquazBusinessLogic/bin"/>
+</jar>
+</target>
+<target name="N1005A" description="run.jar">
+<mkdir dir="dist"/>
+<jar destfile="dist/run.jar" manifest="MANIFEST.MF">
+<zipfileset dir="bin/run" prefix="run"/>
+</jar>
+</target>
+<target name="N10073" description="dbgui.jar">
+<mkdir dir="dist"/>
+<jar destfile="dist/dbgui.jar" manifest="dbgui/MANIFEST.MF">
+<zipfileset dir="bin/server/util" prefix="server/util">
+<include name="DBGUI.class"/>
+</zipfileset>
+</jar>
+</target>
+</project>
+@

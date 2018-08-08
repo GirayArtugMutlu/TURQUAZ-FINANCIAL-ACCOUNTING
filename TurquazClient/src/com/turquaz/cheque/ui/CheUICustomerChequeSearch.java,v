@@ -1,0 +1,484 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.44;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.cheque.ui;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.custom.CTabFolder;
+import com.jasperassistant.designer.viewer.ViewerComposite;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.CLabel;
+import com.turquaz.cheque.CheKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.current.CurKeys;
+import com.turquaz.current.ui.comp.CurrentPicker;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.custom.CCombo;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.bl.EngBLClient;
+import com.turquaz.engine.bl.EngBLUtils;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Label;
+import com.turquaz.engine.interfaces.SearchComposite;
+import com.turquaz.engine.lang.CheLangKeys;
+import com.turquaz.engine.lang.CurLangKeys;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.component.DatePicker;
+import com.turquaz.engine.ui.component.TurkishCurrencyFormat;
+import com.turquaz.engine.ui.viewers.ITableRow;
+import com.turquaz.engine.ui.viewers.SearchTableViewer;
+import com.turquaz.engine.ui.viewers.TurquazTableSorter;
+import org.eclipse.swt.widgets.Text;
+import com.cloudgarden.resource.SWTResourceManager;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.SWT;
+
+import server.util.EngBLLogger;
+
+public class CheUICustomerChequeSearch extends org.eclipse.swt.widgets.Composite implements SearchComposite
+{
+	private Composite compSearchPanle;
+	private Text txtPortFoyNo;
+	private DatePicker dateReportDate;
+	private Label lblReportDate;
+	private Button radioPortFoy;
+	private Button radioDueDate;
+	private Button radioDate;
+	private Group groupReport;
+	private ViewerComposite viewer;
+	private Composite compReport;
+	private CTabItem tabItemReport;
+	private CTabItem cTabItem1;
+	private CTabFolder tabFolder;
+	private CurrentPicker currentPicker;
+	private DatePicker datePickerEndEnterDate;
+	private CLabel lblEnterDateEnd;
+	private DatePicker datePickerStartEnterDate;
+	private CLabel lblEnterDate;
+	private TableColumn tableColumnCurrentCard;
+	private DatePicker datePickerEndDueDate;
+	private CLabel lblDueDateEnd;
+	private TableColumn tableColumnStatus;
+	private TableColumn tableColumnAmount;
+	private TableColumn tableColumnDueDate;
+	private TableColumn tableColumnEntryDate;
+	private TableColumn tableColumnChequeNo;
+	private Table tableCheques;
+	private CLabel lblCurrentCard;
+	private CCombo comboStatus;
+	private CLabel lblStaus;
+	private DatePicker datePickerStartDueDate;
+	private CLabel lblDueDate;
+	private CLabel lblPortfoyNo;
+	private SearchTableViewer tableViewer = null;
+	{
+		//Register as a resource user - SWTResourceManager will
+		//handle the obtaining and disposing of resources
+		SWTResourceManager.registerResourceUser(this);
+	}
+
+	public CheUICustomerChequeSearch(org.eclipse.swt.widgets.Composite parent, int style)
+	{
+		super(parent, style);
+		initGUI();
+	}
+
+	private void initGUI()
+	{
+		try
+		{
+			this.setLayout(new GridLayout());
+			this.setBackground(SWTResourceManager.getColor(255, 255, 255));
+			this.setSize(667, 412);
+			//START >> compSearchPanle
+			compSearchPanle = new Composite(this, SWT.NONE);
+			GridLayout compSearchPanleLayout = new GridLayout();
+			GridData compSearchPanleLData = new GridData();
+			compSearchPanleLData.heightHint = 187;
+			compSearchPanleLData.grabExcessHorizontalSpace = true;
+			compSearchPanleLData.horizontalAlignment = GridData.FILL;
+			compSearchPanle.setLayoutData(compSearchPanleLData);
+			compSearchPanleLayout.numColumns = 4;
+			compSearchPanle.setLayout(compSearchPanleLayout);
+			//START >> lblCurrentCard
+			lblCurrentCard = new CLabel(compSearchPanle, SWT.NONE);
+			lblCurrentCard.setText(CurLangKeys.STR_CUR_CARD); //$NON-NLS-1$
+			//END << lblCurrentCard
+			//START >> currentPicker
+			currentPicker = new CurrentPicker(compSearchPanle, SWT.NONE);
+			GridData currentPickerLData = new GridData();
+			currentPickerLData.widthHint = 404;
+			currentPickerLData.heightHint = 19;
+			currentPickerLData.horizontalSpan = 3;
+			currentPicker.setLayoutData(currentPickerLData);
+			//END << currentPicker
+			//START >> lblPortfoyNo
+			lblPortfoyNo = new CLabel(compSearchPanle, SWT.NONE);
+			lblPortfoyNo.setText(CheLangKeys.STR_PORTFOLIO_NO); //$NON-NLS-1$
+			//END << lblPortfoyNo
+			//START >> txtPortFoyNo
+			txtPortFoyNo = new Text(compSearchPanle, SWT.NONE);
+			GridData txtPortFoyNoLData = new GridData();
+			txtPortFoyNoLData.widthHint = 150;
+			txtPortFoyNoLData.heightHint = 17;
+			txtPortFoyNo.setLayoutData(txtPortFoyNoLData);
+			//END << txtPortFoyNo
+			//START >> lblStaus
+			lblStaus = new CLabel(compSearchPanle, SWT.NONE);
+			lblStaus.setText(CheLangKeys.STR_CHEQUE_STATUS); //$NON-NLS-1$
+			//END << lblStaus
+			//START >> comboStatus
+			comboStatus = new CCombo(compSearchPanle, SWT.NONE);
+			GridData comboStatusLData = new GridData();
+			comboStatusLData.widthHint = 150;
+			comboStatusLData.heightHint = 17;
+			comboStatus.setLayoutData(comboStatusLData);
+			comboStatus.setText(EngLangCommonKeys.STR_ALL); //$NON-NLS-1$
+			//TODO bunlar db den cekilmeli. EngBLCommondaki Map iptal edilmeli..
+			comboStatus.add(EngLangCommonKeys.STR_ALL); //$NON-NLS-1$
+			Iterator it = EngBLClient.getChequeStatusMapWithStringKey().keySet().iterator();
+			while (it.hasNext())
+			{
+				comboStatus.add(it.next().toString());
+			}
+			//END << comboStatus
+			{
+				lblReportDate = new Label(compSearchPanle, SWT.NONE);
+				lblReportDate.setText("Rapor Tarihi");
+			}
+			{
+				GridData dateReportDateLData = new GridData();
+				dateReportDateLData.horizontalSpan = 3;
+				dateReportDateLData.heightHint = 22;
+				dateReportDateLData.widthHint = 150;
+				dateReportDate = new DatePicker(compSearchPanle, SWT.NONE);
+				dateReportDate.setLayoutData(dateReportDateLData);
+			}
+			//START >> lblDueDate
+			lblDueDate = new CLabel(compSearchPanle, SWT.NONE);
+			lblDueDate.setText(CheLangKeys.STR_DUE_DATE_START); //$NON-NLS-1$
+			//END << lblDueDate
+			//START >> datePickerStartDueDate
+			datePickerStartDueDate = new DatePicker(compSearchPanle, SWT.NONE);
+			GridData datePickerLData = new GridData();
+			datePickerLData.widthHint = 150;
+			datePickerLData.heightHint = 22;
+			datePickerStartDueDate.setLayoutData(datePickerLData);
+			datePickerStartDueDate.setFirstDayOfYear();
+			//END << datePickerStartDueDate
+			//START >> lblDueDateEnd
+			lblDueDateEnd = new CLabel(compSearchPanle, SWT.NONE);
+			lblDueDateEnd.setText(CheLangKeys.STR_DUE_DATE_END); //$NON-NLS-1$
+			//END << lblDueDateEnd
+			//START >> datePickerEndDueDate
+			datePickerEndDueDate = new DatePicker(compSearchPanle, SWT.NONE);
+			GridData datePickerEndLData = new GridData();
+			datePickerEndLData.widthHint = 150;
+			datePickerEndLData.heightHint = 22;
+			datePickerEndDueDate.setLayoutData(datePickerEndLData);
+			//END << datePickerEndDueDate
+			//START >> lblEnterDate
+			lblEnterDate = new CLabel(compSearchPanle, SWT.NONE);
+			lblEnterDate.setText(CheLangKeys.STR_ENTRY_DATE_START); //$NON-NLS-1$
+			//END << lblEnterDate
+			//START >> datePickerStartEnterDate
+			datePickerStartEnterDate = new DatePicker(compSearchPanle, SWT.NONE);
+			GridData datePickerStartEnterDateLData = new GridData();
+			datePickerStartEnterDateLData.widthHint = 150;
+			datePickerStartEnterDateLData.heightHint = 22;
+			datePickerStartEnterDate.setLayoutData(datePickerStartEnterDateLData);
+			datePickerStartEnterDate.setFirstDayOfYear();
+			//END << datePickerStartEnterDate
+			//START >> lblEnterDateEnd
+			lblEnterDateEnd = new CLabel(compSearchPanle, SWT.NONE);
+			lblEnterDateEnd.setText(CheLangKeys.STR_ENTRY_DATE_END); //$NON-NLS-1$
+			//END << lblEnterDateEnd
+			//START >> datePickerEndEnterDate
+			datePickerEndEnterDate = new DatePicker(compSearchPanle, SWT.NONE);
+			GridData datePickerEndEnterDateLData = new GridData();
+			datePickerEndEnterDateLData.widthHint = 150;
+			datePickerEndEnterDateLData.heightHint = 22;
+			datePickerEndEnterDate.setLayoutData(datePickerEndEnterDateLData);
+			//END << datePickerEndEnterDate
+			//START >>  groupReport
+			groupReport = new Group(compSearchPanle, SWT.NONE);
+			GridLayout groupReportLayout = new GridLayout();
+			GridData groupReportLData = new GridData();
+			groupReportLData.widthHint = 457;
+			groupReportLData.heightHint = 20;
+			groupReportLData.horizontalSpan = 4;
+			groupReport.setLayoutData(groupReportLData);
+			groupReportLayout.makeColumnsEqualWidth = true;
+			groupReportLayout.numColumns = 3;
+			groupReport.setLayout(groupReportLayout);
+			groupReport.setText("Rapor Seçenekleri");
+			//START >>  radioDate
+			radioDate = new Button(groupReport, SWT.RADIO | SWT.LEFT);
+			radioDate.setText("Tarihe Göre S\u0131rala");
+			radioDate.setSelection(true);
+			//END <<  radioDate
+			//START >>  radioDueDate
+			radioDueDate = new Button(groupReport, SWT.RADIO | SWT.LEFT);
+			radioDueDate.setText("Vadeye Göre S\u0131rala");
+			//END <<  radioDueDate
+			//START >>  radioPortFoy
+			radioPortFoy = new Button(groupReport, SWT.RADIO | SWT.LEFT);
+			radioPortFoy.setText("Portföy No'ya Göre S\u0131rala");
+			//END <<  radioPortFoy
+			//END <<  groupReport
+			//END << compSearchPanle
+			//START >> tabFolder
+			tabFolder = new CTabFolder(this, SWT.NONE);
+			//START >> cTabItem1
+			cTabItem1 = new CTabItem(tabFolder, SWT.NONE);
+			cTabItem1.setText("Arama Sonucu");
+			//START >> tableCheques
+			tableCheques = new Table(tabFolder, SWT.SINGLE | SWT.FULL_SELECTION);
+			cTabItem1.setControl(tableCheques);
+			GridData tableChequesLData = new GridData();
+			tableCheques.addMouseListener(new MouseAdapter()
+			{
+				public void mouseDoubleClick(MouseEvent evt)
+				{
+					tableChequesMouseDoubleClick(evt);
+				}
+			});
+			tableCheques.setLinesVisible(true);
+			tableCheques.setHeaderVisible(true);
+			tableChequesLData.horizontalAlignment = GridData.FILL;
+			tableChequesLData.grabExcessHorizontalSpace = true;
+			tableChequesLData.grabExcessVerticalSpace = true;
+			tableChequesLData.verticalAlignment = GridData.FILL;
+			tableCheques.setLayoutData(tableChequesLData);
+			//START >> tableColumnChequeNo
+			tableColumnChequeNo = new TableColumn(tableCheques, SWT.NONE);
+			tableColumnChequeNo.setText(CheLangKeys.STR_CHEQUE_NO); //$NON-NLS-1$
+			tableColumnChequeNo.setWidth(116);
+			//END << tableColumnChequeNo
+			//START >> tableColumnEntryDate
+			tableColumnEntryDate = new TableColumn(tableCheques, SWT.NONE);
+			tableColumnEntryDate.setText(CheLangKeys.STR_ENTRY_DATE); //$NON-NLS-1$
+			tableColumnEntryDate.setWidth(90);
+			//END << tableColumnEntryDate
+			//START >> tableColumnCurrentCard
+			tableColumnCurrentCard = new TableColumn(tableCheques, SWT.NONE);
+			tableColumnCurrentCard.setText(CurLangKeys.STR_CUR_CARD); //$NON-NLS-1$
+			tableColumnCurrentCard.setWidth(122);
+			//END << tableColumnCurrentCard
+			//START >> tableColumnDueDate
+			tableColumnDueDate = new TableColumn(tableCheques, SWT.NONE);
+			tableColumnDueDate.setText(CheLangKeys.STR_DUE_DATE); //$NON-NLS-1$
+			tableColumnDueDate.setWidth(107);
+			//END << tableColumnDueDate
+			//START >> tableColumnStatus
+			tableColumnStatus = new TableColumn(tableCheques, SWT.NONE);
+			tableColumnStatus.setText("Son \u0130\u015flem");
+			tableColumnStatus.setWidth(105);
+			//END << tableColumnStatus
+			//START >> tableColumnAmount
+			tableColumnAmount = new TableColumn(tableCheques, SWT.RIGHT);
+			tableColumnAmount.setText(EngLangCommonKeys.STR_TOTALPRICE); //$NON-NLS-1$
+			tableColumnAmount.setWidth(98);
+			//END << tableColumnAmount
+			//END << tableCheques
+			GridData tabFolderLData = new GridData();
+			tabFolderLData.grabExcessHorizontalSpace = true;
+			tabFolderLData.horizontalAlignment = GridData.FILL;
+			tabFolderLData.verticalAlignment = GridData.FILL;
+			tabFolderLData.grabExcessVerticalSpace = true;
+			tabFolder.setLayoutData(tabFolderLData);
+			//END << cTabItem1
+			//START >> tabItemReport
+			tabItemReport = new CTabItem(tabFolder, SWT.NONE);
+			tabItemReport.setText("Rapor");
+			//START >> compReport
+			compReport = new Composite(tabFolder, SWT.NONE);
+			GridLayout compReportLayout = new GridLayout();
+			compReportLayout.makeColumnsEqualWidth = true;
+			compReport.setLayout(compReportLayout);
+			tabItemReport.setControl(compReport);
+			//START >> viewer
+			viewer = new ViewerComposite(compReport, SWT.NONE);
+			GridData viewerLData = new GridData();
+			viewerLData.grabExcessVerticalSpace = true;
+			viewerLData.grabExcessHorizontalSpace = true;
+			viewerLData.horizontalAlignment = GridData.FILL;
+			viewerLData.verticalAlignment = GridData.FILL;
+			viewer.setLayoutData(viewerLData);
+			//END << viewer
+			//END << compReport
+			tabFolder.setSelection(0);
+			//END << tabItemReport
+			//END << tabFolder
+			this.layout();
+			PostInitGui();
+		}
+		catch (Exception e)
+		{
+
+            EngBLLogger.log(this.getClass(),e,getShell());
+		}
+	}
+
+	public void PostInitGui()
+	{
+		createTableViewer();
+	}
+
+	public void createTableViewer()
+	{
+		int columnTypes[] = new int[6];
+		columnTypes[0] = TurquazTableSorter.COLUMN_TYPE_STRING;
+		columnTypes[1] = TurquazTableSorter.COLUMN_TYPE_DATE;
+		columnTypes[2] = TurquazTableSorter.COLUMN_TYPE_STRING;
+		columnTypes[3] = TurquazTableSorter.COLUMN_TYPE_DATE;
+		columnTypes[4] = TurquazTableSorter.COLUMN_TYPE_STRING;
+		columnTypes[5] = TurquazTableSorter.COLUMN_TYPE_DECIMAL;
+		tableViewer = new SearchTableViewer(tableCheques, columnTypes, true);
+	}
+
+	public void delete()
+	{
+		
+	}
+
+	public void exportToExcel()
+	{
+		EngBLUtils.Export2Excel(tableViewer);
+	}
+
+	public void printTable()
+	{
+		EngBLUtils.printTable(tableCheques, CheLangKeys.TITLE_CUSTOMER_CHEQUES); //$NON-NLS-1$
+	}
+
+	public void search()
+	{
+		tableViewer.removeAll();
+		try
+		{
+			Integer cheStat = null;
+			Map map = EngBLClient.getChequeStatusMapWithStringKey();
+			if (map.containsKey(comboStatus.getText()))
+			{
+				cheStat = (Integer) map.get(comboStatus.getText());
+			}
+			
+			HashMap argMap = new HashMap();
+			argMap.put(EngKeys.DOCUMENT_NO,txtPortFoyNo.getText().trim());
+			argMap.put(CurKeys.CUR_CARD_ID,currentPicker.getCardId());
+			argMap.put(CheKeys.CHE_STATUS,cheStat);
+			argMap.put(CheKeys.CHE_START_ENTER_DATE,datePickerStartEnterDate.getDate());
+			argMap.put(CheKeys.CHE_END_ENTER_DATE,datePickerEndEnterDate.getDate());
+			argMap.put(CheKeys.CHE_START_DUE_DATE,datePickerStartDueDate.getDate());
+			argMap.put(CheKeys.CHE_END_DUE_DATE,datePickerEndDueDate.getDate());
+			argMap.put(CheKeys.CHE_REPORT_DATE,dateReportDate.getDate());
+			
+			if (map.containsKey(comboStatus.getText()))
+			{
+				argMap.put(CheKeys.CHE_STATUS_STRING,comboStatus.getText());
+			}
+			else
+			{
+				argMap.put(CheKeys.CHE_STATUS_STRING,EngLangCommonKeys.COMMON_ALL_STRING);
+			}
+			
+			Integer sorting=new Integer(0);
+			if (radioDueDate.getSelection())
+			{
+				sorting=new Integer(1);
+			}
+			else if (radioPortFoy.getSelection())
+			{
+				sorting=new Integer(2);
+			}
+			argMap.put(CheKeys.CHE_SORT,sorting);		
+			
+			HashBag chequeBag = (HashBag)EngTXCommon.doSelectTX("Che_getCustomerChequeAbstract",argMap);
+		 
+			JasperPrint jasperPrint=(JasperPrint)chequeBag.get(EngKeys.REPORT);
+			HashMap chequeList =(HashMap)chequeBag.get(CheKeys.CHE_CHEQUES);			
+			
+			
+			TurkishCurrencyFormat cf = new TurkishCurrencyFormat();
+			BigDecimal total = new BigDecimal(0);
+			for (int i = 0; i < chequeList.size(); i++)
+			{
+				
+				HashMap chequeInfo = (HashMap) chequeList.get(new Integer(i));
+				String status = (String)chequeInfo.get(EngKeys.TYPE_NAME);
+
+				Integer id = (Integer)chequeInfo.get(CheKeys.CHE_CHEQUE_ID) ;
+				tableViewer.addRow(new String[]{chequeInfo.get(CheKeys.CHE_PORTFOLIO_NO).toString(), DatePicker.formatter.format(chequeInfo.get(EngKeys.DATE)), chequeInfo.get(CurKeys.CUR_CURRENT_NAME).toString(),
+						DatePicker.formatter.format(chequeInfo.get(CheKeys.CHE_DUE_DATE)), status, cf.format(chequeInfo.get(EngKeys.TOTAL_AMOUNT))}, id);
+				total = total.add((BigDecimal) chequeInfo.get(EngKeys.TOTAL_AMOUNT));
+			}
+			tableViewer.addRow(new String[]{"", "", "", "", "", ""}, null);
+			tableViewer.addRow(new String[]{"", "", "", "", "Toplam", cf.format(total)}, null);
+			
+			viewer.getReportViewer().setDocument(jasperPrint);
+			
+		}
+		catch (Exception ex)
+		{
+
+            EngBLLogger.log(this.getClass(),ex,getShell());
+		}
+	}
+
+	private void tableChequesMouseDoubleClick(MouseEvent evt)
+	{
+		try
+		{
+			TableItem[] selection = tableCheques.getSelection();
+			if (selection.length > 0)
+			{
+				Integer cheqId = (Integer) ((ITableRow) selection[0].getData()).getDBObject();
+				if (cheqId != null)
+				{
+					
+				
+					boolean isUpdated = new CheUICustomerChequeUpdate(getShell(), SWT.NULL, cheqId).open();
+					if (isUpdated)
+						search();
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+
+            EngBLLogger.log(this.getClass(),ex,getShell());
+		}
+	}
+}@

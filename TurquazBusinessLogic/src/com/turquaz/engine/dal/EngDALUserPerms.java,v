@@ -1,0 +1,511 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2009.01.13.17.04.21;	author huseyiner;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.22.16.36.36;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@permisson hatasi
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import com.turquaz.admin.AdmKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.EngKeys;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import server.util.EngBLLogger;
+import server.util.EngDALSessionFactory;
+import server.util.MyThreadLocal;
+
+/**
+ * @@author onsel
+ * @@version $Id: EngDALUserPerms.java,v 1.1 2007/01/22 16:36:36 huseyiner Exp $
+ *          Database functions for calculating user permissions.
+ */
+public class EngDALUserPerms {
+	/**
+	 * @@param username
+	 *            Current user of the system
+	 * @@return List of TurqGroupPermission objects for username
+	 * @@throws Exception
+	 *             "Hibernate Exception"
+	 */
+	public static HashBag getGroupPermissions(HashMap argMap) throws Exception {
+		try {
+			String username = (String) argMap.get(EngKeys.USER);
+			Session session = EngDALSessionFactory.getSession();
+
+			String query = "select perms from TurqGroupPermission as perms," + "TurqUserGroup as ug " + "where ug.turqGroup =perms.turqGroup and "
+					+ "ug.turqUser.username ='" + username + "'";
+			Query q = session.createQuery(query);
+			List list = q.list();
+
+			HashBag permBag = new HashBag();
+			permBag.put(EngKeys.GROUP_PERMISSIONS, new HashMap());
+			Iterator it = list.iterator();
+			int i = 0;
+			while (it.hasNext()) {
+				TurqGroupPermission perm = (TurqGroupPermission) it.next();
+				permBag.put(EngKeys.GROUP_PERMISSIONS, i, AdmKeys.ADM_MODULE_ID, perm.getTurqModule().getId());
+				permBag.put(EngKeys.GROUP_PERMISSIONS, i, AdmKeys.ADM_MODULE_COMP_ID, perm.getTurqModuleComponent().getId());
+				permBag.put(EngKeys.GROUP_PERMISSIONS, i, AdmKeys.ADM_GROUP_PERMISSION_LEVEL, new Integer(perm.getGroupPermissionsLevel()));
+				permBag.put(EngKeys.GROUP_PERMISSIONS, i, AdmKeys.ADM_MODULE_COMP_NAME, perm.getTurqModuleComponent().getComponentsName());
+
+			}
+
+			return permBag;
+		}
+		/*
+		 * String query ="select DISTINCT GP.modules_id,
+		 * GP.module_components_id, GP.group_permissions_level"; query +=" from
+		 * turq_group_permissions GP, turq_users U, turq_user_group UG"; query
+		 * +=" where U.username='"+username+"'AND U.users_id = UG.users_id";
+		 * query +=" AND GP.groups_id = UG.groups_id order by
+		 * GP.group_permissions_id";
+		 */
+		catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public static List getGroupPermissions() throws Exception {
+		try {
+			Session session = EngDALSessionFactory.getSession();
+
+			String query = "select perms from TurqGroupPermission as perms";
+			Query q = session.createQuery(query);
+			List list = q.list();
+
+			return list;
+		}
+		/*
+		 * String query ="select DISTINCT GP.modules_id,
+		 * GP.module_components_id, GP.group_permissions_level"; query +=" from
+		 * turq_group_permissions GP, turq_users U, turq_user_group UG"; query
+		 * +=" where U.username='"+username+"'AND U.users_id = UG.users_id";
+		 * query +=" AND GP.groups_id = UG.groups_id order by
+		 * GP.group_permissions_id";
+		 */
+		catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * @@param username
+	 *            Current User of the system
+	 * @@return List of TurqUserPermission objects for the username
+	 * @@throws Exception
+	 *             HiberNate Exception
+	 */
+	public static HashBag getUserPermissions(HashMap argMap) throws Exception {
+		try {
+			String username = (String) argMap.get(EngKeys.USER);
+			Session session = EngDALSessionFactory.getSession();
+
+			String query = "select perms from TurqUserPermission as perms where " + "perms.turqUser.username ='" + username + "'";
+			Query q = session.createQuery(query);
+			List list = q.list();
+
+			HashBag permBag = new HashBag();
+			permBag.put(EngKeys.USER_PERMISSIONS, new HashMap());
+			Iterator it = list.iterator();
+			int i = 0;
+			while (it.hasNext()) {
+				TurqUserPermission perm = (TurqUserPermission) it.next();
+				permBag.put(EngKeys.USER_PERMISSIONS, i, AdmKeys.ADM_MODULE_ID, perm.getTurqModule().getId());
+				permBag.put(EngKeys.USER_PERMISSIONS, i, AdmKeys.ADM_MODULE_COMP_ID, perm.getTurqModuleComponent().getId());
+				permBag.put(EngKeys.USER_PERMISSIONS, i, AdmKeys.ADM_USER_PERMISSION_LEVEL, new Integer(perm.getTurqUserPermissionLevel()
+						.getPermissionLevel()));
+				permBag.put(EngKeys.USER_PERMISSIONS, i, AdmKeys.ADM_MODULE_COMP_NAME, perm.getTurqModuleComponent().getComponentsName());
+			}
+
+			return permBag;
+
+			/*
+			 * String query ="select DISTINCT UP.modules_id,
+			 * UP.components_id,UP.user_permissions_level"; query +=" from
+			 * turq_user_permissions UP, turq_users U where UP.users_id =
+			 * U.users_id"; query +=" AND U.username ='"+username+"' order by
+			 * UP.user_permissions_id"; ResultSet rs =
+			 * connection.getResultSet(query); return rs;
+			 */
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public static List getUserPermissions() throws Exception {
+		try {
+			Session session = EngDALSessionFactory.getSession();
+
+			String query = "select perms from TurqUserPermission as perms";
+			Query q = session.createQuery(query);
+			List list = q.list();
+
+			return list;
+			/*
+			 * String query ="select DISTINCT UP.modules_id,
+			 * UP.components_id,UP.user_permissions_level"; query +=" from
+			 * turq_user_permissions UP, turq_users U where UP.users_id =
+			 * U.users_id"; query +=" AND U.username ='"+username+"' order by
+			 * UP.user_permissions_id"; ResultSet rs =
+			 * connection.getResultSet(query); return rs;
+			 */
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * @@param module_id
+	 *            --Module id
+	 * @@param component_id
+	 *            --ModuleComponent id
+	 * @@return -- ModuleComponent Name
+	 * @@throws Exception --
+	 *             Hibernate Exception
+	 */
+	public static String getModuleCompName(int module_id, int component_id) throws Exception {
+		try {
+			Session session = EngDALSessionFactory.getSession();
+			String query = "select comp.componentsName from TurqModuleComponent as comp" + " where comp.id= " + component_id;
+			Query q = session.createQuery(query);
+			List lst = q.list();
+			String s = lst.get(0).toString();
+
+			return s;
+			/*
+			 * String query ="select components_name from
+			 * turq_module_components"; query+=" where modules_id="+module_id+"
+			 * AND module_components_id="+component_id; ResultSet rs =
+			 * connection.getResultSet(query); if(rs.next()){ String name =
+			 * rs.getString(1); rs.close(); return name; } rs.close(); return
+			 * "";
+			 */
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * @@return List of all TurqModuleComponents objects
+	 * @@throws Exception
+	 *             Hibernate Exception
+	 */
+	public static HashBag getModuleComponents() throws Exception {
+		try {
+			Session session = EngDALSessionFactory.getSession();
+			Query q = session.createQuery("select comp.id,comp.turqModule.id,comp.componentsName from TurqModuleComponent comp "
+					+ "where comp.id > -1");
+
+			q.setCacheable(true);
+			List list = q.list();
+			Iterator it = list.iterator();
+			HashMap modules = new HashMap();
+			while (it.hasNext()) {
+
+				Object[] comp = (Object[]) it.next();
+				Integer componentId = (Integer) comp[0];
+				Integer moduleId = (Integer) comp[1];
+				String compName = (String) comp[2];
+
+				List compList = (List) modules.get(moduleId);
+				if (compList == null) {
+					compList = new ArrayList();
+				}
+
+				HashMap compMap = new HashMap();
+				compMap.put(AdmKeys.ADM_MODULE_COMP_ID, componentId);
+				compMap.put(AdmKeys.ADM_MODULE_COMP_NAME, compName);
+				compList.add(compMap);
+
+				modules.put(moduleId, compList);
+
+			}
+
+			HashBag compBag = new HashBag();
+			compBag.put(EngKeys.MODULE_COMPONENTS, modules);
+
+			return compBag;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * @@param module_id
+	 *            --Module id
+	 * @@return List of TurqModuleComponent objects of the specified module
+	 * @@throws Exception
+	 */
+	public static List getModuleComponents(int module_id) throws Exception {
+		try {
+			Session session = EngDALSessionFactory.getSession();
+
+			String query = " Select modComp from TurqModuleComponent modComp where modComp.turqModule.id=" + module_id;
+			Query q = session.createQuery(query);
+			List list = q.list();
+
+			return list;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	public static List getModules() throws Exception {
+		try {
+			Session session = EngDALSessionFactory.getSession();
+			String query = "select module from TurqModule as module order by module.id";
+			Query q = session.createQuery(query);
+			List list = q.list();
+
+			return list;
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
+
+	public static List getUserPermissonLevels() throws Exception {
+		try {
+			Session session = EngDALSessionFactory.getSession();
+
+			String query = "select permissionlvl from TurqUserPermissionLevel permissionlvl order by permissionlvl.id";
+			Query q = session.createQuery(query);
+			List list = q.list();
+
+			return list;
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
+
+	public static HashMap getPermissionMap() throws Exception {
+		
+		String username =(String)MyThreadLocal.getSessionInfo().get("username");
+
+		HashMap compMap = new HashMap();
+		
+		HashBag result = getModuleComponents();
+		HashMap moduleList = (HashMap) result.get(EngKeys.MODULE_COMPONENTS);
+		
+		Iterator it = moduleList.keySet().iterator();
+		
+		while (it.hasNext()) {
+			List list = (List) moduleList.get(it.next());
+
+			Iterator listIt = list.iterator();
+
+			while (listIt.hasNext()) {
+				HashMap compInfo = (HashMap) listIt.next();
+				compMap.put(compInfo.get(AdmKeys.ADM_MODULE_COMP_NAME), new Integer(0));
+			}
+
+		}
+
+		HashMap argMap = new HashMap();
+		argMap.put(EngKeys.USER, username);
+
+		HashBag permBag =getGroupPermissions(argMap);
+
+		HashMap permList = (HashMap) permBag.get(EngKeys.GROUP_PERMISSIONS);
+
+		calculateGroupPerms(permList, moduleList,compMap);
+
+		HashBag userPermBag = (HashBag)getUserPermissions(argMap);
+
+		HashMap userPermList = (HashMap) userPermBag.get(EngKeys.USER_PERMISSIONS);
+		calculateUserPerms(userPermList, moduleList,compMap);
+
+		return compMap;
+	}
+	private static void calculateGroupPerms(HashMap permlist,HashMap moduleList,HashMap compMap)
+	{
+		try
+		{
+			int module_id = -1;
+			int module_component_id = -1;
+			int perm_level = 0;
+			String component_name = "";
+			for (int i = 0; i < permlist.size(); i++)
+			{
+				
+				HashMap permInfo =(HashMap)permlist.get(new Integer(i));
+							
+				module_id = ((Integer)permInfo.get(AdmKeys.ADM_MODULE_ID)).intValue();
+				module_component_id = ((Integer)permInfo.get(AdmKeys.ADM_MODULE_COMP_ID)).intValue();
+				perm_level = ((Integer)permInfo.get(AdmKeys.ADM_GROUP_PERMISSION_LEVEL)).intValue();
+				component_name = (String)permInfo.get(AdmKeys.ADM_MODULE_COMP_NAME);
+				
+				if (perm_level > -1 && perm_level < 4)
+				{
+					if (module_id == -1)
+					{
+						// Iterate over the values in the map
+						Iterator it = compMap.keySet().iterator();
+						while (it.hasNext())
+						{
+							// Get value
+							compMap.put(it.next(),new Integer(perm_level ));
+						}
+					}
+					else
+					{
+						if (module_component_id == -1)
+						{
+							
+							List list = (List)moduleList.get(new Integer(module_id));
+														
+							HashMap modComp = null;
+							for (int j = 0; j < list.size(); i++)
+							{
+								modComp = (HashMap) list.get(j);
+								compMap.put(modComp.get(AdmKeys.ADM_MODULE_COMP_NAME), new Integer( perm_level));
+							}
+						}
+						else
+						{							
+							compMap.put(component_name, new Integer(perm_level));
+						}
+					}
+				}
+				else
+				{
+					System.err.println("Permission hatasi: level 1-3 arasý olmalý!");
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(EngDALUserPerms.class,ex);
+		}
+	}
+	/**
+	 * @@param list
+	 *             list of the TurqUserPermission objects of user Adds the user permission to the permission map (compMap)
+	 */
+	private static void calculateUserPerms(HashMap permlist,HashMap moduleList,HashMap compMap)
+	{
+		try
+		{
+			int module_id = -1;
+			int module_component_id = -1;
+			int perm_level = 0;
+			String component_name = "";
+			
+			for (int i = 0; i < permlist.size(); i++)
+			{
+				HashMap permInfo =(HashMap)permlist.get(new Integer(i));
+				
+				module_id = ((Integer)permInfo.get(AdmKeys.ADM_MODULE_ID)).intValue();
+				module_component_id = ((Integer)permInfo.get(AdmKeys.ADM_MODULE_COMP_ID)).intValue();
+				perm_level = ((Integer)permInfo.get(AdmKeys.ADM_USER_PERMISSION_LEVEL)).intValue();
+				component_name = (String)permInfo.get(AdmKeys.ADM_MODULE_COMP_NAME);
+				
+				if (perm_level > -1 && perm_level < 4)
+				{
+				
+					if (module_id == -1)
+					{
+						// Iterate over the values in the map
+						Iterator it = compMap.keySet().iterator();
+						while (it.hasNext())
+						{
+							// Get value
+							compMap.put(it.next(), new Integer(perm_level));
+						}
+					}
+					else
+					{
+						if (module_component_id == -1)
+						{
+							List list = (List)moduleList.get(new Integer(module_id));
+							
+							HashMap modComp = null;
+							for (int j = 0; j < list.size(); j++)
+							{
+								modComp = (HashMap) list.get(j);
+								compMap.put(modComp.get(AdmKeys.ADM_MODULE_COMP_NAME), new Integer(perm_level));
+							}
+						}
+						else
+						{
+							System.out.println("7");
+							compMap.put(component_name, new Integer(perm_level));
+						}
+					}
+				}
+				else
+				{
+					System.err.println("Permission levels should be between 1-3");
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(EngDALUserPerms.class,ex);
+		}
+	}
+
+
+}@
+
+
+1.1
+log
+@initial commit
+@
+text
+@d21 1
+a21 1
+ * @@version $Id: EngDALUserPerms.java,v 1.1 2005/07/02 16:07:08 onsel Exp $
+a283 1
+		
+d285 2
+a287 2
+		HashMap compMap = new HashMap();
+
+d290 1
+a290 1
+
+d292 1
+a292 1
+
+d317 1
+a318 2
+		calculateUserPerms(userPermList, moduleList,compMap);
+		
+d394 1
+d406 1
+d424 1
+a424 1
+							for (int j = 0; j < list.size(); i++)
+d432 1
+@
+

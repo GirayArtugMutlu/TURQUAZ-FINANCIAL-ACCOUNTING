@@ -1,0 +1,115 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.49;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@/*
+ * Created on May 18, 2005
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+package server.util;
+
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.HashMap;
+
+import org.hibernate.Session;
+
+/**
+ * @@author Cem
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+public class ServiceList
+{
+	private static HashMap serviceMap;
+	
+	public static void InitializeServices()
+	{
+		try
+		{
+			serviceMap=getServices();
+			
+			
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	
+	public static HashMap getServices() throws Exception
+	{
+		Session session = EngDALSessionFactory.getSession();
+		Statement stmt = session.connection().createStatement();
+		String query = "Select service_name,class_name,method_name from turq_services";
+		ResultSet rs = stmt.executeQuery(query);
+		HashMap servMap = new HashMap();
+		while(rs.next())
+		{
+			String serviceName = rs.getString(1).trim();
+			String class_name = rs.getString(2).trim();
+			String method_name = rs.getString(3).trim();
+			
+			Service service = new Service(serviceName,class_name,method_name);
+			
+			servMap.put(serviceName,service);
+			
+			
+		}
+		
+		return servMap;
+	}
+	
+	public static Service getService(String servName)throws Exception
+	{
+		
+		Session session = EngDALSessionFactory.getSession();
+		Statement stmt = session.connection().createStatement();
+		String query = "Select service_name,class_name,method_name from turq_services" +
+				" where service_name='"+servName+"'";
+		ResultSet rs = stmt.executeQuery(query);
+		HashMap servMap = new HashMap();
+		Service service = null;
+		if(rs.next())
+		{
+			String serviceName = rs.getString(1).trim();
+			String class_name = rs.getString(2).trim();
+			String method_name = rs.getString(3).trim();
+			
+			service = new Service(serviceName,class_name,method_name);
+			
+				
+			
+		}
+		return service;
+	
+	/*	if(serviceMap==null)
+		{
+			InitializeServices();
+		}
+		return (Service)serviceMap.get(serviceName);
+		*/
+	}
+}
+@

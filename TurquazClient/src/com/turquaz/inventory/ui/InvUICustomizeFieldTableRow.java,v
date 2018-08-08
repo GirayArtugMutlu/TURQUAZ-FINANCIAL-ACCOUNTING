@@ -1,0 +1,219 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.33;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@/* Created on Mar 9, 2005
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+package com.turquaz.inventory.ui;
+
+import java.util.HashMap;
+import org.eclipse.swt.graphics.Color;
+
+import server.util.EngBLLogger;
+
+import com.cloudgarden.resource.SWTResourceManager;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.ui.viewers.ITableRow;
+import com.turquaz.engine.ui.viewers.TableRowList;
+import com.turquaz.engine.ui.viewers.TurquazTableSorter;
+import com.turquaz.inventory.InvKeys;
+
+
+/**
+* This code was generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* *************************************
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED
+* for this machine, so Jigloo or this code cannot be used legally
+* for any corporate or commercial purpose.
+* *************************************
+*/
+public class InvUICustomizeFieldTableRow implements ITableRow
+{
+	TableRowList rowList;
+	int row_index = 0;
+	
+	HashMap fieldMap=new HashMap();
+
+	public InvUICustomizeFieldTableRow(TableRowList rowList, HashMap typeMap)
+	{
+		super();
+		this.rowList = rowList;
+		fieldMap.put(InvKeys.INV_CUSTOMIZE_TYPE_ID,typeMap.get(InvKeys.INV_CUSTOMIZE_TYPE_ID));
+		fieldMap.put(InvKeys.INV_CUSTOMIZE_TYPE_NAME,typeMap.get(InvKeys.INV_CUSTOMIZE_TYPE_NAME));
+		fieldMap.put(EngKeys.VALUE,"");
+	}
+
+	public void setRowIndex(int a)
+	{
+		row_index = a;
+	}
+
+	public int getRowIndex()
+	{
+		return row_index;
+	}
+
+	public Color getColor()
+	{
+		String value=(String)fieldMap.get(EngKeys.VALUE);
+		if (value.equals(""))
+		{
+			return SWTResourceManager.getColor(255, 198, 198);
+		}
+		else
+		{
+			return SWTResourceManager.getColor(198, 255, 198);
+		}
+	}
+
+	public boolean canModify(int column_index)
+	{
+		if (column_index == 0)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public String getColumnText(int column_index)
+	{
+		String result = "";
+		switch (column_index)
+		{
+			case 0 :
+				String typeName=(String)fieldMap.get(InvKeys.INV_CUSTOMIZE_TYPE_NAME);
+				if ( typeName != null)
+					result =typeName;
+				break;
+			case 1 :
+				result=(String)fieldMap.get(EngKeys.VALUE);
+			default :
+				result = "";
+		}
+		return result;
+	}
+
+	public Object getValue(int column_index)
+	{
+		Object result = null;
+		switch (column_index)
+		{
+			case 0 :
+				String typeName=(String)fieldMap.get(InvKeys.INV_CUSTOMIZE_TYPE_NAME);
+				if ( typeName != null)
+					result =typeName;
+				else
+					result = "";
+				break;
+			case 1 :
+				result=fieldMap.get(EngKeys.VALUE);
+				break;
+			default :
+				result = "";
+		}
+		return result;
+	}
+
+	public void modify(int column_index, Object obj)
+	{
+		switch (column_index)
+		{
+			case 0 :
+				this.fieldMap=(HashMap)obj;
+				break;
+			case 1 : //Hesap Kodu
+				try
+				{
+					fieldMap.put(EngKeys.VALUE,(String)obj);
+				}
+				catch (Exception ex)	
+				{
+                    EngBLLogger.log(this.getClass(),ex);;
+				}
+				break;
+		}
+		rowList.taskChanged(this);
+	}
+
+	public boolean equals(Object other)
+	{
+		if (other instanceof ITableRow)
+		{
+			ITableRow row = (ITableRow) other;
+			if (getRowIndex() == row.getRowIndex())
+			{
+				return true;
+			}
+			else
+				return false;
+		}
+		else
+			return false;
+	}
+
+	public Object getDBObject()
+	{
+		return fieldMap;
+	}
+
+	public void setDBObject(Object transRow)
+	{
+		this.fieldMap = (HashMap) transRow;
+	}
+
+	public boolean okToSave()
+	{
+		String value=(String)fieldMap.get(EngKeys.VALUE);
+		if (value.equals(""))
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	int columnTypes[] = null;
+
+	public int getColumnType(int index)
+	{
+		if (columnTypes == null)
+		{
+			return TurquazTableSorter.COLUMN_TYPE_STRING;
+		}
+		else
+			return columnTypes[index];
+	}
+
+	public void setColumnTypes(int[] types)
+	{
+		columnTypes = types;
+	}
+}@

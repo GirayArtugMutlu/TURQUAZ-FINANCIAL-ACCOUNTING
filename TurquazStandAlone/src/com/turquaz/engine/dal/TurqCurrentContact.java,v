@@ -1,0 +1,218 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.43;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Date;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqCurrentContact implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private String contactsName;
+
+    /** persistent field */
+    private String contactAddress;
+
+    /** persistent field */
+    private String contactsPhone1;
+
+    /** persistent field */
+    private String contactsPhone2;
+
+    /** persistent field */
+    private String contactsFaxNumber;
+
+    /** persistent field */
+    private String contactsEmail;
+
+    /** nullable persistent field */
+    private String contactsWebSite;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard;
+
+    /** full constructor */
+    public TurqCurrentContact(String contactsName, String contactAddress, String contactsPhone1, String contactsPhone2, String contactsFaxNumber, String contactsEmail, String contactsWebSite, String createdBy, Date creationDate, String updatedBy, Date lastModified, com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.contactsName = contactsName;
+        this.contactAddress = contactAddress;
+        this.contactsPhone1 = contactsPhone1;
+        this.contactsPhone2 = contactsPhone2;
+        this.contactsFaxNumber = contactsFaxNumber;
+        this.contactsEmail = contactsEmail;
+        this.contactsWebSite = contactsWebSite;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    /** default constructor */
+    public TurqCurrentContact() {
+    }
+
+    /** minimal constructor */
+    public TurqCurrentContact(String contactsName, String contactAddress, String contactsPhone1, String contactsPhone2, String contactsFaxNumber, String contactsEmail, String createdBy, Date creationDate, String updatedBy, Date lastModified, com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.contactsName = contactsName;
+        this.contactAddress = contactAddress;
+        this.contactsPhone1 = contactsPhone1;
+        this.contactsPhone2 = contactsPhone2;
+        this.contactsFaxNumber = contactsFaxNumber;
+        this.contactsEmail = contactsEmail;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getContactsName() {
+        return this.contactsName;
+    }
+
+    public void setContactsName(String contactsName) {
+        this.contactsName = contactsName;
+    }
+
+    public String getContactAddress() {
+        return this.contactAddress;
+    }
+
+    public void setContactAddress(String contactAddress) {
+        this.contactAddress = contactAddress;
+    }
+
+    public String getContactsPhone1() {
+        return this.contactsPhone1;
+    }
+
+    public void setContactsPhone1(String contactsPhone1) {
+        this.contactsPhone1 = contactsPhone1;
+    }
+
+    public String getContactsPhone2() {
+        return this.contactsPhone2;
+    }
+
+    public void setContactsPhone2(String contactsPhone2) {
+        this.contactsPhone2 = contactsPhone2;
+    }
+
+    public String getContactsFaxNumber() {
+        return this.contactsFaxNumber;
+    }
+
+    public void setContactsFaxNumber(String contactsFaxNumber) {
+        this.contactsFaxNumber = contactsFaxNumber;
+    }
+
+    public String getContactsEmail() {
+        return this.contactsEmail;
+    }
+
+    public void setContactsEmail(String contactsEmail) {
+        this.contactsEmail = contactsEmail;
+    }
+
+    public String getContactsWebSite() {
+        return this.contactsWebSite;
+    }
+
+    public void setContactsWebSite(String contactsWebSite) {
+        this.contactsWebSite = contactsWebSite;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrentCard getTurqCurrentCard() {
+        return this.turqCurrentCard;
+    }
+
+    public void setTurqCurrentCard(com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

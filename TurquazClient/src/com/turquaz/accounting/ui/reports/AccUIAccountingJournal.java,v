@@ -1,0 +1,186 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.37;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.accounting.ui.reports;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+import java.util.Calendar;
+import java.util.HashMap;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.SWT;
+/**
+ * This code was generated using CloudGarden's Jigloo SWT/Swing GUI Builder, which is free for non-commercial use. If Jigloo is being used
+ * commercially (ie, by a corporation, company or business for any purpose whatever) then you should purchase a license for each developer
+ * using Jigloo. Please visit www.cloudgarden.com for details. Use of Jigloo implies acceptance of these licensing terms.
+ * ************************************* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED for this machine, so Jigloo or this code cannot be used
+ * legally for any corporate or commercial purpose. *************************************
+ */
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.layout.GridData;
+import com.turquaz.accounting.AccKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.lang.AccLangKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.component.DatePicker;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import com.jasperassistant.designer.viewer.ViewerComposite;
+import org.eclipse.swt.widgets.Composite;
+
+import server.util.EngBLLogger;
+
+public class AccUIAccountingJournal extends org.eclipse.swt.widgets.Composite
+{
+	private CLabel lblDateRange;
+	private DatePicker datePickerBeginDate;
+	private DatePicker datePickerEndDate;
+	private CLabel lblDummy;
+	private Button btnReports;
+	private Calendar cal = Calendar.getInstance();
+	private ViewerComposite viewer;
+	private Button checkApproved;
+	private Composite compViewer;
+
+	public AccUIAccountingJournal(org.eclipse.swt.widgets.Composite parent, int style)
+	{
+		super(parent, style);
+		initGUI();
+	}
+
+	private void initGUI()
+	{
+		try
+		{
+			GridLayout thisLayout = new GridLayout();
+			thisLayout.numColumns = 3;
+			thisLayout.makeColumnsEqualWidth = true;
+			this.setLayout(thisLayout);
+			this.setSize(513, 331);
+			lblDateRange = new CLabel(this, SWT.NONE);
+			lblDateRange.setText(AccLangKeys.STR_SELECT_DATE_RANGE); 
+			{
+				datePickerBeginDate = new DatePicker(this, SWT.NONE);
+				GridData datePickerBeginDateLData = new GridData();
+				datePickerBeginDateLData.widthHint = 157;
+				datePickerBeginDateLData.heightHint = 22;
+				datePickerBeginDate.setLayoutData(datePickerBeginDateLData);
+				//datePickerBeginDate.setDate(new Date(cal.getTime().getYear(),0,1));
+				cal.set(cal.get(Calendar.YEAR), 0, 1);
+				datePickerBeginDate.setDate(cal.getTime());
+			}
+			datePickerEndDate = new DatePicker(this, SWT.NONE);
+			GridData datePickerEndDateLData = new GridData();
+			datePickerEndDateLData.widthHint = 157;
+			datePickerEndDateLData.heightHint = 22;
+			datePickerEndDate.setLayoutData(datePickerEndDateLData);
+			{
+				lblDummy = new CLabel(this, SWT.NONE);
+			}
+			{
+				checkApproved = new Button(this, SWT.CHECK | SWT.LEFT);
+				checkApproved.setText(AccLangKeys.STR_SHOW_ONLY_APPROVED); 
+			}
+			{
+				btnReports = new Button(this, SWT.PUSH | SWT.CENTER);
+				GridData btnReportsLData = new GridData();
+				btnReportsLData.widthHint = 157;
+				btnReportsLData.heightHint = 23;
+				btnReportsLData.verticalAlignment = GridData.BEGINNING;
+				btnReports.setText(AccLangKeys.STR_SHOW_REPORT); 
+				btnReports.addMouseListener(new MouseAdapter()
+				{
+					public void mouseUp(MouseEvent evt)
+					{
+						btnReportsSingleClick();
+					}
+				});
+				btnReports.setLayoutData(btnReportsLData);
+			}
+			{
+				compViewer = new Composite(this, SWT.NONE);
+				GridLayout compViewerLayout = new GridLayout();
+				GridData compViewerLData = new GridData();
+				compViewerLData.grabExcessHorizontalSpace = true;
+				compViewerLData.grabExcessVerticalSpace = true;
+				compViewerLData.horizontalAlignment = GridData.FILL;
+				compViewerLData.verticalAlignment = GridData.FILL;
+				compViewerLData.horizontalSpan = 3;
+				compViewer.setLayoutData(compViewerLData);
+				compViewerLayout.makeColumnsEqualWidth = true;
+				compViewer.setLayout(compViewerLayout);
+				{
+					viewer = new ViewerComposite(compViewer, SWT.NONE);
+					GridData viewerLData = new GridData();
+					viewerLData.horizontalAlignment = GridData.FILL;
+					viewerLData.verticalAlignment = GridData.FILL;
+					viewerLData.grabExcessVerticalSpace = true;
+					viewerLData.grabExcessHorizontalSpace = true;
+					viewerLData.horizontalSpan = 3;
+					viewer.setLayoutData(viewerLData);
+				}
+			}
+			this.layout();
+		}
+		catch (Exception e)
+		{
+            EngBLLogger.log(this.getClass(),e,getShell());
+		}
+	}
+
+	private void btnReportsSingleClick()
+	{
+		try
+		{
+ 
+			HashMap argMap = new HashMap();
+			argMap.put(EngKeys.DATE_START,datePickerBeginDate.getDate());
+			argMap.put(EngKeys.DATE_END,datePickerEndDate.getDate());
+			argMap.put(AccKeys.ACC_APPROVED,new Boolean(checkApproved.getSelection()));
+			
+			HashBag bag=(HashBag)EngTXCommon.doSelectTX("Acc_getAccountingJournal",argMap);
+			JasperPrint jasperPrint=(JasperPrint)bag.get(EngKeys.REPORT);		
+			
+			viewer.getReportViewer().setDocument(jasperPrint);
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getShell());
+		}
+	}
+}@

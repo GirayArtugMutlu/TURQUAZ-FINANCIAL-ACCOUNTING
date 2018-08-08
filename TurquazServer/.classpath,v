@@ -1,0 +1,144 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2009.09.28.11.37.08;	author huseyiner;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.22.18.42.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@settings change and additional library
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/ejb"/>
+	<classpathentry kind="src" path="src/servlet"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/TurquazCommon"/>
+	<classpathentry kind="lib" path="lib/hibernate/asm.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/asm-attrs.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/cglib-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/commons-collections-2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/dom4j-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/ehcache-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/hibernate3.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/antlr-2.7.5H3.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/jdt-compiler.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/jasperreports.jar"/>
+	<classpathentry kind="src" path="src/conf"/>
+	<classpathentry kind="src" path="src/report"/>
+	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/commons-lang-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/jboss-j2ee.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
+@
+
+
+1.1
+log
+@initial commit
+@
+text
+@d3 21
+a23 80
+	<classpathentry kind="src" path="src/ejb">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src/servlet">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="con" path="org.jboss.ide.eclipse.jdt.core.classpath.j2ee-1.4">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="/TurquazCommon">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hibernate/asm.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hibernate/asm-attrs.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hibernate/cglib-2.1.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hibernate/commons-collections-2.1.1.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hibernate/dom4j-1.6.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hibernate/ehcache-1.1.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hibernate/hibernate3.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hibernate/antlr-2.7.5H3.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/log4j-1.2.8.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jasperreport/jdt-compiler.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jasperreport/jasperreports.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src/conf">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src/report">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/commons-logging.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/hibernate/commons-lang-2.1.jar">
+		<attributes>
+		</attributes>
+	</classpathentry>
+@
+

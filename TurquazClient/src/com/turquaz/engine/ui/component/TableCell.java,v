@@ -1,0 +1,54 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.37;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.ui.component;
+
+import org.eclipse.swt.widgets.TableItem;
+
+/**
+ * @@author onsel
+ */
+public class TableCell
+{
+	public String cellText = "";
+	public TableItem item = null;
+
+	public void setItem(TableItem item)
+	{
+		this.item = item;
+	}
+
+	public void setCellText(String cellText)
+	{
+		this.cellText = cellText;
+	}
+
+	public String toString()
+	{
+		return cellText;
+	}
+
+	public TableItem getTableItem()
+	{
+		return item;
+	}
+}@

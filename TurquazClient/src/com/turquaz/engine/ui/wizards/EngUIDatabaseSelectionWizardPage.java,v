@@ -1,0 +1,174 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.44;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.ui.wizards;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Onsel Armagan
+ * @@version $Id: EngUIDatabaseSelectionWizardPage.java,v 1.1 2005/06/20 18:48:36 onsel Exp $
+ */
+
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import com.cloudgarden.resource.SWTResourceManager;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+
+public class EngUIDatabaseSelectionWizardPage extends WizardPage
+{
+	private ISelection selection;
+	private CCombo comboDatabases;
+
+	public EngUIDatabaseSelectionWizardPage(ISelection selection)
+	{
+		super(""); //$NON-NLS-1$
+		setTitle(EngLangCommonKeys.STR_DATABASE_WIZARD); //$NON-NLS-1$
+		setDescription(EngLangCommonKeys.STR_DATABASE_WIZARD_DESCRIPTION); //$NON-NLS-1$
+		this.selection = selection;
+		setPageComplete(false);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @@see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
+	public void createControl(Composite arg0)
+	{
+		Composite container = new Composite(arg0, SWT.NULL);
+		this.setControl(container);
+	}
+
+	public void ShowPage()
+	{
+		final Composite container = (Composite) this.getControl();
+		Control children[] = container.getChildren();
+		for (int i = 0; i < children.length; i++)
+		{
+			children[i].dispose();
+		}
+		if (checkConnection())
+		{
+			setErrorMessage(null);
+			GridLayout layout = new GridLayout();
+			container.setLayout(layout);
+			layout.numColumns = 2;
+			layout.verticalSpacing = 9;
+			Label label = new Label(container, SWT.NULL);
+			label.setText("&Database Name:"); //$NON-NLS-1$
+			comboDatabases = new CCombo(container, SWT.FLAT);
+			comboDatabases.setEditable(false);
+			comboDatabases.setBackground(SWTResourceManager.getColor(255, 255, 255));
+			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+			comboDatabases.setLayoutData(gd);
+			comboDatabases.addSelectionListener(new SelectionAdapter()
+			{
+				public void widgetSelected(SelectionEvent e)
+				{
+					setPageComplete(true);
+				}
+			});
+			container.layout();
+			fillCombo();
+		}
+		else
+		{
+			setErrorMessage(EngLangCommonKeys.STR_CAN_NOT_CONNECT_TO_SERVER); //$NON-NLS-1$
+		}
+	}
+
+	public void fillCombo()
+	{
+		comboDatabases.removeAll();
+		EngUIDatabaseTypeWizardPage page1 = ((EngUIDatabaseConnectionWizard) getWizard()).getPage1();
+		
+	}
+
+	public boolean checkConnection()
+	{
+		return true;
+	}
+
+	private void updateStatus(String message)
+	{
+		setErrorMessage(message);
+		setPageComplete(message == null);
+	}
+
+	private void dialogChanged()
+	{
+		if (comboDatabases.getText().length() == 0)
+		{
+			updateStatus(EngLangCommonKeys.STR_CHOOSE_DATABASE); //$NON-NLS-1$
+			return;
+		}
+		updateStatus(null);
+	}
+
+	public IWizardPage getNextPage()
+	{
+		EngUICreateTablesWizardPage page = ((EngUIDatabaseConnectionWizard) getWizard()).getPage4();
+		page.ShowPage(comboDatabases.getText());
+		return page;
+	}
+
+	/**
+	 * @@return Returns the comboDatabases.
+	 */
+	public CCombo getComboDatabases()
+	{
+		return comboDatabases;
+	}
+
+	/**
+	 * @@param comboDatabases
+	 *             The comboDatabases to set.
+	 */
+	public void setComboDatabases(CCombo comboDatabases)
+	{
+		this.comboDatabases = comboDatabases;
+	}
+}@

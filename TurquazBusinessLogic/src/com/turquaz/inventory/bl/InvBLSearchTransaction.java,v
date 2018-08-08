@@ -1,0 +1,527 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.inventory.bl;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Huseyin Ergun
+ * @@version $Id: InvBLSearchTransaction.java,v 1.3 2005/07/07 16:41:15 huseyin Exp $
+ */
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.hibernate.Session;
+
+import server.util.EngDALSessionFactory;
+
+import com.turquaz.bill.BillKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.consignment.ConsKeys;
+import com.turquaz.current.CurKeys;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.bl.EngBLCommon;
+import com.turquaz.engine.dal.TurqCurrentCard;
+import com.turquaz.engine.dal.TurqInventoryCard;
+import com.turquaz.engine.dal.TurqInventoryTransaction;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import com.turquaz.engine.ui.component.TurkishCurrencyFormat;
+import com.turquaz.inventory.InvKeys;
+import com.turquaz.inventory.dal.InvDALCardSearch;
+import com.turquaz.inventory.dal.InvDALSearchTransaction;
+import com.turquaz.utility.reporting.ReportGenerator;
+
+public class InvBLSearchTransaction
+{
+	public static HashBag searchTransactions(HashMap argMap)
+			throws Exception
+	{
+		try
+		{
+			Integer curCardId = (Integer)argMap.get(CurKeys.CUR_CARD_ID);
+			Integer invCardId=(Integer)argMap.get(InvKeys.INV_CARD_ID);
+			Date startDate=(Date)argMap.get(EngKeys.DATE_START);
+			Date endDate=(Date)argMap.get(EngKeys.DATE_END);
+			Integer type=(Integer)argMap.get(EngKeys.TYPE);
+            Integer warehouseId = (Integer)argMap.get(InvKeys.INV_WAREHOUSE_ID);
+			List transList=InvDALSearchTransaction.searchTransactions(curCardId, invCardId, startDate, endDate, type.intValue(),warehouseId);
+		
+			HashBag transBag= new HashBag();
+			transBag.put(InvKeys.INV_TRANSACTIONS, new HashMap());
+			
+			for(int k=0; k<transList.size(); k++)
+			{
+				Object[] transInfo=(Object[])transList.get(k);
+				Integer transId=(Integer)transInfo[0];
+				Date transDate=(Date)transInfo[1];
+				BigDecimal amountIn=(BigDecimal)transInfo[2];
+				BigDecimal amountOut=(BigDecimal)transInfo[3];
+				BigDecimal totalPriceInFC=(BigDecimal)transInfo[4];
+				String invCode=(String)transInfo[5];
+				String invName=(String)transInfo[6];
+				String currencyAbbr=(String)transInfo[7];
+				
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TRANS_ID,transId);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TRANS_DATE,transDate);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_AMOUNT_IN,amountIn);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_AMOUNT_OUT,amountOut);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TOTAL_PRICE_IN_FOREIGN_CURRENCY,totalPriceInFC);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_CARD_CODE,invCode);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_CARD_NAME,invName);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,EngKeys.CURRENCY_ABBR,currencyAbbr);
+			}
+			
+			return transBag;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static HashBag getAllIds(HashMap argMap) throws Exception
+	{
+		Integer transId=(Integer)argMap.get(InvKeys.INV_TRANS_ID);
+		Session session=EngDALSessionFactory.getSession();
+		
+		TurqInventoryTransaction invTrans=(TurqInventoryTransaction)session.load(TurqInventoryTransaction.class,transId);
+		
+		Integer billId=InvDALSearchTransaction.getBillId(invTrans.getTurqEngineSequence());
+		Integer consId=InvDALSearchTransaction.getConsignmentId(invTrans.getTurqEngineSequence());
+		BigDecimal inAmount = invTrans.getAmountIn();
+        BigDecimal outAmount = invTrans.getAmountOut();
+        
+		HashBag idBag=new HashBag();
+		idBag.put(BillKeys.BILL_ID,billId);
+		idBag.put(ConsKeys.CONS_ID,consId);
+        idBag.put(InvKeys.INV_AMOUNT_IN,inAmount);
+        idBag.put(InvKeys.INV_AMOUNT_OUT,outAmount);
+		
+		return idBag;
+	}
+	
+	
+	public static HashBag getInventoryCardAbstract(HashMap argMap) throws Exception
+	{
+		try
+		{
+			Integer curCardId = (Integer)argMap.get(CurKeys.CUR_CARD_ID);
+			Integer invCardStartId=(Integer)argMap.get(InvKeys.INV_CARD_START_ID);
+			Integer invCardEndId=(Integer)argMap.get(InvKeys.INV_CARD_END_ID);
+			Date startDate=(Date)argMap.get(EngKeys.DATE_START);
+			Date endDate=(Date)argMap.get(EngKeys.DATE_END);
+			Integer type=(Integer)argMap.get(EngKeys.TYPE);
+			
+			TurqInventoryCard invCardStart=null;
+			TurqInventoryCard invCardEnd=null;
+			TurqCurrentCard curCard=null;
+			Session session=EngDALSessionFactory.getSession();
+			
+			if (invCardStartId != null)
+			{
+				invCardStart=(TurqInventoryCard)session.load(TurqInventoryCard.class, invCardStartId);
+			}
+			if (invCardEndId != null)
+			{
+				invCardEnd=(TurqInventoryCard)session.load(TurqInventoryCard.class, invCardEndId);
+			}			
+			if (curCardId != null)
+			{
+				curCard=(TurqCurrentCard)session.load(TurqCurrentCard.class,curCardId);
+			}
+			
+			
+			List cards=InvDALSearchTransaction.getInventoryCardAbstract(invCardStart, invCardEnd, curCardId, startDate, endDate, type.intValue());
+			
+			
+			Map parameters = new HashMap();
+			SimpleDateFormat dformat = new SimpleDateFormat("yyyy-MM-dd"); 
+
+	
+			if (curCard != null)
+			{
+				parameters.put("curCardName", curCard.getCardsName()); 
+				parameters.put("curCardCode", curCard.getCardsCurrentCode()); 
+			}
+			else
+			{
+				parameters.put("curCardName", " - "); 
+				parameters.put("curCardCode", " - "); 
+			}
+
+			if (invCardStart != null && invCardEnd != null)
+			{
+				parameters.put("invCardStart", invCardStart.getCardInventoryCode()); 
+				parameters.put("invCardEnd", invCardEnd.getCardInventoryCode()); 
+			}
+			else if (invCardStart != null)
+			{
+				parameters.put("invCardStart", invCardStart.getCardInventoryCode()); 
+				parameters.put("invCardEnd", ""); 
+			}
+			else if (invCardEnd != null)
+			{
+				parameters.put("invCardStart", invCardEnd.getCardInventoryCode()); 
+				parameters.put("invCardEnd", ""); 
+			}
+			else
+			{
+				parameters.put("invCardStart", "");
+				parameters.put("invCardEnd", ""); 
+			}
+			SimpleDateFormat dformat2 = new SimpleDateFormat("dd/MM/yyyy"); 
+			parameters.put("startDate", dformat2.format(startDate)); 
+			parameters.put("endDate", dformat2.format(endDate)); 
+			parameters.put("dateformat", dformat2); 
+			parameters.put("curCard", (curCard != null) ? curCard.getCardsCurrentCode() : ""); 
+			parameters.put("formatter", new TurkishCurrencyFormat(2));
+			parameters.put("currentDate", dformat2.format(Calendar.getInstance().getTime())); 
+			parameters.put("roundingMethod",new Integer(EngBLCommon.ROUNDING_METHOD));
+			
+			
+			
+			String[] fields = new String[]{"inventory_transactions_id", "transactions_date", "transactions_amount_in",
+					"transactions_total_amount_out", "transactions_total_price", "card_inventory_code", "card_name", "cards_name",
+					"inventory_cards_id", "bill_document_no"};
+			
+			JasperPrint jasperPrint=ReportGenerator.generateReport("/reports/inventory/InventoryCardAbstract.jrxml",cards,fields,parameters);
+		
+			
+			HashBag abstractBag=new HashBag();
+			abstractBag.put(EngKeys.REPORT,jasperPrint);
+			
+			abstractBag.put(InvKeys.INV_CARDS, new HashMap());
+			
+			for(int k=0; k<cards.size(); k++)
+			{
+				Object[] cardInfo=(Object[])cards.get(k);
+				Integer transId=(Integer)cardInfo[0];
+				Date transDate=(Date)cardInfo[1];
+				BigDecimal amountIn=(BigDecimal)cardInfo[2];
+				BigDecimal amountOut=(BigDecimal)cardInfo[3];
+				BigDecimal totalPrice=(BigDecimal)cardInfo[4];
+				String invCode=(String)cardInfo[5];
+				String invName=(String)cardInfo[6];
+				
+				abstractBag.put(InvKeys.INV_CARDS,k,InvKeys.INV_TRANS_ID,transId);
+				abstractBag.put(InvKeys.INV_CARDS,k,InvKeys.INV_TRANS_DATE,transDate);
+				abstractBag.put(InvKeys.INV_CARDS,k,InvKeys.INV_AMOUNT_IN,amountIn);
+				abstractBag.put(InvKeys.INV_CARDS,k,InvKeys.INV_AMOUNT_OUT,amountOut);
+				abstractBag.put(InvKeys.INV_CARDS,k,InvKeys.INV_TOTAL_PRICE,totalPrice);
+				abstractBag.put(InvKeys.INV_CARDS,k,InvKeys.INV_CARD_CODE,invCode);
+				abstractBag.put(InvKeys.INV_CARDS,k,InvKeys.INV_CARD_NAME,invName);				
+			}
+			
+			return abstractBag;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static TurqInventoryTransaction getInvTransByTransId(HashMap argMap) throws Exception
+	{
+		try
+		{
+			Integer transId=(Integer)argMap.get(EngKeys.TRANS_ID);
+			return InvDALSearchTransaction.getInvTransByTransId(transId);
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static HashBag getInventoryTransactionReport(HashMap argMap) throws Exception
+	{
+		try
+		{
+			String invCardCodeStart=(String)argMap.get(InvKeys.INV_CARD_CODE_START);
+			String invCardCodeEnd=(String)argMap.get(InvKeys.INV_CARD_CODE_END);
+			String invCardNameStart=(String)argMap.get(InvKeys.INV_CARD_NAME_START);
+			String invCardNameEnd=(String)argMap.get(InvKeys.INV_CARD_NAME_END);
+			
+			Integer curCardStartId=(Integer)argMap.get(CurKeys.CUR_CARD_START_ID);
+			Integer curCardEndId=(Integer)argMap.get(CurKeys.CUR_CARD_END_ID);
+			
+			Session session=EngDALSessionFactory.getSession();
+			TurqCurrentCard curCardStart=null;
+			if (curCardStartId != null)
+			{
+				curCardStart=(TurqCurrentCard)session.load(TurqCurrentCard.class,curCardStartId);
+			}
+			TurqCurrentCard curCardEnd=null;
+			if(curCardEndId != null)
+			{
+				curCardEnd=(TurqCurrentCard)session.load(TurqCurrentCard.class,curCardEndId);
+			}
+			
+			Date startDate=(Date)argMap.get(EngKeys.DATE_START);
+			Date endDate=(Date)argMap.get(EngKeys.DATE_END);
+			Integer type=(Integer)argMap.get(EngKeys.TYPE);
+			Integer invMainGroupId=(Integer)argMap.get(InvKeys.INV_MAIN_GROUP_ID);
+			Integer invSubGroupId=(Integer)argMap.get(InvKeys.INV_SUB_GROUP_ID);
+			
+			List transList = InvDALSearchTransaction.getInventoryTransactionReport(invCardCodeStart,
+					invCardCodeEnd, invCardNameStart, invCardNameEnd, curCardStart, curCardEnd, startDate,
+					endDate, type.intValue(), invMainGroupId, invSubGroupId);
+		
+			
+			Map parameters = new HashMap();
+			
+			SimpleDateFormat dformat = new SimpleDateFormat("yyyy-MM-dd"); 		
+			if (type.intValue() != EngBLCommon.COMMON_ALL_INT)
+			{
+				if (type.intValue() == EngBLCommon.COMMON_BUY_INT)
+					parameters.put("type", EngLangCommonKeys.COMMON_BUY_STRING); 
+				else
+					parameters.put("type", EngLangCommonKeys.COMMON_SELL_STRING); 
+			}
+			else
+			{
+				parameters.put("type", EngLangCommonKeys.COMMON_ALL_STRING);
+			}
+
+			if (invMainGroupId != null)
+			{
+				parameters.put("invMainGroup", InvDALCardSearch.getGroupName(invMainGroupId)); 
+				if (invSubGroupId != null)
+				{
+					parameters.put("invSubGroup", InvDALCardSearch.getGroupName(invSubGroupId)); 
+				}
+				else
+				{
+					parameters.put("invSubGroup", EngLangCommonKeys.COMMON_ALL_STRING); 
+				}
+			}
+			else
+			{
+				parameters.put("invMainGroup", EngLangCommonKeys.COMMON_ALL_STRING); 
+				parameters.put("invSubGroup", EngLangCommonKeys.COMMON_ALL_STRING);
+			}
+
+			
+			if (curCardStart != null && curCardEnd != null)
+			{
+				parameters.put("curCardStart", curCardStart.getCardsCurrentCode()); 
+				parameters.put("curCardEnd", curCardEnd.getCardsCurrentCode());
+			}
+			else if (curCardStart != null)
+			{
+				parameters.put("curCardStart", curCardStart.getCardsCurrentCode());
+				parameters.put("curCardEnd", "");
+			}
+			else if (curCardEnd != null)
+			{
+				parameters.put("curCardStart", curCardEnd.getCardsCurrentCode()); 
+				parameters.put("curCardEnd", ""); 
+			}
+			else
+			{
+				parameters.put("curCardStart", ""); 
+				parameters.put("curCardEnd", ""); 
+			}		
+
+			parameters.put("invCardStart", invCardCodeStart); 
+			parameters.put("invCardEnd", invCardCodeEnd); 			
+		
+			SimpleDateFormat dformat2 = new SimpleDateFormat("dd/MM/yyyy"); 
+			parameters.put("startDate", dformat2.format(startDate)); 
+			parameters.put("endDate", dformat2.format(endDate)); 
+			parameters.put("dateformat", dformat2); 
+			parameters.put("formatter", new TurkishCurrencyFormat(2)); 
+			parameters.put("currentDate", dformat2.format(Calendar.getInstance().getTime()));
+			parameters.put("roundingMethod",new Integer(EngBLCommon.ROUNDING_METHOD));
+			
+			boolean useGroup=(invMainGroupId != null);
+			
+			String[] fields;
+			if (useGroup)
+			{
+				fields = new String[]{"inventory_transactions_id", "transactions_date",
+						"transactions_amount_in", "transactions_total_amount_out",
+						"transactions_total_price", "card_inventory_code", "card_name", "cards_name",
+						"inventory_cards_id", "bill_document_no", "groups_name", "inventory_groups_id"};
+			}
+			else
+			{
+				fields = new String[]{"inventory_transactions_id", "transactions_date",
+						"transactions_amount_in", "transactions_total_amount_out",
+						"transactions_total_price", "card_inventory_code", "card_name", "cards_name",
+						"inventory_cards_id", "bill_document_no"};
+			}		
+			
+			String reportName;
+			
+			if (useGroup)
+			{
+				reportName="/reports/inventory/InventoryTransactionReportByGroup.jrxml";
+			}
+			else
+			{
+				reportName="/reports/inventory/InventoryTransactionReport.jrxml";
+			}
+			
+		
+			
+			JasperPrint jasperPrint=ReportGenerator.generateReport(reportName,transList,fields,parameters);			
+			
+			HashBag transBag=new HashBag();
+			transBag.put(EngKeys.REPORT,jasperPrint);
+			
+			transBag.put(InvKeys.INV_TRANSACTIONS, new HashMap());
+			
+			for(int k=0; k<transList.size(); k++)
+			{
+				Object[] transInfo=(Object[])transList.get(k);
+				Integer transId=(Integer)transInfo[0];
+				Date transDate=(Date)transInfo[1];
+				BigDecimal amountIn=(BigDecimal)transInfo[2];
+				BigDecimal amountOut=(BigDecimal)transInfo[3];
+				BigDecimal totalPrice=(BigDecimal)transInfo[4];
+				String invCode=(String)transInfo[5];
+				String invName=(String)transInfo[6];
+				String curName=(String)transInfo[7];
+				Integer invCardId=(Integer)transInfo[8];
+				String transDocNo=(String)transInfo[9];
+				
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TRANS_ID, transId);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TRANS_DATE, transDate);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_AMOUNT_IN, amountIn);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_AMOUNT_OUT, amountOut);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TOTAL_PRICE, totalPrice);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_CARD_CODE, invCode);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_CARD_NAME, invName);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,CurKeys.CUR_CURRENT_NAME, curName);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_CARD_ID, invCardId);
+				transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TRANS_DOC_NO, transDocNo);
+				
+				if (transInfo.length > 10)
+				{
+					String groupName=(String)transInfo[10];
+					Integer groupId=(Integer)transInfo[11];
+					
+					transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_GROUP_NAME, groupName);
+					transBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_GROUP_ID, groupId);
+					
+				}
+				
+			}
+			
+			return transBag;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static HashBag getInitialTransactions() throws Exception
+	{
+		HashBag initialBag=new HashBag();
+		List initials=InvDALSearchTransaction.getInitialTransactions();
+		
+		initialBag.put(InvKeys.INV_TRANSACTIONS, new HashMap());
+		
+		for(int k=0; k<initials.size(); k++)
+		{
+			TurqInventoryTransaction invTrans=(TurqInventoryTransaction)initials.get(k);
+			
+			initialBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TRANS_ID,invTrans.getId());
+			initialBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TRANS_DATE,invTrans.getTransactionsDate());
+			initialBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TRANS_DEFINITION,invTrans.getDefinition());
+			
+			HashMap invCardMap=new HashMap();
+			TurqInventoryCard invCard=invTrans.getTurqInventoryCard();
+			
+			invCardMap.put(InvKeys.INV_CARD_ID, invCard.getId());
+			invCardMap.put(InvKeys.INV_CARD_CODE, invCard.getCardInventoryCode());
+			invCardMap.put(InvKeys.INV_CARD_NAME, invCard.getCardName());
+			invCardMap.put(InvKeys.INV_CARD_DEFINITION, invCard.getCardDefinition());
+			
+			initialBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_CARD, invCardMap);
+			
+			initialBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_AMOUNT_IN, invTrans.getAmountIn());
+			initialBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_AMOUNT_OUT, invTrans.getAmountOut());
+			initialBag.put(InvKeys.INV_TRANSACTIONS,k,InvKeys.INV_TOTAL_PRICE_IN_FOREIGN_CURRENCY, invTrans.getTotalPriceInForeignCurrency());
+		}
+		
+		return initialBag;
+	}
+    
+    public static HashBag getTransactionInfo (HashMap argMap) throws Exception
+    {
+        try {
+            
+        Integer transId = (Integer)argMap.get(InvKeys.INV_TRANS_ID);
+        TurqInventoryTransaction trans = (TurqInventoryTransaction)EngDALSessionFactory.getSession().load(TurqInventoryTransaction.class,transId);
+        
+        HashBag returnBag = new HashBag();
+        
+        returnBag.put(EngKeys.DOCUMENT_NO,trans.getDocumentNo());
+        returnBag.put(InvKeys.INV_CARD_ID,trans.getTurqCurrentCard().getId());
+        returnBag.put(InvKeys.INV_CARD_NAME,trans.getTurqInventoryCard().getCardName());
+        returnBag.put(InvKeys.INV_CARD_CODE,trans.getTurqInventoryCard().getCardInventoryCode());
+        returnBag.put(EngKeys.DATE,trans.getTransactionsDate());
+        returnBag.put(EngKeys.AMOUNT_IN, trans.getAmountIn());
+        returnBag.put(EngKeys.AMOUNT_OUT,trans.getAmountOut());
+        returnBag.put(EngKeys.DEFINITION,trans.getDefinition());
+        returnBag.put(InvKeys.INV_WAREHOUSE_ID,trans.getTurqInventoryWarehous().getId());
+        returnBag.put(InvKeys.INV_WAREHOUSE_NAME,trans.getTurqInventoryWarehous().getWarehousesName());
+        returnBag.put(InvKeys.INV_UNIT_NAME,trans.getTurqInventoryUnit().getUnitsName());
+        returnBag.put(InvKeys.INV_UNIT_ID,trans.getTurqInventoryUnit().getId());
+        
+        //TODO Unit name should appear on user interface and unit amount should 
+        // be divided into 
+        
+        return returnBag;
+        
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+        
+        
+    }
+}@

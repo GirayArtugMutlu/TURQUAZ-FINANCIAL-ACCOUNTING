@@ -1,0 +1,205 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.43;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqCurrentTransaction" 
+    table="turq_current_transactions"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="native" />
+    </id>
+
+    <property
+        name="transactionsDate"
+        type="java.sql.Date"
+        column="transactions_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="transactionsDocumentNo"
+        type="java.lang.String"
+        column="transactions_document_no"
+        not-null="true"
+    />
+    <property
+        name="transactionsTotalCredit"
+        type="java.math.BigDecimal"
+        column="transactions_total_credit"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="transactionsTotalDiscount"
+        type="java.math.BigDecimal"
+        column="transactions_total_discount"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="transactionsTotalDept"
+        type="java.math.BigDecimal"
+        column="transactions_total_dept"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="createdBy"
+        type="java.lang.String"
+        column="created_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="creationDate"
+        type="java.sql.Date"
+        column="creation_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="updatedBy"
+        type="java.lang.String"
+        column="updated_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="lastModified"
+        type="java.sql.Date"
+        column="last_modified"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="transactionsDefinition"
+        type="java.lang.String"
+        column="transactions_definition"
+        not-null="true"
+        length="250"
+    />
+    <property
+        name="totalCreditInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="total_credit_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="totalDeptInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="total_dept_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="totalDiscountInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="total_discount_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to TurqCurrentTransactionBill -->
+    <set
+        name="turqCurrentTransactionBillsByCurrentTransactionsIdOpen"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="current_transactions_id_open" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqCurrentTransactionBill"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqCurrentTransactionBill -->
+    <set
+        name="turqCurrentTransactionBillsByCurrentTransactionsIdClose"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="current_transactions_id_close" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqCurrentTransactionBill"
+        />
+    </set>
+    <!-- bi-directional many-to-one association to TurqCurrencyExchangeRate -->
+    <many-to-one
+        name="turqCurrencyExchangeRate"
+        class="com.turquaz.engine.dal.TurqCurrencyExchangeRate"
+        not-null="true"
+    >
+        <column name="exchange_rate_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqCurrentTransactionType -->
+    <many-to-one
+        name="turqCurrentTransactionType"
+        class="com.turquaz.engine.dal.TurqCurrentTransactionType"
+        not-null="true"
+    >
+        <column name="current_transaction_types_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqEngineSequence -->
+    <many-to-one
+        name="turqEngineSequence"
+        class="com.turquaz.engine.dal.TurqEngineSequence"
+        not-null="true"
+    >
+        <column name="engine_sequences_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqCurrentCard -->
+    <many-to-one
+        name="turqCurrentCard"
+        class="com.turquaz.engine.dal.TurqCurrentCard"
+        not-null="true"
+    >
+        <column name="current_cards_id" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>
+@

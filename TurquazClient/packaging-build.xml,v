@@ -1,0 +1,51 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.51;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<project default="_packaging_generation_" name="Packaging Generator">
+<target name="_packaging_generation_" depends="N10004,N10051,N10062"/>
+<target name="N10004" description="turquaz-client.jar">
+<mkdir dir="dist"/>
+<jar destfile="dist/turquaz-client.jar">
+<zipfileset dir="bin/client" prefix="client"/>
+<zipfileset dir="bin/com" prefix="com"/>
+<zipfileset dir="bin/de" prefix="de"/>
+<zipfileset dir="bin/fonts" prefix="fonts"/>
+<zipfileset dir="bin/gfx" prefix="gfx"/>
+<zipfileset dir="bin/icons" prefix="icons"/>
+<zipfileset dir="bin/server" prefix="server"/>
+</jar>
+</target>
+<target name="N10051" description="turquaz-commons.jar">
+<mkdir dir="dist"/>
+<jar destfile="dist/turquaz-commons.jar">
+<zipfileset dir="../TurquazCommon/bin"/>
+</jar>
+</target>
+<target name="N10062" description="turquaz-bs.jar">
+<mkdir dir="dist-standalone"/>
+<jar destfile="dist-standalone/turquaz-bs.jar">
+<zipfileset dir="../TurquazBusinessLogic/bin"/>
+</jar>
+</target>
+</project>
+@

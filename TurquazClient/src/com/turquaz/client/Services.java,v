@@ -1,0 +1,64 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.03.09;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@/*
+ * Created on May 23, 2005
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+package com.turquaz.client;
+
+import client.web.HttpSessionClient;
+
+import com.turquaz.common.HttpServiceRequest;
+import com.turquaz.common.HttpServiceResponse;
+import com.turquaz.engine.EngConfiguration;
+
+/**
+ * @@author Cem
+ *
+ * 
+ * Window - Preferences - Java - Code Style - Code Templates
+ */
+public class Services
+{	
+	
+	public static Object CallService(HttpServiceRequest request)throws Throwable
+	{
+		
+		HttpSessionClient client = HttpSessionClient.getInstance(EngConfiguration.getString("default-app"));
+			
+		HttpServiceResponse response=(HttpServiceResponse)client.invokeHttp(request);
+		
+		if (response.isExceptionThrown())
+		{
+			throw response.getThrowable();
+		}
+		else
+		{
+			return response.getResult();
+		}
+			
+	}
+}
+@

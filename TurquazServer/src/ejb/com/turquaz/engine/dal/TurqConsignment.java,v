@@ -1,0 +1,228 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.28;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqConsignment implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private Date consignmentsDate;
+
+    /** persistent field */
+    private String consignmentsDefinition;
+
+    /** persistent field */
+    private int consignmentsType;
+
+    /** persistent field */
+    private boolean consignmentsPrinted;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private String consignmentDocumentNo;
+
+    /** persistent field */
+    private String billDocumentNo;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard;
+
+    /** persistent field */
+    private Set turqConsignmentsInGroups;
+
+    /** full constructor */
+    public TurqConsignment(Date consignmentsDate, String consignmentsDefinition, int consignmentsType, boolean consignmentsPrinted, String createdBy, Date creationDate, String updatedBy, Date lastModified, String consignmentDocumentNo, String billDocumentNo, com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate, com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence, com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard, Set turqConsignmentsInGroups) {
+        this.consignmentsDate = consignmentsDate;
+        this.consignmentsDefinition = consignmentsDefinition;
+        this.consignmentsType = consignmentsType;
+        this.consignmentsPrinted = consignmentsPrinted;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.consignmentDocumentNo = consignmentDocumentNo;
+        this.billDocumentNo = billDocumentNo;
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+        this.turqEngineSequence = turqEngineSequence;
+        this.turqCurrentCard = turqCurrentCard;
+        this.turqConsignmentsInGroups = turqConsignmentsInGroups;
+    }
+
+    /** default constructor */
+    public TurqConsignment() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getConsignmentsDate() {
+        return this.consignmentsDate;
+    }
+
+    public void setConsignmentsDate(Date consignmentsDate) {
+        this.consignmentsDate = consignmentsDate;
+    }
+
+    public String getConsignmentsDefinition() {
+        return this.consignmentsDefinition;
+    }
+
+    public void setConsignmentsDefinition(String consignmentsDefinition) {
+        this.consignmentsDefinition = consignmentsDefinition;
+    }
+
+    public int getConsignmentsType() {
+        return this.consignmentsType;
+    }
+
+    public void setConsignmentsType(int consignmentsType) {
+        this.consignmentsType = consignmentsType;
+    }
+
+    public boolean isConsignmentsPrinted() {
+        return this.consignmentsPrinted;
+    }
+
+    public void setConsignmentsPrinted(boolean consignmentsPrinted) {
+        this.consignmentsPrinted = consignmentsPrinted;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public String getConsignmentDocumentNo() {
+        return this.consignmentDocumentNo;
+    }
+
+    public void setConsignmentDocumentNo(String consignmentDocumentNo) {
+        this.consignmentDocumentNo = consignmentDocumentNo;
+    }
+
+    public String getBillDocumentNo() {
+        return this.billDocumentNo;
+    }
+
+    public void setBillDocumentNo(String billDocumentNo) {
+        this.billDocumentNo = billDocumentNo;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrencyExchangeRate getTurqCurrencyExchangeRate() {
+        return this.turqCurrencyExchangeRate;
+    }
+
+    public void setTurqCurrencyExchangeRate(com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate) {
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+    }
+
+    public com.turquaz.engine.dal.TurqEngineSequence getTurqEngineSequence() {
+        return this.turqEngineSequence;
+    }
+
+    public void setTurqEngineSequence(com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence) {
+        this.turqEngineSequence = turqEngineSequence;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrentCard getTurqCurrentCard() {
+        return this.turqCurrentCard;
+    }
+
+    public void setTurqCurrentCard(com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    public Set getTurqConsignmentsInGroups() {
+        return this.turqConsignmentsInGroups;
+    }
+
+    public void setTurqConsignmentsInGroups(Set turqConsignmentsInGroups) {
+        this.turqConsignmentsInGroups = turqConsignmentsInGroups;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

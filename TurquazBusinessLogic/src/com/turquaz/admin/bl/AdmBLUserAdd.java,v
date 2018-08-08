@@ -1,0 +1,120 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.admin.bl;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Onsel Armagan
+ * @@version $Id: AdmBLUserAdd.java,v 1.3 2005/07/04 09:05:58 onsel Exp $
+ */
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+
+import server.util.MyThreadLocal;
+import server.util.SessionInfo;
+
+import com.turquaz.admin.AdmKeys;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.dal.EngDALCommon;
+import com.turquaz.engine.dal.TurqGroup;
+import com.turquaz.engine.dal.TurqUser;
+import com.turquaz.engine.dal.TurqUserGroup;
+
+public class AdmBLUserAdd
+{
+	public static void saveUser(HashMap argMap) throws Exception
+	{
+	
+			String username=(String)argMap.get(AdmKeys.ADM_USERNAME);
+			String password=(String)argMap.get(AdmKeys.ADM_PASSWORD);
+			String realname=(String)argMap.get(AdmKeys.ADM_REALNAME);
+			String description=(String)argMap.get(EngKeys.DESCRIPTION);
+			List userGroups=(List)argMap.get(AdmKeys.ADM_USER_GROUPS);
+			
+			Calendar cal = Calendar.getInstance();
+			TurqUser user = new TurqUser();
+			user.setUsername(username);
+			user.setUsersPassword(password);
+			user.setUsersRealName(realname);
+			user.setUsersDescription(description);
+            
+            SessionInfo info = MyThreadLocal.getSessionInfo();            
+            String systemUsername =(String)info.get("username");
+            
+			user.setCreatedBy(systemUsername); 
+			user.setUpdatedBy(systemUsername); 
+			user.setUpdateDate(cal.getTime());
+			user.setCreationDate(cal.getTime());
+			EngDALCommon.saveObject(user);
+			AdmBLUserAdd.saveUserGroups(user.getId(),userGroups);
+
+	}
+	
+	public static void saveUserGroups(Integer userId, List userGroups)throws Exception
+	{
+		for(int k=0; k<userGroups.size(); k++)
+		{
+			registerUserGroup(userId,(Integer)userGroups.get(k));
+		}		
+	}
+
+	private static void registerUserGroup(Integer userId, Integer groupId) throws Exception
+	{
+
+			Calendar cal = Calendar.getInstance();
+			TurqUser user = new TurqUser();
+			user.setId(userId);
+			TurqUserGroup usergroup = new TurqUserGroup();
+			usergroup.setTurqUser(user);
+			
+			TurqGroup group=new TurqGroup();
+			group.setId(groupId);
+			
+			usergroup.setTurqGroup((TurqGroup) group);
+            
+            SessionInfo info = MyThreadLocal.getSessionInfo();            
+            String username =(String)info.get("username");
+            
+			usergroup.setCreatedBy(username);
+			usergroup.setUpdatedBy(username); 
+			usergroup.setUpdateDate(cal.getTime());
+			usergroup.setCreationDate(cal.getTime());
+			EngDALCommon.saveObject(usergroup);
+
+	}
+}@

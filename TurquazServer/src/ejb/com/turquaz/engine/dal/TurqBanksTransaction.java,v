@@ -1,0 +1,192 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.30;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqBanksTransaction implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private BigDecimal deptAmount;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private BigDecimal creditAmount;
+
+    /** persistent field */
+    private BigDecimal deptAmountInForeignCurrency;
+
+    /** persistent field */
+    private BigDecimal creditAmountInForeignCurrency;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqBanksTransactionBill turqBanksTransactionBill;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqBanksCard turqBanksCard;
+
+    /** full constructor */
+    public TurqBanksTransaction(BigDecimal deptAmount, String createdBy, Date creationDate, String updatedBy, Date lastModified, BigDecimal creditAmount, BigDecimal deptAmountInForeignCurrency, BigDecimal creditAmountInForeignCurrency, com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate, com.turquaz.engine.dal.TurqBanksTransactionBill turqBanksTransactionBill, com.turquaz.engine.dal.TurqBanksCard turqBanksCard) {
+        this.deptAmount = deptAmount;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.creditAmount = creditAmount;
+        this.deptAmountInForeignCurrency = deptAmountInForeignCurrency;
+        this.creditAmountInForeignCurrency = creditAmountInForeignCurrency;
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+        this.turqBanksTransactionBill = turqBanksTransactionBill;
+        this.turqBanksCard = turqBanksCard;
+    }
+
+    /** default constructor */
+    public TurqBanksTransaction() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public BigDecimal getDeptAmount() {
+        return this.deptAmount;
+    }
+
+    public void setDeptAmount(BigDecimal deptAmount) {
+        this.deptAmount = deptAmount;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public BigDecimal getCreditAmount() {
+        return this.creditAmount;
+    }
+
+    public void setCreditAmount(BigDecimal creditAmount) {
+        this.creditAmount = creditAmount;
+    }
+
+    public BigDecimal getDeptAmountInForeignCurrency() {
+        return this.deptAmountInForeignCurrency;
+    }
+
+    public void setDeptAmountInForeignCurrency(BigDecimal deptAmountInForeignCurrency) {
+        this.deptAmountInForeignCurrency = deptAmountInForeignCurrency;
+    }
+
+    public BigDecimal getCreditAmountInForeignCurrency() {
+        return this.creditAmountInForeignCurrency;
+    }
+
+    public void setCreditAmountInForeignCurrency(BigDecimal creditAmountInForeignCurrency) {
+        this.creditAmountInForeignCurrency = creditAmountInForeignCurrency;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrencyExchangeRate getTurqCurrencyExchangeRate() {
+        return this.turqCurrencyExchangeRate;
+    }
+
+    public void setTurqCurrencyExchangeRate(com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate) {
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+    }
+
+    public com.turquaz.engine.dal.TurqBanksTransactionBill getTurqBanksTransactionBill() {
+        return this.turqBanksTransactionBill;
+    }
+
+    public void setTurqBanksTransactionBill(com.turquaz.engine.dal.TurqBanksTransactionBill turqBanksTransactionBill) {
+        this.turqBanksTransactionBill = turqBanksTransactionBill;
+    }
+
+    public com.turquaz.engine.dal.TurqBanksCard getTurqBanksCard() {
+        return this.turqBanksCard;
+    }
+
+    public void setTurqBanksCard(com.turquaz.engine.dal.TurqBanksCard turqBanksCard) {
+        this.turqBanksCard = turqBanksCard;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

@@ -1,0 +1,252 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.42;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqBanksCard implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private String bankName;
+
+    /** persistent field */
+    private String bankBranchName;
+
+    /** persistent field */
+    private String bankAccountNo;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private String bankDefinition;
+
+    /** persistent field */
+    private String bankCode;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrency turqCurrency;
+
+    /** persistent field */
+    private Set turqChequeRolls;
+
+    /** persistent field */
+    private Set turqBankAccountingAccounts;
+
+    /** persistent field */
+    private Set turqChequeCheques;
+
+    /** persistent field */
+    private Set turqBankCardsSecondaryAccounts;
+
+    /** persistent field */
+    private Set turqTradebillRolls;
+
+    /** persistent field */
+    private Set turqBanksTransactions;
+
+    /** full constructor */
+    public TurqBanksCard(String bankName, String bankBranchName, String bankAccountNo, String createdBy, Date creationDate, String updatedBy, Date lastModified, String bankDefinition, String bankCode, com.turquaz.engine.dal.TurqCurrency turqCurrency, Set turqChequeRolls, Set turqBankAccountingAccounts, Set turqChequeCheques, Set turqBankCardsSecondaryAccounts, Set turqTradebillRolls, Set turqBanksTransactions) {
+        this.bankName = bankName;
+        this.bankBranchName = bankBranchName;
+        this.bankAccountNo = bankAccountNo;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.bankDefinition = bankDefinition;
+        this.bankCode = bankCode;
+        this.turqCurrency = turqCurrency;
+        this.turqChequeRolls = turqChequeRolls;
+        this.turqBankAccountingAccounts = turqBankAccountingAccounts;
+        this.turqChequeCheques = turqChequeCheques;
+        this.turqBankCardsSecondaryAccounts = turqBankCardsSecondaryAccounts;
+        this.turqTradebillRolls = turqTradebillRolls;
+        this.turqBanksTransactions = turqBanksTransactions;
+    }
+
+    /** default constructor */
+    public TurqBanksCard() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getBankName() {
+        return this.bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public String getBankBranchName() {
+        return this.bankBranchName;
+    }
+
+    public void setBankBranchName(String bankBranchName) {
+        this.bankBranchName = bankBranchName;
+    }
+
+    public String getBankAccountNo() {
+        return this.bankAccountNo;
+    }
+
+    public void setBankAccountNo(String bankAccountNo) {
+        this.bankAccountNo = bankAccountNo;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public String getBankDefinition() {
+        return this.bankDefinition;
+    }
+
+    public void setBankDefinition(String bankDefinition) {
+        this.bankDefinition = bankDefinition;
+    }
+
+    public String getBankCode() {
+        return this.bankCode;
+    }
+
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrency getTurqCurrency() {
+        return this.turqCurrency;
+    }
+
+    public void setTurqCurrency(com.turquaz.engine.dal.TurqCurrency turqCurrency) {
+        this.turqCurrency = turqCurrency;
+    }
+
+    public Set getTurqChequeRolls() {
+        return this.turqChequeRolls;
+    }
+
+    public void setTurqChequeRolls(Set turqChequeRolls) {
+        this.turqChequeRolls = turqChequeRolls;
+    }
+
+    public Set getTurqBankAccountingAccounts() {
+        return this.turqBankAccountingAccounts;
+    }
+
+    public void setTurqBankAccountingAccounts(Set turqBankAccountingAccounts) {
+        this.turqBankAccountingAccounts = turqBankAccountingAccounts;
+    }
+
+    public Set getTurqChequeCheques() {
+        return this.turqChequeCheques;
+    }
+
+    public void setTurqChequeCheques(Set turqChequeCheques) {
+        this.turqChequeCheques = turqChequeCheques;
+    }
+
+    public Set getTurqBankCardsSecondaryAccounts() {
+        return this.turqBankCardsSecondaryAccounts;
+    }
+
+    public void setTurqBankCardsSecondaryAccounts(Set turqBankCardsSecondaryAccounts) {
+        this.turqBankCardsSecondaryAccounts = turqBankCardsSecondaryAccounts;
+    }
+
+    public Set getTurqTradebillRolls() {
+        return this.turqTradebillRolls;
+    }
+
+    public void setTurqTradebillRolls(Set turqTradebillRolls) {
+        this.turqTradebillRolls = turqTradebillRolls;
+    }
+
+    public Set getTurqBanksTransactions() {
+        return this.turqBanksTransactions;
+    }
+
+    public void setTurqBanksTransactions(Set turqBanksTransactions) {
+        this.turqBanksTransactions = turqBanksTransactions;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

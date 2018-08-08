@@ -1,0 +1,299 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.49;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.accounting.ui;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import org.eclipse.swt.graphics.Color;
+
+import server.util.EngBLLogger;
+
+import com.cloudgarden.resource.SWTResourceManager;
+import com.turquaz.accounting.AccKeys;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.bl.EngBLAccountingAccounts;
+import com.turquaz.engine.ui.component.TurkishCurrencyFormat;
+import com.turquaz.engine.ui.viewers.ITableRow;
+import com.turquaz.engine.ui.viewers.TableRowList;
+import com.turquaz.engine.ui.viewers.TurquazTableSorter;
+
+
+/**
+* This code was generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* *************************************
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED
+* for this machine, so Jigloo or this code cannot be used legally
+* for any corporate or commercial purpose.
+* *************************************
+*/
+public class AccUITransactionAddTableRow implements ITableRow
+{
+	String formatted = "";
+	TableRowList rowList;
+	int columnTypes[] = null;
+	int row_index = 0;
+	private HashMap transRow=new HashMap();
+	
+	public AccUITransactionAddTableRow(TableRowList rowList)
+	{
+		super();
+		this.rowList = rowList;
+
+		transRow.put(EngKeys.CREDIT_AMOUNT,new BigDecimal(0));
+		transRow.put(EngKeys.DEPT_AMOUNT,new BigDecimal(0));
+		transRow.put(AccKeys.ACC_TRANS_ROW_DEFINITION,"");
+	}
+
+	public void setRowIndex(int a)
+	{
+		row_index = a;
+	}
+
+	public int getRowIndex()
+	{
+		return row_index;
+	}
+
+	public Color getColor()
+	{
+		if (transRow.get(AccKeys.ACC_ACCOUNT) == null)
+		{
+			return SWTResourceManager.getColor(255, 198, 198);
+		}
+		else
+		{
+			return SWTResourceManager.getColor(198, 255, 198);
+		}
+	}
+
+	public boolean canModify(int column_index)
+	{
+		if (column_index == 1)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public String getColumnText(int column_index)
+	{
+		TurkishCurrencyFormat df = new TurkishCurrencyFormat();
+		String result = "";
+		HashMap accountMap=(HashMap)transRow.get(AccKeys.ACC_ACCOUNT);
+		switch (column_index)
+		{
+			case 0 :
+				if (accountMap != null)
+				{
+					result = (String)accountMap.get(AccKeys.ACC_ACCOUNT_CODE);
+				}
+				break;
+			case 1 :
+				if (accountMap != null)
+					result = (String)accountMap.get(AccKeys.ACC_ACCOUNT_NAME);
+				break;
+			case 2 :
+				result = (String)transRow.get(AccKeys.ACC_TRANS_ROW_DEFINITION);
+				break;
+			case 3 :
+				result = df.format((BigDecimal)transRow.get(EngKeys.DEPT_AMOUNT));
+				break;
+			case 4 :
+				result = df.format((BigDecimal)transRow.get(EngKeys.CREDIT_AMOUNT));
+				break;
+
+			default :
+				result = "";
+		}
+		return result;
+	}
+
+	public Object getValue(int column_index)
+	{
+		Object result = null;
+		HashMap accountMap=(HashMap)transRow.get(AccKeys.ACC_ACCOUNT);
+		switch (column_index)
+		{
+			case 0 :
+				if (accountMap != null)
+				{
+					result =(String)accountMap.get(AccKeys.ACC_ACCOUNT_CODE);
+				}
+				else
+					result = "";
+				break;
+			case 1 :
+				if (accountMap != null)
+				{
+					result = (String)accountMap.get(AccKeys.ACC_ACCOUNT_NAME);
+				}
+				else
+					result = "";
+				break;
+			case 3 :
+				result = transRow.get(EngKeys.DEPT_AMOUNT).toString();
+				result = ((String) result).replaceAll("\\.", ",");
+				break;
+			case 4 :
+				result =transRow.get(EngKeys.CREDIT_AMOUNT).toString();
+				result = ((String) result).replaceAll("\\.", ",");
+				break;
+			case 2 :
+				result = (String) transRow.get(AccKeys.ACC_TRANS_ROW_DEFINITION);
+				break;
+			default :
+				result = "";
+		}
+		return result;
+	}
+
+	public void modify(int column_index, Object value)
+	{
+		switch (column_index)
+		{
+			case 0 : //Hesap Kodu
+				try
+				{
+					HashMap accountMap = EngBLAccountingAccounts.getAccount(value.toString().trim());
+					if (accountMap != null)
+					{
+						transRow.put(AccKeys.ACC_ACCOUNT,accountMap);
+
+					}
+				}
+				catch (Exception ex)
+				{
+                    EngBLLogger.log(this.getClass(),ex);
+				}
+				break;
+			case 1 :
+				break;
+			case 3 :
+				formatted = value.toString();
+				formatted = formatted.replaceAll("\\.", "");
+				formatted = formatted.replaceAll(",", ".");
+				if (formatted.equals(""))
+				{
+					formatted = "0";
+				}
+				if (!formatted.equals("0"))
+				{
+					transRow.put(EngKeys.CREDIT_AMOUNT,new BigDecimal(0));
+				}
+				transRow.put(EngKeys.DEPT_AMOUNT,new BigDecimal(formatted));
+				break;
+			case 4 :
+				formatted = value.toString();
+				formatted = formatted.replaceAll("\\.", "");
+				formatted = formatted.replaceAll(",", ".");
+				if (formatted.equals(""))
+				{
+					formatted = "0";
+				}
+				if (!formatted.equals("0"))
+				{
+					transRow.put(EngKeys.DEPT_AMOUNT,new BigDecimal(0));
+				}
+				transRow.put(EngKeys.CREDIT_AMOUNT,new BigDecimal(formatted));
+				break;
+			case 2 :
+				transRow.put(AccKeys.ACC_TRANS_ROW_DEFINITION,value.toString());
+				break;
+		}
+		rowList.taskChanged(this);
+	}
+
+	public boolean equals(Object other)
+	{
+		if (other instanceof ITableRow)
+		{
+			ITableRow row = (ITableRow) other;
+			if (getRowIndex() == row.getRowIndex())
+			{
+				return true;
+			}
+			else
+				return false;
+		}
+		else
+			return false;
+	}
+
+	public Object getDBObject()
+	{
+        if(okToSave())
+        {
+            return transRow;
+        }
+        else
+            return null;
+	}
+
+	public void setDBObject(Object transRow)
+	{
+		if(transRow!=null)
+		{
+			this.transRow = (HashMap) transRow;
+		}
+		else
+		{
+			this.transRow = new HashMap();
+			this.transRow.put(EngKeys.CREDIT_AMOUNT,new BigDecimal(0));
+			this.transRow.put(EngKeys.DEPT_AMOUNT,new BigDecimal(0));
+			this.transRow.put(AccKeys.ACC_TRANS_ROW_DEFINITION,"");
+		}
+	}
+
+	public boolean okToSave()
+	{
+		if (transRow.get(AccKeys.ACC_ACCOUNT) == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	public int getColumnType(int index)
+	{
+		if (columnTypes == null)
+		{
+			return TurquazTableSorter.COLUMN_TYPE_STRING;
+		}
+		else
+			return columnTypes[index];
+	}
+
+	public void setColumnTypes(int[] types)
+	{
+		columnTypes = types;
+	}
+}@

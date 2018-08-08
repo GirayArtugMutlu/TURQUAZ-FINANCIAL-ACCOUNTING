@@ -1,0 +1,42 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@b@;
+
+
+1.1
+date	2007.01.22.17.02.51;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+<archive name="turquaz-client.jar" destination="dist" used="true" exploded="false">
+<folder prefix="client" includes="" excludes="" project="" projectLocation="bin/client" name="client" location="bin/client" used="true"/>
+<folder prefix="com" includes="" excludes="" project="" projectLocation="bin/com" name="com" location="bin/com" used="true"/>
+<folder prefix="de" includes="" excludes="" project="" projectLocation="bin/de" name="de" location="bin/de" used="true"/>
+<folder prefix="fonts" includes="" excludes="" project="" projectLocation="bin/fonts" name="fonts" location="bin/fonts" used="true"/>
+<folder prefix="gfx" includes="" excludes="" project="" projectLocation="bin/gfx" name="gfx" location="bin/gfx" used="true"/>
+<folder prefix="icons" includes="" excludes="" project="" projectLocation="bin/icons" name="icons" location="bin/icons" used="true"/>
+<folder prefix="server" includes="" excludes="" project="" projectLocation="bin/server" name="server" location="bin/server" used="true"/>
+</archive>
+<archive name="turquaz-commons.jar" destination="dist" used="true" exploded="false">
+<folder prefix="" includes="" excludes="" project="TurquazCommon" projectLocation="bin" name="bin" location="../TurquazCommon/bin" used="true"/>
+</archive>
+<archive name="turquaz-bs.jar" destination="dist-standalone" used="true" exploded="false">
+<folder prefix="" includes="" excludes="" project="TurquazBusinessLogic" projectLocation="bin" name="bin" location="../TurquazBusinessLogic/bin" used="true"/>
+</archive>
+</configurations>
+@

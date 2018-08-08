@@ -1,0 +1,125 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.29;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqAccountingAccountClass" 
+    table="turq_accounting_account_classes"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="assigned" />
+    </id>
+
+    <property
+        name="accountingClassesName"
+        type="java.lang.String"
+        column="accounting_classes_name"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="accountingClassesDefinition"
+        type="java.lang.String"
+        column="accounting_classes_definition"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="createdBy"
+        type="java.lang.String"
+        column="created_by"
+        not-null="true"
+        length="25"
+    />
+    <property
+        name="creationDate"
+        type="java.sql.Date"
+        column="creation_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="updatedBy"
+        type="java.lang.String"
+        column="updated_by"
+        not-null="true"
+        length="25"
+    />
+    <property
+        name="lastModified"
+        type="java.sql.Date"
+        column="last_modified"
+        not-null="true"
+        length="4"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to TurqAccountingAccount -->
+    <set
+        name="turqAccountingAccounts"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="accounting_class_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqAccountingAccount"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqInventoryTransactionBill -->
+    <set
+        name="turqInventoryTransactionBills"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="warehouse_out" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqInventoryTransactionBill"
+        />
+    </set>
+
+</class>
+</hibernate-mapping>
+@

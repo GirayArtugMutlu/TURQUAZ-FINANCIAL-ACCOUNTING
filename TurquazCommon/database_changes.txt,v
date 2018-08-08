@@ -1,0 +1,1621 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.36.03;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@*** 04-02-2005 ****
+- "turq_banks_transaction_bills" --> "banks_cards_id" column 
+- "turq_banks_transactions"      --> "banks_cards_id" (integer) added 
+-  Foreign key "banks_cards_id" from to "turq_banks_transactions" to "turq_banks_card"
+- "turq_inventory_transactions" ---> "transaction_type" (integer) added 
+
+*** 06-02-2005 *** 
+-  "turq_inventory_transactions" ---> "transactions_amount_in" (int8) column changed to 
+												"transactions_amount_in" numeric
+-  "turq_inventory_transactions" ---> "transactions_total_amount_out" (int8) column changed to 
+
+-  "turq_inventory_card_units" ---> "card_units_factor" changed column prop. int4 to numeric
+												"transactions_total_amount_out" numeric
+												
+---Process---
+!!!! Before drop, do not forget to backup the data inside tha tables!!!!!!!!!!!!!!!!!
+
+DROP VIEW turq_view_inventory_totals;
+DROP VIEW turq_view_inventory_amount_total;
+DROP TABLE turq_inventory_transactions;
+
+CREATE TABLE turq_inventory_transactions
+(
+  inventory_transactions_id int4 NOT NULL,
+  inventory_cards_id int4 NOT NULL,
+  inventory_warehouses_id int4 NOT NULL,
+  engine_sequences_id int4 NOT NULL,
+  transactions_amount_in numeric NOT NULL,
+  inventory_units_id int4 NOT NULL,
+  transactions_unit_price numeric NOT NULL,
+  transactions_total_price numeric NOT NULL,
+  transactions_discount numeric NOT NULL,
+  transactions_discount_amount numeric NOT NULL,
+  transactions_vat int4 NOT NULL,
+  transactions_vat_amount numeric NOT NULL,
+  transactions_vat_special_each numeric NOT NULL,
+  transactions_vat_special numeric NOT NULL,
+  transactions_vat_special_amount numeric NOT NULL,
+  transactions_cumilative_price numeric NOT NULL,
+  transactions_total_amount_out numeric NOT NULL,
+  created_by varchar(50) NOT NULL,
+  creation_date date NOT NULL,
+  updated_by varchar(50) NOT NULL,
+  last_modified date NOT NULL,
+  transactions_date date NOT NULL,
+  transaction_type int4 NOT NULL,
+  CONSTRAINT turq_inventory_transactions_pkey PRIMARY KEY (inventory_transactions_id),
+  CONSTRAINT "$100" FOREIGN KEY (engine_sequences_id) REFERENCES turq_engine_sequences (engine_sequences_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "$15" FOREIGN KEY (inventory_warehouses_id) REFERENCES turq_inventory_warehouses (inventory_warehouses_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "$16" FOREIGN KEY (inventory_cards_id) REFERENCES turq_inventory_cards (inventory_cards_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "$17" FOREIGN KEY (inventory_units_id) REFERENCES turq_inventory_units (inventory_units_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+) 
+WITHOUT OIDS;
+
+
+CREATE OR REPLACE VIEW turq_view_inventory_totals AS 
+ SELECT trans.inventory_cards_id, transin.totalamountin AS total_amount_in, transin.totalpricein AS total_price_in, transout.totalamountout AS total_amount_out, transout.totalpriceout AS total_price_out
+   FROM turq_inventory_cards trans
+   LEFT JOIN ( SELECT turq_inventory_transactions.inventory_cards_id, sum(turq_inventory_transactions.transactions_total_price) AS totalpricein, sum(turq_inventory_transactions.transactions_amount_in) AS totalamountin
+                FROM turq_inventory_transactions
+               WHERE turq_inventory_transactions.transactions_amount_in <> 0
+               GROUP BY turq_inventory_transactions.inventory_cards_id) transin ON trans.inventory_cards_id = transin.inventory_cards_id
+   LEFT JOIN ( SELECT turq_inventory_transactions.inventory_cards_id, sum(turq_inventory_transactions.transactions_total_price) AS totalpriceout, sum(turq_inventory_transactions.transactions_total_amount_out) AS totalamountout
+                FROM turq_inventory_transactions
+               WHERE turq_inventory_transactions.transactions_total_amount_out <> 0
+               GROUP BY turq_inventory_transactions.inventory_cards_id) transout ON trans.inventory_cards_id = transout.inventory_cards_id;
+
+
+
+
+CREATE OR REPLACE VIEW turq_view_inventory_amount_total AS 
+ SELECT cards.inventory_cards_id, tabletrans.transactions_amount_in, tabletrans.transactions_total_amount_out, tabletrans.transactions_total_amount_now
+   FROM turq_inventory_cards cards
+   LEFT JOIN ( SELECT trans.inventory_cards_id, sum(trans.transactions_amount_in) AS transactions_amount_in, sum(trans.transactions_total_amount_out) AS transactions_total_amount_out, sum(trans.transactions_amount_in - trans.transactions_total_amount_out) AS transactions_total_amount_now
+                FROM turq_inventory_transactions trans
+               GROUP BY trans.inventory_cards_id) tabletrans ON tabletrans.inventory_cards_id = cards.inventory_cards_id;
+
+
+
+*** 06-02-2005 **** 
+
+-- "turq_inventory_groups" ---> "parent_group" (integer) column added
+-- Foreign key from "parent_group" to "inventory_groups_id" in "turq_inventory_groups"
+
+----Process---
+
+ALTER TABLE turq_inventory_groups ADD COLUMN parent_group int4;
+
+INSERT INTO turq_inventory_groups VALUES (-1, 'Varsayilan', 'Varsayilan', 'admin', '2005-01-14', 'admin', '2005-01-14', -1);
+
+update turq_inventory_groups set parent_group =-1
+
+ALTER TABLE turq_inventory_groups
+   ALTER COLUMN parent_group SET NOT NULL;
+   
+ALTER TABLE turq_inventory_groups ADD CONSTRAINT ig1 FOREIGN KEY (parent_group) REFERENCES turq_inventory_groups (inventory_groups_id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+   
+INSERT INTO turq_inventory_groups VALUES (-1, 'Varsayilan', 'Varsayilan', 'admin', '2005-01-14', 'admin', '2005-01-14', -1);
+
+
+
+**** 09-02-2005 *****
+--- "turq_banks_transactions"  ----> "accounting_accounts_id" removed... 
+
+ALTER TABLE turq_banks_transactions DROP COLUMN accounting_accounts_id;
+
+**** 14-02-2005 *****
+--- "turq_cheque_cheques" -----> "bank_account_no" column added...
+
+ALTER TABLE turq_cheque_cheques ADD COLUMN bank_account_no varchar(100);
+update turq_cheque_cheques set bank_account_no='';
+ALTER TABLE turq_cheque_cheques
+   ALTER COLUMN bank_account_no SET NOT NULL;
+
+
+**** 15-02-2005 ****
+--- "turq_bank_transactions_type" ---> "Bankaya Gelen Cek" --> Tahsil Edilen Cek...
+
+
+**** 16-02-2005 **** 
+---- "turq_cheque_rolls" --> sum totals column added...
+
+ALTER TABLE turq_cheque_rolls
+   ADD COLUMN sum_cheque_amounts bool;
+   
+update turq_cheque_rolls set sum_cheque_amounts = false;
+   
+ALTER TABLE turq_cheque_rolls
+   ALTER COLUMN sum_cheque_amounts SET NOT NULL;
+
+
+
+************* 17 FEBRUARY 0.6 ALPHA5 NEW VERSION RELEASED **********
+
+
+
+INSERT INTO turq_cheque_transaction_types VALUES (2, 'Bankaya Cikis', 2, 3, 'admin', '2005-01-01', 'admin', '2005-01-01');
+INSERT INTO turq_cheque_transaction_types VALUES (3, 'Bankadan Tahsil', 3, 3, 'admin', '2005-01-01', 'admin', '2005-01-01');
+
+
+******CHANGES ON ACCOUNTING TABLES********
+
+CREATE TABLE turq_accounting_account_classes (
+    accounting_classes_id integer NOT NULL,
+    accounting_classes_name character varying(50) NOT NULL,
+    accounting_classes_definition character varying(50) NOT NULL,
+    created_by character varying(25) NOT NULL,
+    creation_date date NOT NULL,
+    updated_by character varying(25) NOT NULL,
+    last_modified date NOT NULL
+);
+
+ALTER TABLE turq_accounting_account_classes ADD PRIMARY KEY (accounting_classes_id);
+
+
+CREATE TABLE turq_accounting_account_types (
+    accounting_types_id integer NOT NULL,
+    accounting_types_name character varying(50) NOT NULL,
+    accounting_types_definition character varying(250) NOT NULL,
+    created_by character varying(25) NOT NULL,
+    creation_date date NOT NULL,
+    updated_by character varying(25) NOT NULL,
+    last_modified date NOT NULL
+);
+
+ALTER TABLE turq_accounting_account_types ADD PRIMARY KEY (accounting_types_id);
+
+
+
+
+insert into turq_accounting_account_classes values (1,'DONEN VARLIKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_classes values (2,'DURAN VARLIKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_classes values (3,'KISA VADELI YABANCI KAYNAKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_classes values (4,'UZUN VADELI YABANCI KAYNAKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_classes values (5,'OZKAYNAKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_classes values (6,'GELIR TABLOSU HESAPLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_classes values (7,'MALIYET HESAPLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_classes values (8,'YONETIM MUHASEBESI HESAPLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_classes values (9,'NAZIM HESAPLAR','','admin','02-17-2005','admin','02-17-2005');
+
+
+
+
+
+
+insert into turq_accounting_account_types values (1,'HAZIR DEGERLER','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (2,'MENKUL KIYMETLER','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (3,'TICARI ALACAKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (4,'DIGER ALACAKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (5,'STOKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (6,'YILLARA YAYGIN INSAAT VE ONARIM MALIYETLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (7,'GELECEK AYLARA AIT GIDERLER VE GELIR TAAHHUKLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (8,'DIGER DONEN VARLIKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (9,'MALI DURAN VARLIKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (10,'MADDI DURAN VARLIKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (11,'MADDI OLMAYAN DURAN VARLIKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (12,'OZEL TUKENMEYE TABI VARLIKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (13,'GELECEK YILLARA AIT GIDERLER VE GELIR TAAHHUKLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (14,'DIGER DURAN VARLIKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (15,'MALI BORCLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (16,'TICARI BORCLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (17,'DIGER BORCLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (18,'ALINAN AVANSLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (19,'BORC VE DIGER KARSILIKLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (20,'GELECEK YILLARA AIT GELIRLER VE GIDER TAAHHUKLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (21,'DIGER UZUN VADELI YABANCI KAYNAKLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (22,'GELECEK AYLARA AIT GELIR VE GIDER TAAHHUKLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (23,'ODENMIS SERMAYE','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (24,'SERMAYE YEDEKLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (25,'KAR YEDEKLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (26,'GECMIS YILLAR KARLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (27,'GECMIS YILLAR ZARARLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (28,'DONEM NET KARI(ZARARI)','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (29,'BRUT SATISLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (30,'SATIS INDIRIMLERI (-)','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (31,'SATISLARIN MALIYETLERI (-)','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (32,'FAALIYET GIDERLERI (-)','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (33,'DIGER FAALIYETLERDEN OLAGAN GELIR VE KARLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (34,'DIGER FAALIYETLERDEN OLAGAN GIDER VE ZARARLAR (-)','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (35,'FINANSMAN GIDERLERI(-)','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (36,'OLAGANDISI GELIR VE KARLAR','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (37,'OLAGANDISI GIDER VE ZARARLAR(-)','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (38,'MALIYET MUHASEBES BAGLANTI HESAPLARI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (39,'DIREKT ILKMADDE VE MALZEME GIDERLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (40,'DIREKT ISCILIK GIDERLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (41,'GENEL URETIM GIDERLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (42,'HIZMET URETIM MALIYETLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (43,'ARASTIRMA VE GELISTIRME GIDERLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (44,'PAZARLAMA SATIS VE DAGITIM GIDERLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (45,'GENEL YONETIM GIDERLERI','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (46,'FINANSMAN GIDERLERI (-)','','admin','02-17-2005','admin','02-17-2005');
+insert into turq_accounting_account_types values (47,'FINANSMAN GIDERLERI ','','admin','02-17-2005','admin','02-17-2005');
+
+ALTER TABLE turq_accounting_transaction_columns ADD COLUMN rows_currency_type int4;
+
+update turq_accounting_transaction_columns set rows_currency_type = 1;
+
+ALTER TABLE turq_accounting_transaction_columns ALTER COLUMN rows_currency_type SET NOT NULL;
+
+
+
+
+ALTER TABLE turq_accounting_transaction_columns ADD COLUMN rows_dept_in_base_currency numeric;
+update turq_accounting_transaction_columns set rows_dept_in_base_currency = dept_amount;
+ALTER TABLE turq_accounting_transaction_columns ALTER COLUMN rows_dept_in_base_currency SET NOT NULL;
+
+
+
+ALTER TABLE turq_accounting_transaction_columns ADD COLUMN rows_credit_in_base_currency numeric;
+update turq_accounting_transaction_columns set rows_credit_in_base_currency = credit_amount;
+ALTER TABLE turq_accounting_transaction_columns ALTER COLUMN rows_credit_in_base_currency SET NOT NULL;
+
+
+
+ALTER TABLE turq_accounting_accounts
+   ADD COLUMN accounting_types_id int4;
+
+ALTER TABLE turq_accounting_accounts
+   ADD COLUMN accounting_class_id int4;
+
+
+update turq_accounting_accounts set accounting_types_id = 1;
+update turq_accounting_accounts set accounting_class_id = 1;
+
+
+
+
+
+ALTER TABLE turq_accounting_transaction_columns ADD CONSTRAINT ac1 FOREIGN KEY (rows_currency_type) REFERENCES turq_currencies (currencies_id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+ALTER TABLE turq_currencies
+   ADD COLUMN default_currency bool;
+
+update turq_currencies set default_currency = false;
+
+ALTER TABLE turq_currencies
+   ALTER COLUMN default_currency SET NOT NULL;
+
+ALTER TABLE turq_accounting_accounts ADD CONSTRAINT at1 FOREIGN KEY (accounting_types_id) REFERENCES turq_accounting_account_types (accounting_types_id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE turq_accounting_accounts ADD CONSTRAINT ac1 FOREIGN KEY (accounting_class_id) REFERENCES turq_accounting_account_classes (accounting_classes_id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+
+
+*********currency_exhange_rate_added (18-02-2005)*********************
+CREATE TABLE public.turq_currency_exchange_rates
+(
+   exchange_rates_id int4 NOT NULL, 
+   exhange_rates_date date NOT NULL, 
+   base_currency_id int4 NOT NULL, 
+   exchange_currency_id int4 NOT NULL, 
+   exchange_ratio numeric NOT NULL, 
+    PRIMARY KEY (exchange_rates_id), 
+   CONSTRAINT fc1 FOREIGN KEY (base_currency_id) REFERENCES turq_currencies (currencies_id)    ON UPDATE RESTRICT ON DELETE RESTRICT, 
+   CONSTRAINT fc2 FOREIGN KEY (exchange_currency_id) REFERENCES turq_currencies (currencies_id)    ON UPDATE RESTRICT ON DELETE RESTRICT, 
+   CONSTRAINT uniq_value UNIQUE (exhange_rates_date, base_currency_id, exchange_currency_id)
+) WITHOUT OIDS;
+
+*******************************************************
+
+
+******* (18-02-2005)*************
+----turq_accounting_transactions ---> "currencies_id" added..
+
+ALTER TABLE turq_accounting_transactions ADD COLUMN currencies_id int4;
+ALTER TABLE turq_accounting_transactions ADD CONSTRAINT "accTransCurrencies" FOREIGN KEY (currencies_id) REFERENCES turq_currencies (currencies_id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+update turq_accounting_transactions set currencies_id =1;
+ALTER TABLE turq_accounting_transactions
+   ALTER COLUMN currencies_id SET NOT NULL;
+*******************************************************   
+   
+   
+************ (19-02-2005) *****************   
+---turq_view_cheque_status_changed---- 
+
+
+DROP VIEW turq_view_cheque_status;
+
+CREATE VIEW turq_view_cheque_status AS 
+ SELECT cheq.cheque_cheques_id, cheq.cheques_portfolio_no, cheq.cheques_no, cheq.banks_id, cheq.cheques_due_date, cheq.cheques_debtor, cheq.cheques_payment_place, cheq.cheques_value_date, cheq.cheques_amount, cheq.currencies_id, transtype.cheque_transaction_types_id, transtype.transaction_typs_name, transtype.accounting_accounts_id, rolls.cheque_rolls_id, rolls.cheque_rolls_date, rolls.engine_sequences_id, rolls.cheque_roll_no, rolls.current_cards_id, rolls.banks_cards_id
+FROM turq_cheque_cheques cheq, turq_cheque_rolls rolls, turq_cheque_cheque_in_rolls cheqrolls, turq_cheque_transaction_types transtype
+
+WHERE cheq.cheque_cheques_id = cheqrolls.cheque_cheques_id AND rolls.cheque_rolls_id = cheqrolls.cheque_rolls_id AND transtype.cheque_transaction_types_id = rolls.cheque_transaction_types_id 
+AND rolls.cheque_rolls_id = (( SELECT max(roll_inner.cheque_rolls_id)
+FROM turq_cheque_rolls roll_inner, turq_cheque_cheque_in_rolls cheqroll_inner, turq_cheque_cheques cheq_inner
+WHERE cheqroll_inner.cheque_rolls_id = roll_inner.cheque_rolls_id AND cheqroll_inner.cheque_cheques_id = cheq_inner.cheque_cheques_id AND cheqroll_inner.cheque_cheques_id = cheq.cheque_cheques_id));
+
+******************** ***************************************
+  
+********************* New Table Added *****************************   
+--turq_cheuqe_roll_accounting_accounts-----
+
+  CREATE TABLE turq_cheque_roll_accounting_accounts
+(
+  cheque_rolls_id integer NOT NULL,
+  accounting_accounts_id integer NOT NULL,
+  CONSTRAINT turq_cheque_roll_accounting_accounts_pkey PRIMARY KEY (cheque_rolls_id),
+  CONSTRAINT crac1 FOREIGN KEY (accounting_accounts_id) REFERENCES turq_accounting_accounts (accounting_accounts_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT crac2 FOREIGN KEY (cheque_rolls_id) REFERENCES turq_cheque_rolls (cheque_rolls_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+) 
+
+**********************************************************************
+
+
+*******************New Default Values ***********************************
+INSERT INTO turq_module_components VALUES (77, 8, 'com.turquaz.cash.ui.CashUICashOtherCollectTransaction', 'Kasa Diger Tahsilat', 'admin', '2004-10-18', 'admin', '2004-10-18');
+INSERT INTO turq_module_components VALUES (78, 8, 'com.turquaz.cash.ui.CashUICashOtherPaymentTransaction', 'Kasa Diger Odeme', 'admin', '2004-10-18', 'admin', '2004-10-18');
+INSERT INTO turq_module_components VALUES (79, 8, 'com.turquaz.cash.ui.CashUICashTransferBetweenCards', 'Kasa Virman', 'admin', '2004-10-18', 'admin', '2004-10-18');
+
+INSERT INTO turq_cash_transaction_types VALUES (2, 'Diger Tahsilat', 'admin', '2004-12-12', 'admin', '2004-12-12');
+INSERT INTO turq_cash_transaction_types VALUES (3, 'Diger Odeme', 'admin', '2004-12-12', 'admin', '2004-12-12');
+INSERT INTO turq_cash_transaction_types VALUES (4, 'Virman', 'admin', '2004-12-12', 'admin', '2004-12-12');
+
+******************************************************************************
+
+
+**********21-02-2005************************
+
+----- Cash Card Transaction Tables Changed ---
+
+ALTER TABLE turq_cash_transaction_rows ADD COLUMN cash_cards_id int4;
+ALTER TABLE turq_cash_transaction_rows ADD CONSTRAINT row_to_card FOREIGN KEY (cash_cards_id) REFERENCES turq_cash_cards (cash_cards_id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+update turq_cash_transaction_rows set cash_cards_id = turq_cash_transactions.cash_cards_id 
+where cash_transactions_id = turq_cash_transactions.cash_transactions_id;
+
+ALTER TABLE turq_cash_transaction_rows ALTER COLUMN cash_cards_id SET NOT NULL;
+ALTER TABLE turq_cash_transactions DROP COLUMN cash_cards_id;
+   
+*******************************************************************   
+
+************************22-02-2005******************************
+------------New Default Values ----------------------
+INSERT INTO turq_cash_transaction_types VALUES (5, 'Cek Tahsilat', 'admin', '2004-12-12', 'admin', '2004-12-12');
+INSERT INTO turq_cheque_transaction_types VALUES (4, 'Cariden Tahsil', 4, 3, 'admin', '2005-01-01', 'admin', '2005-01-01');
+
+INSERT INTO turq_module_components VALUES (80, 9, 'com.turquaz.cheque.ui.CheUIChequeCollect', 'Cariden Cek Tahsilati', 'admin', '2004-10-18', 'admin', '2004-10-18');
+
+
+**********************************************************************
+
+
+*********************24-02-2005***************************************
+-------------- Current Accounting Tables -----------------------------
+
+CREATE TABLE turq_current_accounting_types
+(
+  current_accouting_types_id int4 NOT NULL,
+  type_name varchar(100) NOT NULL,
+  definition varchar(100) NOT NULL,
+  CONSTRAINT turq_current_accounting_types_pkey PRIMARY KEY (current_accouting_types_id)
+) 
+WITHOUT OIDS;
+
+INSERT INTO turq_current_accounting_types VALUES (0, 'Cari Muhasebe Hesabi', ' ');
+INSERT INTO turq_current_accounting_types VALUES (1, 'Alinan Cekler Muhasebe Hesabi', ' ');
+INSERT INTO turq_current_accounting_types VALUES (2, 'Verilen Cekler Muhasebe Hesabi', ' ');
+
+
+CREATE TABLE turq_current_accounting_accounts
+(
+  current_accounting_accounts_id int4 NOT NULL,
+  current_cards_id int4 NOT NULL,
+  accounting_accounts_id int4 NOT NULL,
+  current_accounting_types_id int4 NOT NULL,
+  created_by varchar(50) NOT NULL,
+  creation_date date NOT NULL,
+  updated_by varchar(50) NOT NULL,
+  last_modified date NOT NULL,
+  CONSTRAINT turq_current_accounting_accounts_pkey PRIMARY KEY (current_accounting_accounts_id),
+  CONSTRAINT "curAcc1" FOREIGN KEY (accounting_accounts_id) REFERENCES turq_accounting_accounts (accounting_accounts_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "curAcc2" FOREIGN KEY (current_accounting_types_id) REFERENCES turq_current_accounting_types (current_accouting_types_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "curAcc3" FOREIGN KEY (current_cards_id) REFERENCES turq_current_cards (current_cards_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+) 
+WITHOUT OIDS;
+
+!!!!!!!!!!!!!!!!IMPORTANTT!!!!!!!!!!!!!!!!
+In the preferences section of program,  export current card data to new Tables.. 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+----After you finished the above action continue with below---
+
+ALTER TABLE turq_current_cards DROP COLUMN accounting_code_id;
+
+---- Foreign Currency Support For current transactions --------
+
+ALTER TABLE turq_current_transactions
+   ADD COLUMN total_credit_in_foreign_currency numeric;
+ALTER TABLE turq_current_transactions
+   ADD COLUMN total_dept_in_foreign_currency numeric;
+ALTER TABLE turq_current_transactions
+   ADD COLUMN total_discount_in_foreign_currency numeric;
+
+update turq_current_transactions set total_dept_in_foreign_currency = transactions_total_dept,
+ total_credit_in_foreign_currency = transactions_total_credit, total_discount_in_foreign_currency = transactions_total_discount;
+
+ALTER TABLE turq_current_transactions
+   ALTER COLUMN total_credit_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_current_transactions
+   ALTER COLUMN total_dept_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_current_transactions
+   ALTER COLUMN total_discount_in_foreign_currency SET NOT NULL;
+   
+   
+   
+**********************view changes******************
+***********************25-02-2005******************
+
+--turq_view_acc_trans_total_amount updated--
+****credit_amount -> rows_credit_in_base_currency***
+****dept_amount -> rows_dept_in_base_currency***
+drop view turq_view_acc_trans_total_amount;
+
+CREATE OR REPLACE VIEW public.turq_view_acc_trans_total_amount AS 
+ SELECT trans.accounting_transactions_id, tabletranscolumns.totalcreditamount, tabletranscolumns.totaldeptamount
+   FROM turq_accounting_transactions trans
+   LEFT JOIN ( SELECT transcolumns.accounting_transactions_id, sum(transcolumns.rows_credit_in_base_currency) AS totalcreditamount, sum(transcolumns.rows_dept_in_base_currency) AS totaldeptamount
+                FROM turq_accounting_transaction_columns transcolumns
+               GROUP BY transcolumns.accounting_transactions_id) tabletranscolumns ON tabletranscolumns.accounting_transactions_id = trans.accounting_transactions_id;
+---new view created----
+              
+CREATE OR REPLACE VIEW public.turq_view_acc_totals AS 
+ SELECT account.accounting_accounts_id, tabletranscolumns.totalcreditamount, tabletranscolumns.totaldeptamount
+   FROM turq_accounting_accounts account
+   LEFT JOIN ( SELECT transcolumns.accounting_accounts_id, sum(transcolumns.rows_credit_in_base_currency) AS totalcreditamount, sum(transcolumns.rows_dept_in_base_currency) AS totaldeptamount
+                FROM turq_accounting_transaction_columns transcolumns
+               GROUP BY transcolumns.accounting_accounts_id) tabletranscolumns ON tabletranscolumns.accounting_accounts_id = account.accounting_accounts_id
+  ORDER BY account.accounting_accounts_id;
+
+
+********************28-02-2005**************
+**currencies unique index added*************
+alter table turq_currencies add CONSTRAINT uniq_cur_abbr UNIQUE (currencies_abbreviation);
+****************************************
+
+********************* 01-03-2005 ****************
+--------New Tables For Bank Accountings ------------
+CREATE TABLE turq_bank_accounting_types
+(
+  bank_accouting_types_id int4 NOT NULL,
+  type_name varchar(100) NOT NULL,
+  definition varchar(100) NOT NULL,
+  CONSTRAINT turq_bank_accounting_types_pkey PRIMARY KEY (bank_accouting_types_id)
+) 
+
+INSERT INTO turq_bank_accounting_types VALUES (0, 'Banka Muhasebe Hesabi', ' ');
+INSERT INTO turq_bank_accounting_types VALUES (1, 'Tahsile Gelen Cekler Hesabi', ' ');
+INSERT INTO turq_bank_accounting_types VALUES (2, 'Verilen Cekler Hesai', ' ');
+
+CREATE TABLE turq_bank_accounting_accounts
+(
+  bank_accounting_accounts_id int4 NOT NULL,
+  banks_cards_id int4 NOT NULL,
+  accounting_accounts_id int4 NOT NULL,
+  bank_accounting_types_id int4 NOT NULL,
+  created_by varchar(50) NOT NULL,
+  creation_date date NOT NULL,
+  updated_by varchar(50) NOT NULL,
+  last_modified date NOT NULL,
+  CONSTRAINT turq_bank_accounting_accounts_pkey PRIMARY KEY (bank_accounting_accounts_id),
+  CONSTRAINT "bankAcc1" FOREIGN KEY (accounting_accounts_id) REFERENCES turq_accounting_accounts (accounting_accounts_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "bankAcc2" FOREIGN KEY (bank_accounting_types_id) REFERENCES turq_bank_accounting_types (bank_accouting_types_id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT "bankAcc3" FOREIGN KEY (banks_cards_id) REFERENCES turq_banks_cards (banks_cards_id) ON UPDATE RESTRICT ON DELETE RESTRICT
+) 
+
+!!!!!!!!!!!!!!!!IMPORTANTT!!!!!!!!!!!!!!!!
+In the preferences section of program,  export bank card data to new Tables.. 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+ALTER TABLE turq_banks_cards DROP COLUMN accounting_accounts_id;
+
+*********************************************************************
+*********************************************************************
+ALTER TABLE turq_accounting_account_classes RENAME accounting_classes_id  TO id;
+ALTER TABLE turq_accounting_account_types RENAME accounting_types_id  TO id;
+ALTER TABLE turq_accounting_accounts RENAME accounting_accounts_id  TO id;
+ALTER TABLE turq_accounting_journal RENAME accounting_journal_id  TO id;
+ALTER TABLE turq_accounting_transaction_columns RENAME accounting_transaction_columns_id  TO id;
+ALTER TABLE turq_accounting_transaction_types RENAME accounting_transaction_types_id  TO id;
+ALTER TABLE turq_accounting_transactions RENAME accounting_transactions_id  TO id;
+ALTER TABLE turq_bank_accounting_accounts RENAME bank_accounting_accounts_id  TO id;
+ALTER TABLE turq_bank_accounting_types RENAME bank_accouting_types_id  TO id;
+ALTER TABLE turq_bank_cards_secondary_accounts RENAME bank_cards_secondary_accounts_id  TO id;
+ALTER TABLE turq_bank_secondary_accounts RENAME bank_secondary_accounts_id  TO id;
+ALTER TABLE turq_banks_cards RENAME banks_cards_id  TO id;
+ALTER TABLE turq_banks_transaction_bills RENAME banks_transaction_bills_id  TO id;
+ALTER TABLE turq_banks_transaction_types RENAME bank_transaction_types_id  TO id;
+ALTER TABLE turq_banks_transactions RENAME bank_transactions_id  TO id;
+ALTER TABLE turq_bill_consignment_commons RENAME bill_consignment_common_id  TO id;
+ALTER TABLE turq_bill_groups RENAME bill_groups_id  TO id;
+ALTER TABLE turq_bill_in_groups RENAME bill_in_groups_id  TO id;
+ALTER TABLE turq_bills RENAME bills_id  TO id;
+ALTER TABLE turq_cash_cards RENAME cash_cards_id  TO id;
+ALTER TABLE turq_cash_transaction_rows RENAME cash_transaction_rows_id  TO id;
+ALTER TABLE turq_cash_transaction_types RENAME cash_transaction_types_id  TO id;
+ALTER TABLE turq_cash_transactions RENAME cash_transactions_id  TO id;
+ALTER TABLE turq_cheque_cheque_in_rolls RENAME cheque_cheques_rolls_id  TO id;
+ALTER TABLE turq_cheque_cheques RENAME cheque_cheques_id  TO id;
+ALTER TABLE turq_cheque_roll_accounting_accounts RENAME cheque_rolls_id  TO id;
+ALTER TABLE turq_cheque_rolls RENAME cheque_rolls_id  TO id;
+ALTER TABLE turq_cheque_transaction_types RENAME cheque_transaction_types_id  TO id;
+ALTER TABLE turq_companies RENAME companies_id  TO id;
+ALTER TABLE turq_consignment_groups RENAME consignment_groups_id  TO id;
+ALTER TABLE turq_consignments RENAME consignments_id  TO id;
+ALTER TABLE turq_consignments_in_group RENAME consignments_in_group_id  TO id;
+ALTER TABLE turq_currencies RENAME currencies_id  TO id;
+ALTER TABLE turq_currency_exchange_rates RENAME exchange_rates_id  TO id;
+ALTER TABLE turq_current_accounting_accounts RENAME current_accounting_accounts_id  TO id;
+ALTER TABLE turq_current_accounting_types RENAME current_accouting_types_id  TO id;
+ALTER TABLE turq_users RENAME users_id  TO id;
+ALTER TABLE turq_user_permissions RENAME user_permissions_id  TO id;
+ALTER TABLE turq_user_group RENAME user_group_id  TO id;
+ALTER TABLE turq_tradebill_transaction_types RENAME tradebill_transaction_types_id  TO id;
+ALTER TABLE turq_tradebill_tradebills_rolls RENAME tradebill_tradebills_rolls_id  TO id;
+ALTER TABLE turq_tradebill_tradebills RENAME tradebill_tradebills_id  TO id;
+ALTER TABLE turq_tradebill_rolls RENAME tradebill_rolls_id  TO id;
+ALTER TABLE turq_orders RENAME orders_id  TO id;
+ALTER TABLE turq_order_in_groups RENAME order_in_groups_id  TO id;
+ALTER TABLE turq_order_groups RENAME order_groups_id  TO id;
+ALTER TABLE turq_modules RENAME modules_id  TO id;
+ALTER TABLE turq_module_components RENAME module_components_id  TO id;
+ALTER TABLE turq_inventory_warehouses RENAME inventory_warehouses_id  TO id;
+ALTER TABLE turq_inventory_units RENAME inventory_units_id  TO id;
+ALTER TABLE turq_inventory_transactions RENAME inventory_transactions_id  TO id;
+ALTER TABLE turq_inventory_prices RENAME inventory_prices_id  TO id;
+ALTER TABLE turq_inventory_groups RENAME inventory_groups_id  TO id;
+ALTER TABLE turq_inventory_cards RENAME inventory_cards_id  TO id;
+ALTER TABLE turq_inventory_card_units RENAME inventory_card_units_id  TO id;
+ALTER TABLE turq_inventory_card_groups RENAME inventory_card_groups_id  TO id;
+ALTER TABLE turq_groups RENAME groups_id  TO id;
+ALTER TABLE turq_group_permissions RENAME group_permissions_id  TO id;
+ALTER TABLE turq_engine_sequences RENAME engine_sequences_id  TO id;
+ALTER TABLE turq_current_transactions RENAME current_transactions_id  TO id;
+ALTER TABLE turq_current_transaction_types RENAME current_transaction_types_id  TO id;
+ALTER TABLE turq_current_transaction_bill RENAME current_transaction_bill_id  TO id;
+ALTER TABLE turq_current_groups RENAME current_groups_id  TO id;
+ALTER TABLE turq_current_contacts RENAME current_contacts_id  TO id;
+ALTER TABLE turq_current_cards_phones RENAME current_cards_phones_id  TO id;
+ALTER TABLE turq_current_cards_groups RENAME current_cards_groups_id  TO id;
+ALTER TABLE turq_current_cards RENAME current_cards_id  TO id;
+
+
+***************02-03-2005***********************
+-added column exchange_rate_id to acc_transactions and trans_columns***
+
+ALTER TABLE turq_accounting_transaction_columns ADD COLUMN exchange_rate_id int4;
+ALTER TABLE turq_accounting_transaction_columns DROP COLUMN rows_currency_type;
+update turq_accounting_transaction_columns set exchange_rate_id=-1;
+ALTER TABLE turq_accounting_transaction_columns
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+
+ALTER TABLE turq_accounting_transactions ADD COLUMN exchange_rate_id int4;
+ALTER TABLE turq_accounting_transactions DROP COLUMN currencies_id;
+update turq_accounting_transactions set exchange_rate_id=-1;
+ALTER TABLE turq_accounting_transactions
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+
+
+INSERT INTO turq_currency_exchange_rates VALUES (-1,'2005-01-01',1,1,1);
+ALTER TABLE public.turq_accounting_transaction_columns ADD CONSTRAINT ex_rate FOREIGN KEY (exchange_rate_id) REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE public.turq_accounting_transactions ADD CONSTRAINT ex_rate2 FOREIGN KEY (exchange_rate_id) REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+INSERT INTO turq_module_components VALUES (81, 5, 'com.turquaz.admin.ui.AdmUICurrencyAdd', 'Para Birimi Ekle', 'cem', '2005-02-28', 'cem', '2005-02-28');
+INSERT INTO turq_module_components VALUES (82, 5, 'com.turquaz.admin.ui.AdmUICurrencyExchangeRateAdd', 'Para Degisim Orani Ekle', 'cem', '2005-02-28', 'cem', '2005-02-28');
+INSERT INTO turq_module_components VALUES (83, 5, 'com.turquaz.admin.ui.AdmUICurrencyExchangeRateSearch', 'Para Degisim Orani Arama', 'cem', '2005-02-28', 'cem', '2005-02-28');
+
+
+
+****exchange_rate_id column added to current transactions********
+
+ALTER TABLE public.turq_currencies DROP COLUMN exchange_rate;
+
+ALTER TABLE public.turq_current_transactions ADD COLUMN exchange_rate_id int4;
+ALTER TABLE public.turq_current_transactions DROP COLUMN currencies_id;
+
+update turq_current_transactions set exchange_rate_id=-1;
+
+ALTER TABLE public.turq_current_transactions
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+
+ALTER TABLE public.turq_current_transactions ADD CONSTRAINT ex_rate3 FOREIGN KEY (exchange_rate_id) REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+***********************************************************
+ *** 03/03/2005 hsqldb database updated v1.49 ***
+
+
+
+
+************************foreign currency support***********************
+************************06-03-2005**************************************
+
+ALTER TABLE turq_cheque_cheques ADD COLUMN cheques_amount_in_foreign_currency numeric;
+ALTER TABLE turq_cheque_cheques ADD COLUMN exchange_rate_id int4;
+
+update turq_cheque_cheques set cheques_amount_in_foreign_currency=cheques_amount;
+update turq_cheque_cheques set exchange_rate_id=-1;
+
+ALTER TABLE turq_cheque_cheques
+   ALTER COLUMN cheques_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_cheque_cheques
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+
+ALTER TABLE turq_cheque_cheques ADD CONSTRAINT ex_rate4 FOREIGN KEY (exchange_rate_id) 
+REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+
+
+
+
+ALTER TABLE turq_cash_transaction_rows ADD COLUMN dept_amount_in_foreign_currency numeric;
+ALTER TABLE turq_cash_transaction_rows ADD COLUMN credit_amount_in_foreign_currency numeric;
+ALTER TABLE turq_cash_transaction_rows ADD COLUMN exchange_rate_id int4;
+
+update turq_cash_transaction_rows set dept_amount_in_foreign_currency=dept_amount;
+update turq_cash_transaction_rows set credit_amount_in_foreign_currency=credit_amount;
+update turq_cash_transaction_rows set exchange_rate_id=-1;
+
+ALTER TABLE turq_cash_transaction_rows
+   ALTER COLUMN dept_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_cash_transaction_rows
+   ALTER COLUMN credit_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_cash_transaction_rows
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+
+ALTER TABLE turq_cash_transaction_rows ADD CONSTRAINT ex_rate5 FOREIGN KEY (exchange_rate_id) 
+REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE turq_bill_consignment_commons ADD COLUMN discount_rate_perc numeric;
+ALTER TABLE turq_bill_consignment_commons ADD COLUMN discount_amount_in_foreign_currency numeric;
+ALTER TABLE turq_bill_consignment_commons ADD COLUMN vat_amount_in_foreign_currency numeric;
+ALTER TABLE turq_bill_consignment_commons ADD COLUMN charges_in_foreign_currency numeric;
+ALTER TABLE turq_bill_consignment_commons ADD COLUMN total_amount_in_foreign_currency numeric;
+ALTER TABLE turq_bill_consignment_commons ADD COLUMN special_vat_amount_in_foreign_currency numeric;
+ALTER TABLE turq_bill_consignment_commons ADD COLUMN exchange_rate_id int4;
+
+
+update turq_bill_consignment_commons set discount_rate_perc=discount_rate;
+update turq_bill_consignment_commons set discount_amount_in_foreign_currency=discount_amount;
+update turq_bill_consignment_commons set vat_amount_in_foreign_currency=vat_amount;
+update turq_bill_consignment_commons set charges_in_foreign_currency=charges;
+update turq_bill_consignment_commons set total_amount_in_foreign_currency=total_amount;
+update turq_bill_consignment_commons set special_vat_amount_in_foreign_currency=special_vat_amount;
+update turq_bill_consignment_commons set exchange_rate_id=-1;
+
+
+
+ALTER TABLE turq_bill_consignment_commons
+   ALTER COLUMN discount_rate_perc SET NOT NULL;
+ALTER TABLE turq_bill_consignment_commons
+   ALTER COLUMN discount_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_bill_consignment_commons
+   ALTER COLUMN vat_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_bill_consignment_commons
+   ALTER COLUMN charges_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_bill_consignment_commons
+   ALTER COLUMN total_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_bill_consignment_commons
+   ALTER COLUMN special_vat_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_bill_consignment_commons DROP COLUMN discount_rate;
+ALTER TABLE turq_bill_consignment_commons
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+
+
+ALTER TABLE turq_bill_consignment_commons ADD CONSTRAINT ex_rate6 FOREIGN KEY (exchange_rate_id) 
+REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+
+
+
+
+ALTER TABLE turq_banks_transactions ADD COLUMN dept_amount_in_foreign_currency numeric;
+ALTER TABLE turq_banks_transactions ADD COLUMN credit_amount_in_foreign_currency numeric;
+ALTER TABLE turq_banks_transactions ADD COLUMN exchange_rate_id int4;
+
+
+update turq_banks_transactions set dept_amount_in_foreign_currency=dept_amount;
+update turq_banks_transactions set credit_amount_in_foreign_currency=credit_amount;
+update turq_banks_transactions set exchange_rate_id=-1;
+
+
+ALTER TABLE turq_banks_transactions
+   ALTER COLUMN dept_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_banks_transactions
+   ALTER COLUMN credit_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_banks_transactions
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+
+
+ALTER TABLE turq_banks_transactions ADD CONSTRAINT ex_rate7 FOREIGN KEY (exchange_rate_id) 
+REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+**************************************************************************************
+yukardakilerden sonra bunlar da cal?st?r?lacak..
+
+
+ALTER TABLE turq_bill_consignment_commons RENAME discount_rate_perc  TO discount_rate;
+
+**************************************************************************************
+
+INSERT INTO turq_bank_accounting_types VALUES (3, 'Karsiliksiz Cek Hesabi', ' ');
+INSERT INTO turq_cheque_transaction_types VALUES (5, 'Bankadan Iade', 5, 3, 'admin', '2005-01-01', 'admin', '2005-01-01');
+INSERT INTO turq_module_components VALUES (84, 9, 'com.turquaz.cheque.ui.CheUIReturnFromBankRoll', 'Bankadan Iade Bordrosu', 'cem', '2005-02-28', 'cem', '2005-02-28');
+
+INSERT INTO turq_cheque_transaction_types VALUES (6, 'Cariye Iade', 6, 3, 'admin', '2005-01-01', 'admin', '2005-01-01');
+
+INSERT INTO turq_module_components VALUES (85, 9, 'com.turquaz.cheque.ui.CheUIReturnFromCurrent', 'Cariden Iade Bordrosu', 'cem', '2005-02-28', 'cem', '2005-02-28');
+
+
+CREATE TABLE turq_inventory_accounting_accounts
+(
+  id int4 NOT NULL,
+  inventory_cards_id int4 NOT NULL,
+  accounting_accounts_id int4 NOT NULL,
+  inventory_accounting_types_id int4 NOT NULL,
+  created_by varchar(50) NOT NULL,
+  creation_date date NOT NULL,
+  updated_by varchar(50) NOT NULL,
+  last_modified date NOT NULL
+) 
+
+
+CREATE TABLE turq_inventory_accounting_types
+(
+  id int4 NOT NULL,
+  type_name varchar(100) NOT NULL,
+  definition varchar(100) NOT NULL
+) 
+
+INSERT INTO turq_inventory_accounting_types VALUES (0, 'Buy', 'Alis Muhasebe Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (1, 'Sell', 'Satis Muhasebe Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (2, 'Buy VAT', 'Alis KDV Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (3, 'Sell VAT', 'Satis KDV Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (4, 'Buy Special VAT', 'Alis OTV Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (5, 'Sell Special VAT', 'Satis OTV Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (6, 'Buy Discount', 'Alistan Inidirimler Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (7, 'Sell Discount', 'Satistan Indirimler Hesabi');
+
+
+
+ALTER TABLE turq_inventory_accounting_accounts 
+ADD CONSTRAINT prim_id PRIMARY KEY (id);
+ALTER TABLE turq_inventory_accounting_accounts 
+ADD CONSTRAINT uniq UNIQUE (inventory_cards_id, accounting_accounts_id, inventory_accounting_types_id);
+
+ALTER TABLE turq_inventory_accounting_types 
+ADD CONSTRAINT p_id PRIMARY KEY (id);
+
+
+ALTER TABLE turq_inventory_accounting_accounts ADD CONSTRAINT f_inv_card FOREIGN KEY (inventory_cards_id) 
+REFERENCES turq_inventory_cards (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE turq_inventory_accounting_accounts ADD CONSTRAINT f_acc FOREIGN KEY (accounting_accounts_id) 
+REFERENCES turq_accounting_accounts (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE turq_inventory_accounting_accounts ADD CONSTRAINT f_type FOREIGN KEY (inventory_accounting_types_id) 
+REFERENCES turq_inventory_accounting_types (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+/****************************************************************************************/
+
+!!!!!!IMPORTANT!!!!! Export Inventory Accounting Accounts HERE.....
+
+****************************11-03-2005***************************************
+
+ALTER TABLE turq_inventory_cards DROP COLUMN accounting_accounts_id_buy;
+ALTER TABLE turq_inventory_cards DROP COLUMN accounting_accounts_id_sell;
+ALTER TABLE turq_inventory_cards DROP COLUMN accounting_accounts_id_vat;
+ALTER TABLE turq_inventory_cards DROP COLUMN accounting_accounts_id_special_vat;
+ALTER TABLE turq_inventory_cards DROP COLUMN accounting_accounts_id_vat_sell;
+ALTER TABLE turq_inventory_cards DROP COLUMN accounting_accounts_id_special_vat_sell;
+
+
+
+
+CREATE TABLE turq_cheque_transaction_type_groups
+(
+   id int4, 
+   group_name varchar(100), 
+   definition varchar(250), 
+   PRIMARY KEY (id)
+);
+
+insert into turq_cheque_transaction_type_groups values(1,'Portfoyde','');
+insert into turq_cheque_transaction_type_groups values(2,'Ciro Edildi','');
+insert into turq_cheque_transaction_type_groups values(3,'Tahsil Edildi','');
+insert into turq_cheque_transaction_type_groups values(4,'Cariye Iade Edildi','');
+insert into turq_cheque_transaction_type_groups values(5,'Karsiliksiz','');
+insert into turq_cheque_transaction_type_groups values(6,'Tahsilde','');
+
+
+DROP VIEW turq_view_cheque_status;
+CREATE VIEW turq_view_cheque_status AS 
+ SELECT cheq.id AS cheque_cheques_id, cheq.cheques_portfolio_no, cheq.cheques_no, cheq.banks_id, cheq.cheques_due_date, cheq.cheques_debtor, cheq.cheques_payment_place, cheq.cheques_value_date, cheq.cheques_amount, cheq.currencies_id, transtype.id AS cheque_transaction_types_id, transtype.transaction_typs_name,transtype.transaction_types_parent, rolls.id AS cheque_rolls_id, rolls.cheque_rolls_date, rolls.engine_sequences_id, rolls.cheque_roll_no, rolls.current_cards_id, rolls.banks_cards_id
+   FROM turq_cheque_cheques cheq, turq_cheque_rolls rolls, turq_cheque_cheque_in_rolls cheqrolls, turq_cheque_transaction_types transtype
+  WHERE cheq.id = cheqrolls.cheque_cheques_id AND rolls.id = cheqrolls.cheque_rolls_id AND transtype.id = rolls.cheque_transaction_types_id AND rolls.id = (( SELECT max(roll_inner.id)
+           FROM turq_cheque_rolls roll_inner, turq_cheque_cheque_in_rolls cheqroll_inner, turq_cheque_cheques cheq_inner
+          WHERE cheqroll_inner.cheque_rolls_id = roll_inner.id AND cheqroll_inner.cheque_cheques_id = cheq_inner.id AND cheqroll_inner.cheque_cheques_id = cheq.id));
+
+
+ALTER TABLE turq_cheque_transaction_types DROP CONSTRAINT "$53";
+ALTER TABLE turq_cheque_transaction_types DROP COLUMN accounting_accounts_id;
+
+update turq_cheque_transaction_types set transaction_types_parent =1;
+ALTER TABLE turq_cheque_transaction_types ADD CONSTRAINT type2groups FOREIGN KEY (transaction_types_parent) REFERENCES turq_cheque_transaction_type_groups (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+update turq_cheque_transaction_types set transaction_types_parent=1 where id = 0; 
+update turq_cheque_transaction_types set transaction_types_parent=2 where id = 1;
+update turq_cheque_transaction_types set transaction_types_parent=6 where id = 2;
+update turq_cheque_transaction_types set transaction_types_parent=3 where id = 3;
+update turq_cheque_transaction_types set transaction_types_parent=3 where id = 4;
+update turq_cheque_transaction_types set transaction_types_parent=1 where id = 5;
+update turq_cheque_transaction_types set transaction_types_parent=4 where id = 6;
+update turq_cheque_transaction_types set transaction_typs_name="Portfoyden Cariye Iade" where id = 6;
+
+INSERT INTO turq_cheque_transaction_types VALUES (7, 'Cariden Portfoye Iade', 1, 'admin', '2005-01-01', 'admin', '2005-01-01');
+INSERT INTO turq_module_components VALUES (86, 9, 'com.turquaz.cheque.ui.CheUIReturnFromGivenCheques', 'Verilen Cek Iade Bordrosu', 'cem', '2005-02-28', 'cem', '2005-02-28');
+
+
+**************************************************************************************;
+!!!! makro datalari en son buraya kada update edildi...!!!
+**************************************************************************************
+
+CREATE TABLE turq_inventory_transaction_types
+(
+  id int4 NOT NULL,
+  type_name varchar(100) NOT NULL,
+  created_by varchar(100) NOT NULL,
+  creation_date date NOT NULL,
+  updated_by varchar(100) NOT NULL,
+  last_modified date NOT NULL,
+  CONSTRAINT id PRIMARY KEY (id)
+) 
+
+INSERT INTO turq_inventory_transaction_types VALUES (0, 'Acilis', 'admin', '2005-03-18', 'admin', '2005-03-18');
+INSERT INTO turq_inventory_transaction_types VALUES (1, 'Alis/Satis', 'admin', '2005-03-18', 'admin', '2005-03-18');
+INSERT INTO turq_inventory_transaction_types VALUES (2, 'Giris/Cikis', 'admin', '2005-03-18', 'admin', '2005-03-18');
+INSERT INTO turq_inventory_transaction_types VALUES (3, 'Uretim', 'admin', '2005-03-18', 'admin', '2005-03-18');
+
+ALTER TABLE turq_inventory_transactions ADD CONSTRAINT inv_type FOREIGN KEY (transaction_type) REFERENCES turq_inventory_transaction_types (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE turq_inventory_transactions
+   ADD COLUMN document_no varchar(100);
+ALTER TABLE turq_inventory_transactions
+   ADD COLUMN definition varchar(250);
+   
+update turq_inventory_transactions set document_no ='';
+update turq_inventory_transactions set definition ='';
+
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN definition SET NOT NULL;
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN document_no SET NOT NULL;
+   
+INSERT INTO turq_module_components VALUES (87, 0, 'com.turquaz.inventory.ui.InvUIOtherTransactionIn', 'Diger Giris Hareketi', 'cem', '2005-02-28', 'cem', '2005-02-28');
+
+INSERT INTO turq_module_components VALUES (88, 0, 'com.turquaz.inventory.ui.InvUIOtherTransactionOut', 'Diger Cikis Hareketi', 'cem', '2005-02-28', 'cem', '2005-02-28');
+
+
+**********************************************************************************
+***********************************29-03-2005***************************************
+CREATE TABLE turq_bill_in_engine_sequences
+(
+  id int4 NOT NULL,
+  engine_sequences_id int4 NOT NULL,
+  bills_id int4 NOT NULL,
+  
+  CONSTRAINT p_iddd PRIMARY KEY (id),
+  CONSTRAINT f_bill_id FOREIGN KEY (bills_id) REFERENCES turq_bills (id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT f_en_id FOREIGN KEY (engine_sequences_id) REFERENCES turq_engine_sequences (id) ON UPDATE RESTRICT ON DELETE RESTRICT
+) 
+************************************************************************************************
+************************************************************************************************
+***********************************!!!!!!!!IMPORTANT!!!!!!!!!!!!********************************
+************************************************************************************************
+******************************Yukardaki tabloyu olusturduktan sonra*****************************
+******************************ozellikler kismindaki FillBillInEngineSeq*************************
+****************************************calistirilmali******************************************
+************************************************************************************************
+************************************************************************************************
+************************************************************************************************
+
+
+
+ALTER TABLE turq_inventory_transactions RENAME transactions_unit_price  TO unit_price;
+ALTER TABLE turq_inventory_transactions RENAME transactions_total_price  TO total_price;
+ALTER TABLE turq_inventory_transactions RENAME transactions_discount  TO discount_rate;
+ALTER TABLE turq_inventory_transactions RENAME transactions_discount_amount  TO discount_amount;
+ALTER TABLE turq_inventory_transactions RENAME transactions_vat_amount  TO vat_amount;
+ALTER TABLE turq_inventory_transactions RENAME transactions_vat_special_each  TO vat_special_unit_price;
+ALTER TABLE turq_inventory_transactions RENAME transactions_vat_special  TO vat_special_rate;
+ALTER TABLE turq_inventory_transactions RENAME transactions_vat_special_amount  TO vat_special_amount;
+ALTER TABLE turq_inventory_transactions RENAME transactions_cumilative_price  TO cumilative_price;
+ALTER TABLE turq_inventory_transactions RENAME transactions_total_amount_out  TO total_amount_out;
+ALTER TABLE turq_inventory_transactions ADD COLUMN exchange_rate_id int4;
+ALTER TABLE turq_inventory_transactions ADD COLUMN vat_rate numeric;
+
+ALTER TABLE turq_consignments ADD COLUMN current_cards_id int4;
+ALTER TABLE turq_consignments ADD COLUMN consignment_document_no varchar(50);
+
+ALTER TABLE turq_bills ADD COLUMN bill_document_no varchar(50);
+ALTER TABLE turq_bills ADD COLUMN current_cards_id int4;
+
+update turq_inventory_transactions set exchange_rate_id=-1;
+update turq_inventory_transactions set vat_rate=transactions_vat;
+
+ALTER TABLE turq_inventory_transactions DROP COLUMN transactions_vat;
+
+update turq_consignments set current_cards_id = turq_bill_consignment_commons.current_cards_id
+where turq_bill_consignment_commons.id = bill_consignment_common_id;
+
+update turq_consignments set consignment_document_no=turq_bill_consignment_commons.consignment_document_no
+where bill_consignment_common_id=turq_bill_consignment_commons.id;
+
+update turq_bills set bill_document_no=turq_bill_consignment_commons.bill_document_no
+where bill_consignment_commons_id=turq_bill_consignment_commons.id;
+
+update turq_bills set current_cards_id=turq_bill_consignment_commons.current_cards_id
+where bill_consignment_commons_id=turq_bill_consignment_commons.id;
+
+ALTER TABLE turq_bills
+   ALTER COLUMN bill_document_no SET NOT NULL;
+ALTER TABLE turq_bills
+   ALTER COLUMN current_cards_id SET NOT NULL;
+
+ALTER TABLE turq_consignments
+   ALTER COLUMN current_cards_id SET NOT NULL;
+ALTER TABLE turq_consignments
+   ALTER COLUMN consignment_document_no SET NOT NULL;
+ALTER TABLE turq_consignments ADD CONSTRAINT f_cur_card FOREIGN KEY (current_cards_id) 
+REFERENCES turq_current_cards (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN vat_rate SET NOT NULL;
+ALTER TABLE turq_inventory_transactions ADD CONSTRAINT f_ex_rate FOREIGN KEY (exchange_rate_id) 
+REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE turq_bills ADD CONSTRAINT f_cur_card FOREIGN KEY (current_cards_id) 
+REFERENCES turq_current_cards (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE turq_bills DROP COLUMN bill_consignment_commons_id;
+ALTER TABLE turq_consignments DROP COLUMN bill_consignment_common_id;
+
+drop table turq_bill_consignment_commons;
+
+ALTER TABLE turq_inventory_transactions RENAME transactions_amount_in  TO amount_in;
+ALTER TABLE turq_inventory_transactions RENAME total_amount_out  TO amount_out;
+
+ALTER TABLE turq_inventory_transactions ADD COLUMN unit_price_in_foreign_currency numeric;
+ALTER TABLE turq_inventory_transactions ADD COLUMN total_price_in_foreign_currency numeric;
+ALTER TABLE turq_inventory_transactions ADD COLUMN discount_amount_in_foreign_currency numeric;
+ALTER TABLE turq_inventory_transactions ADD COLUMN vat_amount_in_foreign_currency numeric;
+ALTER TABLE turq_inventory_transactions ADD COLUMN vat_special_unit_price_in_foreign_currency numeric;
+ALTER TABLE turq_inventory_transactions ADD COLUMN vat_special_amount_in_foreign_currency numeric;
+ALTER TABLE turq_inventory_transactions ADD COLUMN cumilative_price_in_foreign_currency numeric;
+
+update turq_inventory_transactions set unit_price_in_foreign_currency=unit_price;
+update turq_inventory_transactions set total_price_in_foreign_currency=total_price;
+update turq_inventory_transactions set cumilative_price_in_foreign_currency=cumilative_price;
+update turq_inventory_transactions set discount_amount_in_foreign_currency=discount_amount;
+update turq_inventory_transactions set vat_amount_in_foreign_currency=vat_amount;
+update turq_inventory_transactions set vat_special_unit_price_in_foreign_currency=vat_special_unit_price;
+update turq_inventory_transactions set vat_special_amount_in_foreign_currency=vat_special_amount;
+
+ALTER TABLE turq_bills ADD COLUMN exchange_rate_id int4;
+ALTER TABLE turq_consignments ADD COLUMN exchange_rate_id int4;
+
+update turq_bills set exchange_rate_id=-1;
+update turq_consignments set exchange_rate_id=-1;
+
+ALTER TABLE turq_bills
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+ALTER TABLE turq_bills ADD CONSTRAINT f_ex_rate FOREIGN KEY (exchange_rate_id) 
+REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE turq_consignments
+   ALTER COLUMN exchange_rate_id SET NOT NULL;
+ALTER TABLE turq_consignments ADD CONSTRAINT f_ex_rate FOREIGN KEY (exchange_rate_id) 
+REFERENCES turq_currency_exchange_rates (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN unit_price_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN total_price_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN discount_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN vat_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN vat_special_unit_price_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN vat_special_amount_in_foreign_currency SET NOT NULL;
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN cumilative_price_in_foreign_currency SET NOT NULL;
+
+ALTER TABLE turq_consignments ADD COLUMN bill_document_no varchar(50);
+update turq_consignments set bill_document_no='';
+update turq_consignments set bill_document_no=turq_bills.bill_document_no
+where turq_consignments.engine_sequences_id=turq_bill_in_engine_sequences.engine_sequences_id
+and turq_bill_in_engine_sequences.bills_id=turq_bills.id;
+
+
+ALTER TABLE turq_bills DROP COLUMN consignments_id;
+
+
+ALTER TABLE turq_consignments
+   ALTER COLUMN bill_document_no SET NOT NULL;
+
+CREATE OR REPLACE VIEW turq_view_bill_trans_total AS 
+ SELECT billin.bills_id, sum(invtrans.total_price_in_foreign_currency) AS totalprice,
+ sum(invtrans.vat_amount_in_foreign_currency) AS vatamount, 
+sum(invtrans.vat_special_amount_in_foreign_currency) AS specialvatamount,
+ sum(invtrans.discount_amount_in_foreign_currency) AS discountamount
+   FROM turq_inventory_transactions invtrans, turq_bill_in_engine_sequences billin
+  WHERE invtrans.engine_sequences_id = billin.engine_sequences_id
+  GROUP BY billin.bills_id;
+  
+  
+  
+CREATE OR REPLACE VIEW turq_view_inv_price_totals AS 
+ SELECT invtrans.engine_sequences_id, sum(invtrans.total_price_in_foreign_currency) AS totalprice, sum(invtrans.vat_amount_in_foreign_currency) AS vatamount, sum(invtrans.vat_special_amount_in_foreign_currency) AS specialvatamount, sum(invtrans.discount_amount_in_foreign_currency) AS discountamount
+   FROM turq_inventory_transactions invtrans
+  GROUP BY invtrans.engine_sequences_id;
+
+  
+
+ALTER TABLE turq_inventory_transactions ADD COLUMN current_cards_id int4;
+
+update turq_inventory_transactions set current_cards_id=-1;
+
+update turq_inventory_transactions set current_cards_id=turq_consignments.current_cards_id
+where engine_sequences_id=turq_consignments.engine_sequences_id;
+
+update turq_inventory_transactions set current_cards_id=turq_bills.current_cards_id
+where engine_sequences_id=turq_bill_in_engine_sequences.engine_sequences_id
+and turq_bill_in_engine_sequences.bills_id=turq_bills.id;
+
+ALTER TABLE turq_inventory_transactions
+   ALTER COLUMN current_cards_id SET NOT NULL;
+
+ALTER TABLE turq_inventory_transactions 
+ADD CONSTRAINT f_cur_id FOREIGN KEY (current_cards_id) REFERENCES turq_current_cards (id)
+    ON UPDATE RESTRICT ON DELETE RESTRICT;
+    
+ CREATE TABLE turq_settings( database_version varchar(50) NOT NULL);
+ insert into turq_settings values('0.7.0');
+ 
+ ALTER TABLE turq_users ADD CONSTRAINT u_name UNIQUE (username);
+
+CREATE TABLE turq_user_permission_levels(  id int4 NOT NULL,
+  permission_level int4 NOT NULL,  permission_name varchar(50) NOT NULL,
+  permission_description varchar(50) NOT NULL,  CONSTRAINT p_level_id PRIMARY KEY (id));
+
+ insert into turq_user_permission_levels values(0,0,'No Access','Hicbiri');
+ insert into turq_user_permission_levels values(1,1,'Read','Okuma');
+ insert into turq_user_permission_levels values(2,2,'Read/Write','Okuma/Yazma');
+ insert into turq_user_permission_levels values(3,3,'Read/Write/Delete','Okuma/Yazma/Silme');
+
+ALTER TABLE turq_user_permissions ADD CONSTRAINT f_level FOREIGN KEY 
+(user_permissions_level) REFERENCES turq_user_permission_levels (id)    ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+**********************************************************************************
+
+****************************06-04-2005*******************************
+DROP TABLE TURQ_SETTINGS;
+CREATE TABLE TURQ_SETTINGS(ID INTEGER NOT NULL PRIMARY KEY,DATABASE_VERSION VARCHAR(50) NOT NULL);
+insert into turq_settings values(0,'0.7.0');
+***********************************************
+
+
+!!!!!!!!!!!!!!!!!!!0.7.0 Beta 1 yayinlandi...
+
+INSERT INTO TURQ_CURRENT_TRANSACTION_TYPES VALUES((8,'Virman','admin','2004-10-18','admin','2004-10-18');
+INSERT INTO turq_module_components VALUES (92, 4, 'com.turquaz.current.ui.CurUICurrentTransfer', 'Cari Virman', 'cem', '2005-02-28', 'cem', '2005-02-28');
+
+!!!!!!!!!!!!!!!!!!!0.7.0 Beta 2 yayinlandi...
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+
+INSERT INTO turq_cash_transaction_types VALUES (6, 'Acilis', 'admin', '2004-12-12', 'admin', '2004-12-12');
+INSERT INTO turq_module_components VALUES (93, 8, 'com.turquaz.cash.ui.CashUIInitialTransactions', 'Kasa Acilis', 'cem', '2005-02-28', 'cem', '2005-02-28');
+INSERT INTO turq_module_components VALUES (94, 6, 'com.turquaz.consignment.ui.ConUIAddBuyConsignment', 'Alis Irsaliyesi Ekle', 'onsel', '2004-10-18', 'onsel', '2004-10-18');
+INSERT INTO turq_module_components VALUES (95, 6, 'com.turquaz.consignment.ui.ConUIAddSellConsignment', 'Satis Irsaliyesi Ekle', 'onsel', '2004-10-18', 'onsel', '2004-10-18');
+
+!!!!!!!!!!!!!!!!!!!!!0.7.0 Beta 3 yayinlandi...
+
+INSERT INTO turq_module_components VALUES (96, 9, 'com.turquaz.cheque.ui.CheUIOwnChequeCollect', 'Firma Ceki Tahsili', 'onsel', '2004-10-18', 'onsel', '2004-10-18');
+INSERT INTO turq_cheque_transaction_types VALUES (8, 'Firma Ceki Tahsili', 3, 'admin', '2005-01-01', 'admin', '2005-01-01');
+INSERT INTO turq_banks_transaction_types VALUES (9, 'Cek Odemesi', 'admin', '2005-01-01', 'admin', '2005-01-01');
+INSERT INTO turq_module_components VALUES (97, 0, 'com.turquaz.inventory.ui.InvUIInitialTransacions', 'Stok Acilis Degerleri', 'onsel', '2004-10-18', 'onsel', '2004-10-18');
+
+!!!!!!!!!!!!!!!!!!!!0.7.0 Beta 4 yayinlandi....
+INSERT INTO turq_inventory_accounting_types VALUES (8, 'Return Buy', 'Alistan Iade Muhasebe Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (9, 'Return Sell', 'Satistan Iade Muhasebe Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (11, 'Return Sell VAT', 'Satistan Iade KDV Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (10, 'Return Buy VAT', 'Alistan Iade KDV Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (12, 'Return Buy Special VAT', 'Alistan Iade OTV Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (13, 'Return Sell Special VAT', 'Satistan Iade OTV Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (14, 'Return Buy Discount', 'Alistan Iade Indirim Hesabi');
+INSERT INTO turq_inventory_accounting_types VALUES (15, 'Return Sell Discount', 'Satistan Iade Indirim Hesabi');
+
+INSERT INTO turq_current_transaction_types VALUES (9, 'Coklu Borc', 'admin', '2004-10-18', 'admin', '2004-10-18');
+INSERT INTO turq_current_transaction_types VALUES (10, 'Coklu Alacak', 'admin', '2004-10-18', 'admin', '2004-10-18');
+
+INSERT INTO turq_module_components VALUES (98, 4, 'com.turquaz.current.ui.CurUICurCardBalanceReport', 'Cari Kart Mizani', 'admin', '2005-04-27', 'admin', '2005-04-27');
+INSERT INTO turq_module_components VALUES (99, 4, 'com.turquaz.current.ui.CurUIMultipleCreditVoucher', 'Coklu Alacak Fisi', 'onsel', '2004-10-18', 'onsel', '2004-10-18');
+INSERT INTO turq_module_components VALUES (100, 4, 'com.turquaz.current.ui.CurUIMultipleDeptVoucher', 'Coklu Borc Fisi', 'onsel', '2004-10-18', 'onsel', '2004-10-18');
+
+INSERT INTO turq_module_components VALUES (101, 7, 'com.turquaz.bill.ui.BillUIAddReturnBuyBill', 'Alistan Iade Faturasi', 'onsel', '2004-10-18', 'onsel', '2004-10-18');
+INSERT INTO turq_module_components VALUES (102, 7, 'com.turquaz.bill.ui.BillUIAddReturnSellBill', 'Satistan Iade Faturasi', 'onsel', '2004-10-18', 'onsel', '2004-10-18');
+
+
+
+
+----------------------0.7.6 Beta-------------------------------
+
+delete from turq_inventory_transactions where (turq_inventory_transactions.engine_sequences_id not in
+ (Select cons.engine_sequences_id from turq_consignments cons)) and (turq_inventory_transactions.engine_sequences_id not in
+ (Select billInEngine.engine_sequences_id from turq_bill_in_engine_sequences billInEngine))
+
+------------------------------------------------------------
+
+
+----------------------------2005-05-18---------------------------------
+CREATE TABLE public.turq_services
+(
+  id int4 NOT NULL,
+  service_name varchar(250) NOT NULL,
+  class_name varchar(250) NOT NULL,
+  method_name varchar(250) NOT NULL,
+  CONSTRAINT turq_services_pkey PRIMARY KEY (id),
+  CONSTRAINT turq_services_service_name_key UNIQUE (service_name)
+)
+-------------------------------------------------------------------------
+
+
+
+
+
+---------------------------17-06-2005------------------------------------
+ALTER TABLE turq_currencies ADD COLUMN constant bool;
+update turq_currencies set constant='FALSE';
+update turq_currencies set constant='TRUE' where id=1;
+----------------------------------------------------------------------------------
+
+
+--------------------------30-06-2005------------------------------------------
+CREATE TABLE turq_inventory_transaction_bills
+(
+  id int4 NOT NULL,
+  bill_date date NOT NULL,
+  bill_definition varchar(250) NOT NULL,
+  bill_type int4 NOT NULL,
+  engine_sequence int4 NOT NULL,
+  bill_document_no varchar(25) NOT NULL,
+  created_by varchar(25) NOT NULL,
+  creation_date date NOT NULL,
+  updated_by varchar(25) NOT NULL,
+  last_modified date NOT NULL,
+  warehouse_in int4 NOT NULL,
+  warehouse_out int4 NOT NULL,
+  CONSTRAINT turq_inventory_transaction_bills_pkey PRIMARY KEY (id),
+  CONSTRAINT eng_seq_trans FOREIGN KEY (engine_sequence) REFERENCES turq_engine_sequences (id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT warehouse_in FOREIGN KEY (warehouse_in) REFERENCES turq_inventory_warehouses (id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CONSTRAINT warehouse_out FOREIGN KEY (warehouse_out) REFERENCES turq_accounting_account_classes (id) ON UPDATE RESTRICT ON DELETE RESTRICT
+) 
+WITHOUT OIDS;
+----------------------------------------------------------------------------------
+
+
+--------------------------27-08-2005------------------------------------------
+
+CREATE TABLE turq_engine_menu (
+    id integer NOT NULL,
+    menu_name character varying(100) NOT NULL,
+    menu_image character varying(100),
+    menu_type integer NOT NULL,
+    menu_module_component integer NOT NULL,
+    parent_id integer NOT NULL,
+    CONSTRAINT turq_engine_menu_pkey PRIMARY KEY (id),
+    CONSTRAINT menu_module FOREIGN KEY (menu_module_component) REFERENCES turq_module_components(id) ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+
+
+INSERT INTO turq_services VALUES (2, 'Bank_getBankCards', 'com.turquaz.bank.bl.BankBLBankCardSearch', 'getBankCards');
+INSERT INTO turq_services VALUES (6, 'Eng_getModuleComponents', 'com.turquaz.engine.dal.EngDALUserPerms', 'getModuleComponents');
+INSERT INTO turq_services VALUES (7, 'Acc_getAllAccountsWithSum', 'com.turquaz.accounting.bl.AccBLAccountAdd', 'getAllAccountsWithSum');
+INSERT INTO turq_services VALUES (10, 'Acc_updateAccount', 'com.turquaz.accounting.bl.AccBLAccountUpdate', 'updateAccount');
+INSERT INTO turq_services VALUES (11, 'Acc_deleteAccount', 'com.turquaz.accounting.bl.AccBLAccountUpdate', 'deleteAccount');
+INSERT INTO turq_services VALUES (12, 'Acc_saveAccount', 'com.turquaz.accounting.bl.AccBLAccountAdd', 'saveAccount');
+INSERT INTO turq_services VALUES (15, 'Acc_getInitialTransaction', 'com.turquaz.accounting.bl.AccBLTransactionUpdate', 'getInitialTransaction');
+INSERT INTO turq_services VALUES (16, 'Acc_updateTransaction', 'com.turquaz.accounting.bl.AccBLTransactionUpdate', 'updateTransaction');
+INSERT INTO turq_services VALUES (17, 'Acc_getUnsavedTransactions', 'com.turquaz.accounting.bl.AccBLTransactionSearch', 'getUnsavedTransactions');
+INSERT INTO turq_services VALUES (18, 'Acc_addToJournal', 'com.turquaz.accounting.bl.AccBLTransactionSearch', 'addToJournal');
+INSERT INTO turq_services VALUES (19, 'Acc_searchAccounts', 'com.turquaz.accounting.bl.AccBLAccountSearch', 'searchAccounts');
+INSERT INTO turq_services VALUES (20, 'Eng_getCurrencies', 'com.turquaz.engine.bl.EngBLServer', 'getCurrencies');
+INSERT INTO turq_services VALUES (24, 'Acc_saveAccTransactionFromUI', 'com.turquaz.accounting.bl.AccBLTransactionAdd', 'saveAccTransactionFromUI');
+INSERT INTO turq_services VALUES (27, 'Acc_getAccTransactionById', 'com.turquaz.accounting.bl.AccBLTransactionSearch', 'getAccTransactionById');
+INSERT INTO turq_services VALUES (28, 'Acc_removeAccountingTransaction', 'com.turquaz.accounting.bl.AccBLTransactionSearch', 'removeAccountingTransaction');
+INSERT INTO turq_services VALUES (30, 'Acc_initiliazeTransactionRows', 'com.turquaz.accounting.bl.AccBLTransactionUpdate', 'initiliazeTransactionRows');
+INSERT INTO turq_services VALUES (31, 'Acc_searchAccTransaction', 'com.turquaz.accounting.bl.AccBLTransactionSearch', 'searchAccTransaction');
+INSERT INTO turq_services VALUES (32, 'Eng_PrintTransaction', 'com.turquaz.engine.bl.EngBLUtils', 'PrintTransaction');
+INSERT INTO turq_services VALUES (33, 'Eng_checkVersion', 'com.turquaz.engine.bl.EngBLVersionValidate', 'checkVersion');
+INSERT INTO turq_services VALUES (34, 'Eng_validateVersion', 'com.turquaz.engine.bl.EngBLVersionValidate', 'validateVersion');
+INSERT INTO turq_services VALUES (36, 'Adm_getCompany', 'com.turquaz.admin.bl.AdmBLCompanyInfo', 'getCompany');
+INSERT INTO turq_services VALUES (38, 'Adm_updateCompany', 'com.turquaz.admin.bl.AdmBLCompanyInfo', 'updateCompany');
+INSERT INTO turq_services VALUES (40, 'Adm_saveCurrency', 'com.turquaz.admin.bl.AdmBLCurrencyAdd', 'saveCurrency');
+INSERT INTO turq_services VALUES (41, 'Adm_saveExchangeRate', 'com.turquaz.admin.bl.AdmBLCurrencyExchangeRateAdd', 'saveExchangeRate');
+INSERT INTO turq_services VALUES (42, 'Adm_getCurrencyExchangeRates', 'com.turquaz.admin.bl.AdmBLCurrencyExchangeRateAdd', 'getCurrencyExchangeRates');
+INSERT INTO turq_services VALUES (43, 'Adm_saveGroup', 'com.turquaz.admin.bl.AdmBLGroupAdd', 'saveGroup');
+INSERT INTO turq_services VALUES (44, 'Adm_getModules', 'com.turquaz.admin.bl.AdmBLGroupPermissions', 'getModules');
+INSERT INTO turq_services VALUES (45, 'Adm_getModuleComponents', 'com.turquaz.admin.bl.AdmBLGroupPermissions', 'getModuleComponents');
+INSERT INTO turq_services VALUES (46, 'Adm_getGroupPermissions', 'com.turquaz.admin.bl.AdmBLGroupPermissions', 'getGroupPermissions');
+INSERT INTO turq_services VALUES (47, 'Adm_saveGroupPermission', 'com.turquaz.admin.bl.AdmBLGroupPermissions', 'saveGroupPermission');
+INSERT INTO turq_services VALUES (48, 'Adm_deleteGroupPermission', 'com.turquaz.admin.bl.AdmBLGroupPermissions', 'deleteGroupPermission');
+INSERT INTO turq_services VALUES (49, 'Adm_getGroups', 'com.turquaz.admin.bl.AdmBLGroups', 'getGroups');
+INSERT INTO turq_services VALUES (50, 'Adm_getUserPermissonLevels', 'com.turquaz.admin.bl.AdmBLUserPermissions', 'getUserPermissonLevels');
+INSERT INTO turq_services VALUES (52, 'Adm_deleteGroup', 'com.turquaz.admin.bl.AdmBLUsers', 'deleteGroup');
+INSERT INTO turq_services VALUES (53, 'Adm_updateGroup', 'com.turquaz.admin.bl.AdmBLUserUpdate', 'updateGroup');
+INSERT INTO turq_services VALUES (55, 'Adm_saveUser', 'com.turquaz.admin.bl.AdmBLUserAdd', 'saveUser');
+INSERT INTO turq_services VALUES (57, 'Adm_getUsers', 'com.turquaz.admin.bl.AdmBLUsers', 'getUsers');
+INSERT INTO turq_services VALUES (58, 'Adm_getUserPermissions', 'com.turquaz.admin.bl.AdmBLUserPermissions', 'getUserPermissions');
+INSERT INTO turq_services VALUES (59, 'Adm_saveUserPermission', 'com.turquaz.admin.bl.AdmBLUserPermissions', 'saveUserPermission');
+INSERT INTO turq_services VALUES (60, 'Adm_deleteUserPermission', 'com.turquaz.admin.bl.AdmBLUserPermissions', 'deleteUserPermission');
+INSERT INTO turq_services VALUES (61, 'Adm_deleteUser', 'com.turquaz.admin.bl.AdmBLUsers', 'deleteUser');
+INSERT INTO turq_services VALUES (62, 'Adm_updateUser', 'com.turquaz.admin.bl.AdmBLUserUpdate', 'updateUser');
+INSERT INTO turq_services VALUES (64, 'Eng_getGroupPermissions', 'com.turquaz.engine.dal.EngDALUserPerms', 'getGroupPermissions');
+INSERT INTO turq_services VALUES (65, 'Eng_getUserPermissions', 'com.turquaz.engine.dal.EngDALUserPerms', 'getUserPermissions');
+INSERT INTO turq_services VALUES (67, 'Bnk_saveBankCard', 'com.turquaz.bank.bl.BankBLBankCardAdd', 'saveBankCard');
+INSERT INTO turq_services VALUES (68, 'Bnk_searchBankCards', 'com.turquaz.bank.bl.BankBLBankCardSearch', 'searchBankCards');
+INSERT INTO turq_services VALUES (69, 'Bnk_searchBankCardsWithCode', 'com.turquaz.bank.bl.BankBLBankCardSearch', 'searchBankCardsWithCode');
+INSERT INTO turq_services VALUES (70, 'Bnk_initializeBankCardById', 'com.turquaz.bank.bl.BankBLBankCardSearch', 'initializeBankCardById');
+INSERT INTO turq_services VALUES (71, 'Bnk_updateBankCard', 'com.turquaz.bank.bl.BankBLBankCardUpdate', 'updateBankCard');
+INSERT INTO turq_services VALUES (73, 'Bnk_deleteBankCard', 'com.turquaz.bank.bl.BankBLBankCardUpdate', 'deleteBankCard');
+INSERT INTO turq_services VALUES (74, 'Bnk_saveCashTransaction', 'com.turquaz.bank.bl.BankBLTransactionAdd', 'saveCashTransaction');
+INSERT INTO turq_services VALUES (75, 'Bnk_getTransactionInfo', 'com.turquaz.bank.bl.BankBLTransactionSearch', 'getTransactionInfo');
+INSERT INTO turq_services VALUES (76, 'Bnk_updateCashTransactionBill', 'com.turquaz.bank.bl.BankBLTransactionUpdate', 'updateCashTransactionBill');
+INSERT INTO turq_services VALUES (77, 'Bnk_deleteTransaction', 'com.turquaz.bank.bl.BankBLTransactionUpdate', 'deleteTransaction');
+INSERT INTO turq_services VALUES (82, 'Bnk_getBankInitialTransactions', 'com.turquaz.bank.bl.BankBLTransactionSearch', 'getBankInitialTransactions');
+INSERT INTO turq_services VALUES (83, 'Bnk_updateInitialTransaction', 'com.turquaz.bank.bl.BankBLTransactionUpdate', 'updateInitialTransaction');
+INSERT INTO turq_services VALUES (84, 'Bnk_saveTransaction', 'com.turquaz.bank.bl.BankBLTransactionAdd', 'saveTransaction');
+INSERT INTO turq_services VALUES (87, 'Bnk_updateTransactionBill', 'com.turquaz.bank.bl.BankBLTransactionUpdate', 'updateTransactionBill');
+INSERT INTO turq_services VALUES (92, 'Bnk_saveOtherTransaction', 'com.turquaz.bank.bl.BankBLTransactionAdd', 'saveOtherTransaction');
+INSERT INTO turq_services VALUES (94, 'Bnk_updateOtherTransactionBill', 'com.turquaz.bank.bl.BankBLTransactionUpdate', 'updateOtherTransactionBill');
+INSERT INTO turq_services VALUES (101, 'Bnk_searchtransaction', 'com.turquaz.bank.bl.BankBLTransactionSearch', 'searchtransaction');
+INSERT INTO turq_services VALUES (102, 'Bnk_saveTransferBetweenBanks', 'com.turquaz.bank.bl.BankBLTransactionAdd', 'saveTransferBetweenBanks');
+INSERT INTO turq_services VALUES (105, 'Bnk_updateTransferBetweenBanks', 'com.turquaz.bank.bl.BankBLTransactionUpdate', 'updateTransferBetweenBanks');
+INSERT INTO turq_services VALUES (107, 'Csh_getDeferredTotal', 'com.turquaz.cash.bl.CashBLCashTransactionSearch', 'getDeferredTotal');
+INSERT INTO turq_services VALUES (109, 'Csh_getTransactionInfo', 'com.turquaz.cash.bl.CashBLCashTransactionSearch', 'getTransactionInfo');
+INSERT INTO turq_services VALUES (110, 'Csh_saveCashCard', 'com.turquaz.cash.bl.CashBLCashCardAdd', 'saveCashCard');
+INSERT INTO turq_services VALUES (116, 'Csh_deleteCashCard', 'com.turquaz.cash.bl.CashBLCashCardUpdate', 'deleteCashCard');
+INSERT INTO turq_services VALUES (117, 'Csh_updateCashCard', 'com.turquaz.cash.bl.CashBLCashCardUpdate', 'updateCashCard');
+INSERT INTO turq_services VALUES (118, 'Csh_saveCurrentTransaction', 'com.turquaz.cash.bl.CashBLCashTransactionAdd', 'saveCurrentTransaction');
+INSERT INTO turq_services VALUES (120, 'Csh_deleteCashTrans', 'com.turquaz.cash.bl.CashBLCashTransactionUpdate', 'deleteCashTrans');
+INSERT INTO turq_services VALUES (121, 'Csh_updateCashTrans', 'com.turquaz.cash.bl.CashBLCashTransactionUpdate', 'updateCashTrans');
+INSERT INTO turq_services VALUES (122, 'Csh_saveOtherTransaction', 'com.turquaz.cash.bl.CashBLCashTransactionAdd', 'saveOtherTransaction');
+INSERT INTO turq_services VALUES (127, 'Csh_updateOtherTrans', 'com.turquaz.cash.bl.CashBLCashTransactionUpdate', 'updateOtherTrans');
+INSERT INTO turq_services VALUES (135, 'Csh_searchCashTransactions', 'com.turquaz.cash.bl.CashBLCashTransactionSearch', 'searchCashTransactions');
+INSERT INTO turq_services VALUES (137, 'Csh_saveTransferBetweenAccounts', 'com.turquaz.cash.bl.CashBLCashTransactionAdd', 'saveTransferBetweenAccounts');
+INSERT INTO turq_services VALUES (138, 'Csh_getTransactionBetweenAccounts', 'com.turquaz.cash.bl.CashBLCashTransactionSearch', 'getTransactionBetweenAccounts');
+INSERT INTO turq_services VALUES (140, 'Csh_updateTransBetweenCards', 'com.turquaz.cash.bl.CashBLCashTransactionUpdate', 'updateTransBetweenCards');
+INSERT INTO turq_services VALUES (141, 'Csh_getInitialTransactions', 'com.turquaz.cash.bl.CashBLCashTransactionSearch', 'getInitialTransactions');
+INSERT INTO turq_services VALUES (142, 'Csh_updateCashInitialTrans', 'com.turquaz.cash.bl.CashBLCashTransactionUpdate', 'updateCashInitialTrans');
+INSERT INTO turq_services VALUES (143, 'Che_saveChequeCollect', 'com.turquaz.cheque.bl.CheBLSaveChequeTransaction', 'saveChequeCollect');
+INSERT INTO turq_services VALUES (146, 'Che_getChequeRollInfo', 'com.turquaz.cheque.bl.CheBLUpdateChequeRoll', 'getChequeRollInfo');
+INSERT INTO turq_services VALUES (147, 'Che_updateChequeRollIn', 'com.turquaz.cheque.bl.CheBLUpdateChequeRoll', 'updateChequeRollIn');
+INSERT INTO turq_services VALUES (148, 'Che_deleteChequeRollIn', 'com.turquaz.cheque.bl.CheBLUpdateChequeRoll', 'deleteChequeRollIn');
+INSERT INTO turq_services VALUES (150, 'Che_updateChequeCollectRoll', 'com.turquaz.cheque.bl.CheBLUpdateChequeRoll', 'updateChequeCollectRoll');
+INSERT INTO turq_services VALUES (152, 'Che_saveChequeRoll', 'com.turquaz.cheque.bl.CheBLSaveChequeTransaction', 'saveChequeRoll');
+INSERT INTO turq_services VALUES (166, 'Che_getTransactionTypes', 'com.turquaz.cheque.bl.CheBLSearchChequeRoll', 'getTransactionTypes');
+INSERT INTO turq_services VALUES (167, 'Che_searchChequeRoll', 'com.turquaz.cheque.bl.CheBLSearchChequeRoll', 'searchChequeRoll');
+INSERT INTO turq_services VALUES (168, 'Che_getChequesInBank', 'com.turquaz.cheque.bl.CheBLSearchChequeRoll', 'getChequesInBank');
+INSERT INTO turq_services VALUES (169, 'Che_getChequesGivenToCurrent', 'com.turquaz.cheque.bl.CheBLSearchChequeRoll', 'getChequesGivenToCurrent');
+INSERT INTO turq_services VALUES (170, 'Che_getChequesInPortfolio', 'com.turquaz.cheque.bl.CheBLSearchChequeRoll', 'getChequesInPortfolio');
+INSERT INTO turq_services VALUES (173, 'Che_getChequeHistory', 'com.turquaz.cheque.bl.CheBLSearchCheques', 'getChequeHistory');
+INSERT INTO turq_services VALUES (174, 'Che_updateCheque', 'com.turquaz.cheque.bl.CheBLUpdateCheque', 'updateCheque');
+INSERT INTO turq_services VALUES (175, 'Che_deleteCheque', 'com.turquaz.cheque.bl.CheBLUpdateCheque', 'deleteCheque');
+INSERT INTO turq_services VALUES (176, 'Che_getOwnChequesGivenToCurrent', 'com.turquaz.cheque.bl.CheBLSearchChequeRoll', 'getOwnChequesGivenToCurrent');
+INSERT INTO turq_services VALUES (177, 'Che_saveCollectOfOwnCheques', 'com.turquaz.cheque.bl.CheBLSaveChequeTransaction', 'saveCollectOfOwnCheques');
+INSERT INTO turq_services VALUES (179, 'Che_updateOwnChequeCollect', 'com.turquaz.cheque.bl.CheBLUpdateChequeRoll', 'updateOwnChequeCollect');
+INSERT INTO turq_services VALUES (185, 'Che_saveReturnFromBank', 'com.turquaz.cheque.bl.CheBLSaveChequeTransaction', 'saveReturnFromBank');
+INSERT INTO turq_services VALUES (188, 'Acc_getTransactions', 'com.turquaz.accounting.bl.AccBLTransactionSearch', 'getTransactions');
+INSERT INTO turq_services VALUES (190, 'Che_saveReturnToCurrent', 'com.turquaz.cheque.bl.CheBLSaveChequeTransaction', 'saveReturnToCurrent');
+INSERT INTO turq_services VALUES (194, 'Che_saveReturnFromCurrent', 'com.turquaz.cheque.bl.CheBLSaveChequeTransaction', 'saveReturnFromCurrent');
+INSERT INTO turq_services VALUES (199, 'Con_saveConsignment', 'com.turquaz.consignment.bl.ConBLAddConsignment', 'saveConsignment');
+INSERT INTO turq_services VALUES (200, 'Con_getConsignmentGroups', 'com.turquaz.consignment.bl.ConBLAddGroups', 'getConsignmentGroups');
+INSERT INTO turq_services VALUES (201, 'Inv_getInventoryWarehouses', 'com.turquaz.inventory.bl.InvBLWarehouseSearch', 'getInventoryWarehouses');
+INSERT INTO turq_services VALUES (207, 'Con_searchConsignment', 'com.turquaz.consignment.bl.ConBLSearchConsignment', 'searchConsignment');
+INSERT INTO turq_services VALUES (208, 'Con_getConsignmentInfo', 'com.turquaz.consignment.bl.ConBLUpdateConsignment', 'getConsignmentInfo');
+INSERT INTO turq_services VALUES (209, 'Con_deleteConsignmentById', 'com.turquaz.consignment.bl.ConBLUpdateConsignment', 'deleteConsignmentById');
+INSERT INTO turq_services VALUES (210, 'Con_chooseConsignment', 'com.turquaz.consignment.bl.ConBLSearchConsignment', 'chooseConsignment');
+INSERT INTO turq_services VALUES (212, 'Con_deleteGroup', 'com.turquaz.consignment.bl.ConBLAddGroups', 'deleteGroup');
+INSERT INTO turq_services VALUES (213, 'Con_updateGroup', 'com.turquaz.consignment.bl.ConBLAddGroups', 'updateGroup');
+INSERT INTO turq_services VALUES (214, 'Con_saveGroup', 'com.turquaz.consignment.bl.ConBLAddGroups', 'saveGroup');
+INSERT INTO turq_services VALUES (216, 'Eng_PrintConsignment', 'com.turquaz.engine.bl.EngBLUtils', 'PrintConsignment');
+INSERT INTO turq_services VALUES (220, 'Con_updateConsignment', 'com.turquaz.consignment.bl.ConBLUpdateConsignment', 'updateConsignment');
+INSERT INTO turq_services VALUES (224, 'Inv_getInventoryUnits', 'com.turquaz.inventory.bl.InvBLCardAdd', 'getInventoryUnits');
+INSERT INTO turq_services VALUES (225, 'Inv_saveInventoryCard', 'com.turquaz.inventory.bl.InvBLCardAdd', 'saveInventoryCard');
+INSERT INTO turq_services VALUES (226, 'Inv_getAllInvAccTypes', 'com.turquaz.inventory.bl.InvBLCardSearch', 'getAllInvAccTypes');
+INSERT INTO turq_services VALUES (229, 'Inv_deleteInventoryCard', 'com.turquaz.inventory.bl.InvBLCardUpdate', 'deleteInventoryCard');
+INSERT INTO turq_services VALUES (230, 'Inv_searchCards', 'com.turquaz.inventory.bl.InvBLCardSearch', 'searchCards');
+INSERT INTO turq_services VALUES (232, 'Inv_initializeInventoryCard', 'com.turquaz.inventory.bl.InvBLCardSearch', 'initializeInventoryCard');
+INSERT INTO turq_services VALUES (233, 'Inv_getInvAccountingAccs', 'com.turquaz.inventory.bl.InvBLCardSearch', 'getInvAccountingAccs');
+INSERT INTO turq_services VALUES (234, 'Inv_getInvCardPrices', 'com.turquaz.inventory.bl.InvBLCardSearch', 'getInvCardPrices');
+INSERT INTO turq_services VALUES (235, 'Inv_getInvCardGroups', 'com.turquaz.inventory.bl.InvBLCardSearch', 'getInvCardGroups');
+INSERT INTO turq_services VALUES (238, 'Inv_updateInventoryCard', 'com.turquaz.inventory.bl.InvBLCardUpdate', 'updateInventoryCard');
+INSERT INTO turq_services VALUES (239, 'Inv_deleteInvGroup', 'com.turquaz.inventory.bl.InvBLCardUpdate', 'deleteInvGroup');
+INSERT INTO turq_services VALUES (244, 'Inv_getInitialTransactions', 'com.turquaz.inventory.bl.InvBLSearchTransaction', 'getInitialTransactions');
+INSERT INTO turq_services VALUES (245, 'Inv_updateInitialTransaction', 'com.turquaz.inventory.bl.InvBLUpdateTransaction', 'updateInitialTransaction');
+INSERT INTO turq_services VALUES (247, 'Inv_getAllIds', 'com.turquaz.inventory.bl.InvBLSearchTransaction', 'getAllIds');
+INSERT INTO turq_services VALUES (249, 'Inv_getInventoryCardAbstract', 'com.turquaz.inventory.bl.InvBLSearchTransaction', 'getInventoryCardAbstract');
+INSERT INTO turq_services VALUES (251, 'Inv_saveInvGroup', 'com.turquaz.inventory.bl.InvBLCardAdd', 'saveInvGroup');
+INSERT INTO turq_services VALUES (252, 'Inv_updateInvGroup', 'com.turquaz.inventory.bl.InvBLCardAdd', 'updateInvGroup');
+INSERT INTO turq_services VALUES (256, 'Inv_getInventoryLedger', 'com.turquaz.inventory.bl.InvBLInventoryLedger', 'getInventoryLedger');
+INSERT INTO turq_services VALUES (262, 'Inv_getInventoryTransactionReport', 'com.turquaz.inventory.bl.InvBLSearchTransaction', 'getInventoryTransactionReport');
+INSERT INTO turq_services VALUES (264, 'Inv_saveOtherInventoryTransaction', 'com.turquaz.inventory.bl.InvBLSaveTransaction', 'saveOtherInventoryTransaction');
+INSERT INTO turq_services VALUES (269, 'Inv_getTransactionTotals', 'com.turquaz.inventory.bl.InvBLProfitAnalysis', 'getTransactionTotals');
+INSERT INTO turq_services VALUES (273, 'Inv_searchTransactions', 'com.turquaz.inventory.bl.InvBLSearchTransaction', 'searchTransactions');
+INSERT INTO turq_services VALUES (277, 'Inv_getTransactionTotalReport', 'com.turquaz.inventory.bl.InvBLCardSearch', 'getTransactionTotalReport');
+INSERT INTO turq_services VALUES (287, 'Inv_saveUnit', 'com.turquaz.inventory.bl.InvBLCardAdd', 'saveUnit');
+INSERT INTO turq_services VALUES (288, 'Inv_updateInvUnit', 'com.turquaz.inventory.bl.InvBLCardUpdate', 'updateInvUnit');
+INSERT INTO turq_services VALUES (289, 'Inv_saveWarehouse', 'com.turquaz.inventory.bl.InvBLWarehouseAdd', 'saveWarehouse');
+INSERT INTO turq_services VALUES (291, 'Inv_searchWarehouse', 'com.turquaz.inventory.bl.InvBLWarehouseSearch', 'searchWarehouse');
+INSERT INTO turq_services VALUES (294, 'Inv_deleteWarehouse', 'com.turquaz.inventory.bl.InvBLWarehouseUpdate', 'deleteWarehouse');
+INSERT INTO turq_services VALUES (295, 'Inv_updateWarehouse', 'com.turquaz.inventory.bl.InvBLWarehouseUpdate', 'updateWarehouse');
+INSERT INTO turq_services VALUES (297, 'Inv_getWarehouseInfo', 'com.turquaz.inventory.bl.InvBLWarehouseSearch', 'getWarehouseInfo');
+INSERT INTO turq_services VALUES (301, 'Bil_saveBillFromBill', 'com.turquaz.bill.bl.BillBLAddBill', 'saveBillFromBill');
+INSERT INTO turq_services VALUES (198, 'Inv_getParentInventoryGroups', 'com.turquaz.inventory.bl.InvBLCardAdd', 'getParentInventoryGroups');
+INSERT INTO turq_services VALUES (217, 'Cur_hasTransactions', 'com.turquaz.current.bl.CurBLCurrentCardSearch', 'hasTransactions');
+INSERT INTO turq_services VALUES (221, 'Cur_deleteCurrentCard', 'com.turquaz.current.bl.CurBLCurrentCardUpdate', 'deleteCurrentCard');
+INSERT INTO turq_services VALUES (223, 'Cur_searchCurrentCard', 'com.turquaz.current.bl.CurBLCurrentCardSearch', 'searchCurrentCard');
+INSERT INTO turq_services VALUES (227, 'Cur_searchCurrentCardBalanceList', 'com.turquaz.current.bl.CurBLCurrentCardSearch', 'searchCurrentCardBalanceList');
+INSERT INTO turq_services VALUES (231, 'Cur_saveCurrentCard', 'com.turquaz.current.bl.CurBLCurrentCardAdd', 'saveCurrentCard');
+INSERT INTO turq_services VALUES (246, 'Cur_getCurrentTransactions', 'com.turquaz.current.bl.CurBLSearchTransaction', 'getCurrentTransactions');
+INSERT INTO turq_services VALUES (248, 'Cur_getCurrentcardInfo', 'com.turquaz.current.bl.CurBLCurrentCardUpdate', 'getCurrentcardInfo');
+INSERT INTO turq_services VALUES (250, 'Cur_getCurrentTransactionTypes', 'com.turquaz.current.bl.CurBLCurrentTransactionAdd', 'getCurrentTransactionTypes');
+INSERT INTO turq_services VALUES (254, 'Cur_getCurrentTransactionBalances', 'com.turquaz.current.bl.CurBLCurrentCardUpdate', 'getCurrentTransactionBalances');
+INSERT INTO turq_services VALUES (257, 'Cur_getTransactions', 'com.turquaz.current.bl.CurBLCurrentCardSearch', 'getTransactions');
+INSERT INTO turq_services VALUES (261, 'Cur_isCurrentCodePresent', 'com.turquaz.current.bl.CurBLCurrentCardAdd', 'isCurrentCodePresent');
+INSERT INTO turq_services VALUES (263, 'Cur_updateCurrentCard', 'com.turquaz.current.bl.CurBLCurrentCardUpdate', 'updateCurrentCard');
+INSERT INTO turq_services VALUES (267, 'Cur_saveCurrentTransferBetweenAccounts', 'com.turquaz.current.bl.CurBLCurrentTransactionAdd', 'saveCurrentTransferBetweenAccounts');
+INSERT INTO turq_services VALUES (270, 'Cur_getTransferBetweenAccountsInfo', 'com.turquaz.current.bl.CurBLTransactionUpdate', 'getTransferBetweenAccountsInfo');
+INSERT INTO turq_services VALUES (271, 'Cur_deleteTransfer', 'com.turquaz.current.bl.CurBLTransactionUpdate', 'deleteTransfer');
+INSERT INTO turq_services VALUES (276, 'Cur_deleteGroup', 'com.turquaz.current.bl.CurBLCurrentCardAdd', 'deleteGroup');
+INSERT INTO turq_services VALUES (278, 'Cur_updateGroup', 'com.turquaz.current.bl.CurBLCurrentCardAdd', 'updateGroup');
+INSERT INTO turq_services VALUES (279, 'Cur_saveCurrentGroup', 'com.turquaz.current.bl.CurBLCurrentCardAdd', 'saveCurrentGroup');
+INSERT INTO turq_services VALUES (282, 'Cur_getInitialTransactions', 'com.turquaz.current.bl.CurBLSearchTransaction', 'getInitialTransactions');
+INSERT INTO turq_services VALUES (284, 'Cur_updateInitialTransaction', 'com.turquaz.current.bl.CurBLTransactionUpdate', 'updateInitialTransaction');
+INSERT INTO turq_services VALUES (286, 'Cur_saveMultipleOtherTransaction', 'com.turquaz.current.bl.CurBLCurrentTransactionAdd', 'saveMultipleOtherTransaction');
+INSERT INTO turq_services VALUES (290, 'Cur_getMultipleVoucherInfo', 'com.turquaz.current.bl.CurBLTransactionUpdate', 'getMultipleVoucherInfo');
+INSERT INTO turq_services VALUES (292, 'Cur_deleteCurTrans', 'com.turquaz.current.bl.CurBLTransactionUpdate', 'deleteCurTrans');
+INSERT INTO turq_services VALUES (305, 'Cur_saveCurrentCashTransaction', 'com.turquaz.current.bl.CurBLCurrentTransactionAdd', 'saveCurrentCashTransaction');
+INSERT INTO turq_services VALUES (309, 'Cur_searchCurrentTransaction', 'com.turquaz.current.bl.CurBLSearchTransaction', 'searchCurrentTransaction');
+INSERT INTO turq_services VALUES (312, 'Cur_getBankTransaction', 'com.turquaz.current.bl.CurBLSearchTransaction', 'getBankTransaction');
+INSERT INTO turq_services VALUES (313, 'Cur_getBillofCurrentTrans', 'com.turquaz.current.bl.CurBLSearchTransaction', 'getBillofCurrentTrans');
+INSERT INTO turq_services VALUES (315, 'Cur_getCheqeuTransaction', 'com.turquaz.current.bl.CurBLSearchTransaction', 'getCheqeuTransaction');
+INSERT INTO turq_services VALUES (316, 'Cur_getCashTransaction', 'com.turquaz.current.bl.CurBLSearchTransaction', 'getCashTransaction');
+INSERT INTO turq_services VALUES (321, 'Cur_getVoucherInfo', 'com.turquaz.current.bl.CurBLTransactionUpdate', 'getVoucherInfo');
+INSERT INTO turq_services VALUES (330, 'Cur_getCurrentAccountingAccount', 'com.turquaz.current.bl.CurBLCurrentCardSearch', 'getCurrentAccountingAccount');
+INSERT INTO turq_services VALUES (335, 'Inv_getInventoryCardFromName', 'com.turquaz.inventory.bl.InvBLCardSearch', 'getInventoryCardFromName');
+INSERT INTO turq_services VALUES (336, 'Inv_getInventoryCard', 'com.turquaz.inventory.bl.InvBLCardSearch', 'getInventoryCard');
+INSERT INTO turq_services VALUES (337, 'Inv_getInventoryCards', 'com.turquaz.inventory.bl.InvBLCardSearch', 'getInventoryCards');
+INSERT INTO turq_services VALUES (215, 'Cur_getCurrentGroups', 'com.turquaz.current.bl.CurBLCurrentCardAdd', 'getCurrentGroups');
+INSERT INTO turq_services VALUES (236, 'Cur_saveOtherCurrentTransaction', 'com.turquaz.current.bl.CurBLCurrentTransactionAdd', 'saveOtherCurrentTransaction');
+INSERT INTO turq_services VALUES (300, 'Acc_getGeneralLedger', 'com.turquaz.accounting.bl.AccBLTransactionSearch', 'getGeneralLedger');
+INSERT INTO turq_services VALUES (304, 'Acc_getAccountingJournal', 'com.turquaz.accounting.bl.AccBLTransactionSearch', 'getAccountingJournal');
+INSERT INTO turq_services VALUES (334, 'Acc_getSubsidiaryLedger', 'com.turquaz.accounting.bl.AccBLTransactionSearch', 'getSubsidiaryLedger');
+INSERT INTO turq_services VALUES (302, 'Bil_getBillGroups', 'com.turquaz.bill.bl.BillBLAddGroups', 'getBillGroups');
+INSERT INTO turq_services VALUES (306, 'Bil_saveBillFromCons', 'com.turquaz.bill.bl.BillBLAddBill', 'saveBillFromCons');
+INSERT INTO turq_services VALUES (310, 'Bil_updateBill', 'com.turquaz.bill.bl.BillBLUpdateBill', 'updateBill');
+INSERT INTO turq_services VALUES (311, 'Bil_deleteBill', 'com.turquaz.bill.bl.BillBLUpdateBill', 'deleteBill');
+INSERT INTO turq_services VALUES (314, 'Eng_printBill', 'com.turquaz.engine.bl.EngBLUtils', 'printBill');
+INSERT INTO turq_services VALUES (317, 'Bil_initializeBillById', 'com.turquaz.bill.bl.BillBLSearchBill', 'initializeBillById');
+INSERT INTO turq_services VALUES (318, 'Bil_canUpdateBill', 'com.turquaz.bill.bl.BillBLSearchBill', 'canUpdateBill');
+INSERT INTO turq_services VALUES (324, 'Bil_searchBill', 'com.turquaz.bill.bl.BillBLSearchBill', 'searchBill');
+INSERT INTO turq_services VALUES (326, 'Bil_deleteGroup', 'com.turquaz.bill.bl.BillBLAddGroups', 'deleteGroup');
+INSERT INTO turq_services VALUES (328, 'Bil_updateGroup', 'com.turquaz.bill.bl.BillBLAddGroups', 'updateGroup');
+INSERT INTO turq_services VALUES (329, 'Bil_saveGroup', 'com.turquaz.bill.bl.BillBLAddGroups', 'saveGroup');
+INSERT INTO turq_services VALUES (331, 'Bil_getBillInfo', 'com.turquaz.bill.bl.BillBLUpdateBill', 'getBillInfo');
+INSERT INTO turq_services VALUES (340, 'Bnk_getBankCardAbstract', 'com.turquaz.bank.bl.BankBLTransactionSearch', 'getBankCardAbstract');
+INSERT INTO turq_services VALUES (341, 'Bnk_getAccountingAccount', 'com.turquaz.bank.bl.BankBLBankCardSearch', 'getAccountingAccount');
+INSERT INTO turq_services VALUES (283, 'Eng_delete', 'com.turquaz.engine.bl.EngBLServer', 'delete');
+INSERT INTO turq_services VALUES (343, 'Cur_getCurrentCardAbstract', 'com.turquaz.current.bl.CurBLSearchTransaction', 'getCurrentCardAbstract');
+INSERT INTO turq_services VALUES (344, 'Inv_deleteInvUnit', 'com.turquaz.inventory.bl.InvBLCardAdd', 'deleteInvUnit');
+INSERT INTO turq_services VALUES (345, 'Csh_getCashCardAbstract', 'com.turquaz.cash.bl.CashBLCashTransactionSearch', 'getCashCardAbstract');
+INSERT INTO turq_services VALUES (319, 'Bil_getBillReport', 'com.turquaz.bill.bl.BillBLSearchBill', 'getBillReport');
+INSERT INTO turq_services VALUES (171, 'Che_getCustomerChequeAbstract', 'com.turquaz.cheque.bl.CheBLSearchCheques', 'getCustomerChequeAbstract');
+INSERT INTO turq_services VALUES (181, 'Che_getOwnChequeAbstract', 'com.turquaz.cheque.bl.CheBLSearchCheques', 'getOwnChequeAbstract');
+INSERT INTO turq_services VALUES (346, 'Cur_getCurCardBalanceReport', 'com.turquaz.current.bl.CurBLCurrentCardSearch', 'getCurCardBalanceReport');
+INSERT INTO turq_services VALUES (347, 'Util_printBill', 'com.turquaz.utility.reporting.PrintUtility', 'printBill');
+INSERT INTO turq_services VALUES (348, 'Util_printConsignment', 'com.turquaz.utility.reporting.PrintUtility', 'printConsignment');
+INSERT INTO turq_services VALUES (349, 'Util_printAccTransaction', 'com.turquaz.utility.reporting.PrintUtility', 'printAccTransaction');
+INSERT INTO turq_services VALUES (350, 'Eng_getApplicationMenus', 'com.turquaz.engine.bl.EngBLServer', 'getApplicationMenus');
+INSERT INTO turq_services VALUES (361, 'Csh_initializeCashCard', 'com.turquaz.cash.bl.CashBLCashCardSearch', 'initializeCashCard');
+INSERT INTO turq_services VALUES (362, 'Util_getInvoiceTemplates', 'com.turquaz.utility.reporting.PrintUtility', 'getInvoiceTemplates');
+INSERT INTO turq_services VALUES (363, 'Che_getChequeStatus', 'com.turquaz.cheque.bl.CheBLUpdateChequeRoll', 'getChequeStatus');
+INSERT INTO turq_services VALUES (364, 'Cur_updateCurrentTransferBetweenAccounts', 'com.turquaz.current.bl.CurBLTransactionUpdate', 'updateCurrentTransferBetweenAccounts');
+INSERT INTO turq_services VALUES (367, 'Cur_updateOtherCurrentTransaction', 'com.turquaz.current.bl.CurBLTransactionUpdate', 'updateOtherCurrentTransaction');
+INSERT INTO turq_services VALUES (368, 'Cur_updateMultipleOtherTransaction', 'com.turquaz.current.bl.CurBLTransactionUpdate', 'updateMultipleOtherTransaction');
+INSERT INTO turq_services VALUES (369, 'Inv_deleteOtherTransaction', 'com.turquaz.inventory.bl.InvBLUpdateTransaction', 'deleteOtherTransaction');
+INSERT INTO turq_services VALUES (371, 'Inv_updateOtherTransaction', 'com.turquaz.inventory.bl.InvBLUpdateTransaction', 'updateOtherTransaction');
+INSERT INTO turq_services VALUES (35, 'authenticate', 'com.turquaz.engine.bl.EngBLServer', 'checkUserPass');
+INSERT INTO turq_services VALUES (5, 'Cur_getCurrentCards', 'com.turquaz.current.bl.CurBLCurrentCardSearch', 'getCurrentCards');
+INSERT INTO turq_services VALUES (3, 'Csh_searchCashCard', 'com.turquaz.cash.bl.CashBLCashCardSearch', 'searchCashCard');
+INSERT INTO turq_services VALUES (1, 'Acc_getAccountingAccountLists', 'com.turquaz.accounting.bl.AccBLAccountAdd', 'getAccountingAccountLists');
+INSERT INTO turq_services VALUES (374, 'Inv_getTransactionInfo', 'com.turquaz.inventory.bl.InvBLSearchTransaction', 'getTransactionInfo');
+INSERT INTO turq_services VALUES (373, 'Inv_checkStabilityInventoryLevel', 'com.turquaz.inventory.bl.InvBLCardSearch', 'checkStabilityInventoryLevel');
+INSERT INTO turq_services VALUES (379, 'Csh_getCashTransactionTypes', 'com.turquaz.cash.bl.CashBLCashTransactionSearch', 'getCashTransactionTypes');
+INSERT INTO turq_services VALUES (4, 'Eng_getBaseCurrency', 'com.turquaz.engine.bl.EngBLServer', 'getBaseCurrency');
+INSERT INTO turq_services VALUES (144, 'Che_saveCollectFromBank', 'com.turquaz.cheque.bl.CheBLSaveChequeTransaction', 'saveCollectFromBank');
+INSERT INTO turq_services VALUES (172, 'Che_getChequeInfo', 'com.turquaz.cheque.bl.CheBLUpdateCheque', 'getChequeInfo');
+
+
+
+
+INSERT INTO turq_engine_menu VALUES (-1, 'Ana Menu', ' ', -1, -1, -1);
+INSERT INTO turq_engine_menu VALUES (10101, 'STR_ACCOUNTING_PLAN', ' ', 3, 26, 10100);
+INSERT INTO turq_engine_menu VALUES (10100, 'STR_ACCOUNTS', ' ', 2, -1, 10000);
+INSERT INTO turq_engine_menu VALUES (10102, 'STR_NEW_ACCOUNT', ' ', 3, 3, 10100);
+INSERT INTO turq_engine_menu VALUES (10200, 'STR_ACCOUNTING_VOUCHERS', ' ', 2, -1, 10000);
+INSERT INTO turq_engine_menu VALUES (10201, 'STR_GENERAL_VOUCHER', ' ', 3, 8, 10200);
+INSERT INTO turq_engine_menu VALUES (10202, 'STR_COLLECT_VOUCHER', ' ', 3, 9, 10200);
+INSERT INTO turq_engine_menu VALUES (10203, 'STR_PAYMENT_VOUCHER', ' ', 3, 10, 10200);
+INSERT INTO turq_engine_menu VALUES (10300, 'STR_SEARCHING', ' ', 2, -1, 10000);
+INSERT INTO turq_engine_menu VALUES (10301, 'STR_SEARCH_ACC_VOUCHER', ' ', 3, 11, 10300);
+INSERT INTO turq_engine_menu VALUES (10400, 'STR_ACC_BOOKS', ' ', 2, -1, 10000);
+INSERT INTO turq_engine_menu VALUES (10401, 'STR_ACC_JOURNAL', ' ', 3, 29, 10400);
+INSERT INTO turq_engine_menu VALUES (10402, 'STR_ACC_SUBSIDIARY_LEDGER', ' ', 3, 38, 10400);
+INSERT INTO turq_engine_menu VALUES (10403, 'STR_ACC_GENERAL_LEDGER', ' ', 3, 33, 10400);
+INSERT INTO turq_engine_menu VALUES (10500, 'STR_ACC_STATUS_REPORTS', ' ', 2, -1, 10000);
+INSERT INTO turq_engine_menu VALUES (10501, 'STR_ACC_BALANCE', ' ', 3, 39, 10500);
+INSERT INTO turq_engine_menu VALUES (10502, 'STR_ACC_MONTHLY_BALANCE', ' ', 3, 59, 10500);
+INSERT INTO turq_engine_menu VALUES (10600, 'STR_PREFERENCES', NULL, 2, -1, 10000);
+INSERT INTO turq_engine_menu VALUES (10601, 'STR_INITIAL_VOUCHER', NULL, 3, 34, 10600);
+INSERT INTO turq_engine_menu VALUES (1100, 'STR_CARDS', NULL, 2, -1, 1000);
+INSERT INTO turq_engine_menu VALUES (1101, 'STR_ADD_INV_CARD', NULL, 3, 0, 1100);
+INSERT INTO turq_engine_menu VALUES (1102, 'STR_ADD_WAREHOUSE', NULL, 3, 4, 1100);
+INSERT INTO turq_engine_menu VALUES (1200, 'STR_INV_TRANSACTIONS', NULL, 2, -1, 1000);
+INSERT INTO turq_engine_menu VALUES (1201, 'STR_INV_OTHER_TRANS_IN', NULL, 3, 87, 1200);
+INSERT INTO turq_engine_menu VALUES (1202, 'STR_INV_OTHER_TRANS_OUT', NULL, 3, 88, 1200);
+INSERT INTO turq_engine_menu VALUES (1203, 'STR_INITIAL_TRANSACTION', NULL, 3, 97, 1200);
+INSERT INTO turq_engine_menu VALUES (1300, 'STR_SEARCHING', NULL, 2, -1, 1000);
+INSERT INTO turq_engine_menu VALUES (1301, 'STR_SEARCH_INV_CARD', NULL, 3, 1, 1300);
+INSERT INTO turq_engine_menu VALUES (1302, 'STR_SEARCH_INV_TRANS', NULL, 3, 24, 1300);
+INSERT INTO turq_engine_menu VALUES (1303, 'STR_SEARCH_WAREHOUSE', NULL, 3, 5, 1300);
+INSERT INTO turq_engine_menu VALUES (1400, 'STR_REPORTS', NULL, 2, -1, 1000);
+INSERT INTO turq_engine_menu VALUES (1401, 'STR_PROFIT_ANALYSIS', NULL, 3, 40, 1400);
+INSERT INTO turq_engine_menu VALUES (1402, 'STR_INV_LEDGER', NULL, 3, 41, 1400);
+INSERT INTO turq_engine_menu VALUES (1403, 'STR_INV_TRANSACTIONS_REPORT', NULL, 3, 64, 1400);
+INSERT INTO turq_engine_menu VALUES (1404, 'STR_INV_TRANSACTION_TOTALS', NULL, 3, 66, 1400);
+INSERT INTO turq_engine_menu VALUES (1405, 'STR_INV_CARD_ABSTRACT', NULL, 3, 71, 1400);
+INSERT INTO turq_engine_menu VALUES (1500, 'STR_PREFERENCES', NULL, 2, -1, 1000);
+INSERT INTO turq_engine_menu VALUES (1501, 'STR_INV_GROUPS', NULL, 3, 70, 1500);
+INSERT INTO turq_engine_menu VALUES (1502, 'STR_INV_GROUP_ADD', NULL, 3, 72, 1500);
+INSERT INTO turq_engine_menu VALUES (2000, 'STR_MODULE_CURRENT', NULL, 0, -1, -1);
+INSERT INTO turq_engine_menu VALUES (2100, 'STR_ACCOUNTS', NULL, 2, -1, 2000);
+INSERT INTO turq_engine_menu VALUES (2101, 'STR_ADD_CURRENT_CARD', NULL, 3, 12, 2100);
+INSERT INTO turq_engine_menu VALUES (2200, 'STR_CUR_TRANSCATIONS', NULL, 2, -1, 2000);
+INSERT INTO turq_engine_menu VALUES (2201, 'STR_CUR_DEPT_VOUCHER', NULL, 3, 51, 2200);
+INSERT INTO turq_engine_menu VALUES (2202, 'STR_CUR_CREDIT_VOUCHER', NULL, 3, 89, 2200);
+INSERT INTO turq_engine_menu VALUES (2203, 'STR_CUR_TRANSFER_BETWEEN_ACCS', NULL, 3, 92, 2200);
+INSERT INTO turq_engine_menu VALUES (2204, 'STR_CUR_MULTIPLE_CREDIT_VOUCHER', NULL, 3, 99, 2200);
+INSERT INTO turq_engine_menu VALUES (2205, 'STR_CUR_MULTIPLE_DEPT_VOUCHER', NULL, 3, 100, 2200);
+INSERT INTO turq_engine_menu VALUES (2300, 'STR_SEARCHING', NULL, 2, -1, 2000);
+INSERT INTO turq_engine_menu VALUES (2301, 'STR_SEARCH_CUR_CARD', NULL, 3, 13, 2300);
+INSERT INTO turq_engine_menu VALUES (2302, 'STR_SEARCH_CUR_TRANS', NULL, 3, 15, 2300);
+INSERT INTO turq_engine_menu VALUES (2303, 'STR_CUR_CARD_WITH_DEPT', NULL, 3, 90, 2300);
+INSERT INTO turq_engine_menu VALUES (2304, 'STR_CUR_CARD_WITH_CREDIT', NULL, 3, 91, 2300);
+INSERT INTO turq_engine_menu VALUES (2400, 'STR_REPORTS', NULL, 2, -1, 2000);
+INSERT INTO turq_engine_menu VALUES (2401, 'STR_CUR_CARD_ABSTRACT', NULL, 3, 47, 2400);
+INSERT INTO turq_engine_menu VALUES (2402, 'STR_CUR_CARD_BALANCE', NULL, 3, 98, 2400);
+INSERT INTO turq_engine_menu VALUES (2500, 'STR_PREFERENCES', NULL, 2, -1, 2000);
+INSERT INTO turq_engine_menu VALUES (2501, 'STR_CUR_INITIAL_VALUES', NULL, 3, 49, 2500);
+INSERT INTO turq_engine_menu VALUES (3000, 'STR_MODULE_CONSIGNMENT', NULL, 0, -1, -1);
+INSERT INTO turq_engine_menu VALUES (3100, 'STR_MODULE_CONSIGNMENT', NULL, 2, -1, 3000);
+INSERT INTO turq_engine_menu VALUES (3101, 'STR_ADD_BUY_CONSIGNMENT', NULL, 3, 94, 3100);
+INSERT INTO turq_engine_menu VALUES (3102, 'STR_ADD_SELL_CONSIGNMENT', NULL, 3, 95, 3100);
+INSERT INTO turq_engine_menu VALUES (3103, 'STR_SEARCH_CONSIGNMENT', NULL, 3, 23, 3100);
+INSERT INTO turq_engine_menu VALUES (4000, 'STR_MODULE_BILL', NULL, 0, -1, -1);
+INSERT INTO turq_engine_menu VALUES (4100, 'STR_BILLS', NULL, 2, -1, 4000);
+INSERT INTO turq_engine_menu VALUES (4101, 'STR_ADD_BUY_BILL', NULL, 3, 35, 4100);
+INSERT INTO turq_engine_menu VALUES (4102, 'STR_ADD_SELL_BILL', NULL, 3, 36, 4100);
+INSERT INTO turq_engine_menu VALUES (4103, 'STR_ADD_RETURN_SELL_BILL', NULL, 3, 102, 4100);
+INSERT INTO turq_engine_menu VALUES (4104, 'STR_ADD_RETURN_BUY_BILL', NULL, 3, 101, 4100);
+INSERT INTO turq_engine_menu VALUES (4105, 'STR_BILL_FROM_CONSIGNMENT', NULL, 3, 25, 4100);
+INSERT INTO turq_engine_menu VALUES (4201, 'STR_SEARCH_BILL', NULL, 3, 27, 4200);
+INSERT INTO turq_engine_menu VALUES (4200, 'STR_SEARCHING', NULL, 2, -1, 4000);
+INSERT INTO turq_engine_menu VALUES (4300, 'STR_REPORTS', NULL, 2, -1, 4000);
+INSERT INTO turq_engine_menu VALUES (4301, 'STR_BILL_REPORT', NULL, 3, 68, 4300);
+INSERT INTO turq_engine_menu VALUES (5000, 'STR_MODULE_CHEQUE', NULL, 0, -1, -1);
+INSERT INTO turq_engine_menu VALUES (5100, 'STR_CHEQUE_ROLLS', NULL, 2, -1, 5000);
+INSERT INTO turq_engine_menu VALUES (5101, 'STR_CHEQUE_ROLL_IN', NULL, 3, 50, 5100);
+INSERT INTO turq_engine_menu VALUES (5102, 'STR_CHEQUE_ROLL_OUT_TO_CURRENT', NULL, 3, 58, 5100);
+INSERT INTO turq_engine_menu VALUES (5103, 'STR_CHEQUE_ROLL_OUT_TO_BANK', NULL, 3, 73, 5100);
+INSERT INTO turq_engine_menu VALUES (5104, 'STR_CHEQUE_COLLECT_FROM_BANK', NULL, 3, 76, 5100);
+INSERT INTO turq_engine_menu VALUES (5105, 'STR_CHEQUE_COLLECT_FROM_CURRENT', NULL, 3, 80, 5100);
+INSERT INTO turq_engine_menu VALUES (5106, 'STR_CHEQUE_RETURN_FROM_BANK', NULL, 3, 84, 5100);
+INSERT INTO turq_engine_menu VALUES (5107, 'STR_CHEQUE_RETURN_TO_CURRENT', NULL, 3, 85, 5100);
+INSERT INTO turq_engine_menu VALUES (5108, 'STR_CHEQUE_RETURN_FROM_CURRENT', NULL, 3, 86, 5100);
+INSERT INTO turq_engine_menu VALUES (5109, 'STR_CHEQUE_COLLECT_OF_OWN_CHEQUE', NULL, 3, 96, 5100);
+INSERT INTO turq_engine_menu VALUES (5200, 'STR_SEARCHING', NULL, 2, -1, 5000);
+INSERT INTO turq_engine_menu VALUES (5201, 'STR_SEARCH_OWN_CHEQUE', NULL, 3, 75, 5200);
+INSERT INTO turq_engine_menu VALUES (5202, 'STR_SEARCH_CUSTOMER_CHEQUE', NULL, 3, 74, 5200);
+INSERT INTO turq_engine_menu VALUES (5203, 'STR_SEARCH_CHEQUE_ROLL', NULL, 3, 57, 5200);
+INSERT INTO turq_engine_menu VALUES (6000, 'STR_MODULE_BANK', NULL, 0, -1, -1);
+INSERT INTO turq_engine_menu VALUES (6100, 'STR_ACCOUNTS', NULL, 2, -1, 6000);
+INSERT INTO turq_engine_menu VALUES (6101, 'STR_ADD_BANK_CARD', NULL, 3, 6, 6100);
+INSERT INTO turq_engine_menu VALUES (6200, 'STR_BANK_TRANSACTIONS', NULL, 2, -1, 6000);
+INSERT INTO turq_engine_menu VALUES (6201, 'STR_CASH_TRANSFER_IN', NULL, 3, 54, 6200);
+INSERT INTO turq_engine_menu VALUES (6202, 'STR_CASH_TRANSFER_OUT', NULL, 3, 55, 6200);
+INSERT INTO turq_engine_menu VALUES (6203, 'STR_CASH_FROM_BANK', NULL, 3, 60, 6200);
+INSERT INTO turq_engine_menu VALUES (6204, 'STR_CASH_TO_BANK', NULL, 3, 61, 6200);
+INSERT INTO turq_engine_menu VALUES (6205, 'STR_OTHER_TRANSFER_DEPT', NULL, 3, 62, 6200);
+INSERT INTO turq_engine_menu VALUES (6206, 'STR_OTHER_TRANSFER_CREDIT', NULL, 3, 63, 6200);
+INSERT INTO turq_engine_menu VALUES (6207, 'STR_TRANSFER_BETWEEN_ACCOUNTS', NULL, 3, 67, 6200);
+INSERT INTO turq_engine_menu VALUES (6300, 'STR_SEARCHING', NULL, 2, -1, 6000);
+INSERT INTO turq_engine_menu VALUES (6301, 'STR_SEARCH_BANK_CARD', NULL, 3, 7, 6300);
+INSERT INTO turq_engine_menu VALUES (6302, 'STR_SEARCH_BANK_TRANS', NULL, 3, 53, 6300);
+INSERT INTO turq_engine_menu VALUES (6400, 'STR_REPORTS', NULL, 2, -1, 6000);
+INSERT INTO turq_engine_menu VALUES (6401, 'STR_BANK_CARD_ABSTRACT', NULL, 3, 56, 6400);
+INSERT INTO turq_engine_menu VALUES (6500, 'STR_PREFERENCES', NULL, 2, -1, 6000);
+INSERT INTO turq_engine_menu VALUES (6501, 'STR_BANK_INITIAL_TRANSACTIONS', NULL, 3, 65, 6500);
+INSERT INTO turq_engine_menu VALUES (7000, 'STR_MODULE_CASH', NULL, 0, -1, -1);
+INSERT INTO turq_engine_menu VALUES (7101, 'STR_ADD_CASH_CARD', NULL, 3, 42, 7100);
+INSERT INTO turq_engine_menu VALUES (7100, 'STR_ACCOUNTS', NULL, 2, -1, 7000);
+INSERT INTO turq_engine_menu VALUES (7200, 'STR_CASH_TRANSACTIONS', NULL, 2, -1, 7000);
+INSERT INTO turq_engine_menu VALUES (7201, 'STR_COLLECT_FROM_CURRENT', NULL, 3, 44, 7200);
+INSERT INTO turq_engine_menu VALUES (7202, 'STR_PAYMENT_TO_CURRENT', NULL, 3, 45, 7200);
+INSERT INTO turq_engine_menu VALUES (7203, 'STR_OTHER_COLLECT', NULL, 3, 77, 7200);
+INSERT INTO turq_engine_menu VALUES (7204, 'STR_OTHER_PAYMENT', NULL, 3, 78, 7200);
+INSERT INTO turq_engine_menu VALUES (7205, 'STR_CASH_TRANSFER_BETWEEN_ACCOUNTS', NULL, 3, 79, 7200);
+INSERT INTO turq_engine_menu VALUES (7206, 'STR_CASH_INITIAL_VALUES', NULL, 3, 93, 7200);
+INSERT INTO turq_engine_menu VALUES (7301, 'STR_SEARCH_CASH_CARD', NULL, 3, 43, 7300);
+INSERT INTO turq_engine_menu VALUES (7302, 'STR_SEARCH_CASH_TRANS', NULL, 3, 46, 7300);
+INSERT INTO turq_engine_menu VALUES (7400, 'STR_REPORTS', NULL, 2, -1, 7000);
+INSERT INTO turq_engine_menu VALUES (7300, 'STR_SEARCHING', NULL, 2, -1, 7000);
+INSERT INTO turq_engine_menu VALUES (7401, 'STR_CASH_CARD_ABSTRACT', NULL, 3, 52, 7400);
+INSERT INTO turq_engine_menu VALUES (7402, 'STR_DAILY_CASH_CARD_ABSTRACT', NULL, 3, 69, 7400);
+INSERT INTO turq_engine_menu VALUES (11000, 'STR_MODULE_ADMIN', NULL, 0, -1, -1);
+INSERT INTO turq_engine_menu VALUES (11100, 'STR_USERS_GROUPS', NULL, 2, -1, 11000);
+INSERT INTO turq_engine_menu VALUES (11101, 'STR_ADD_USER', NULL, 3, 16, 11100);
+INSERT INTO turq_engine_menu VALUES (11102, 'STR_ADD_GROUP', NULL, 3, 18, 11100);
+INSERT INTO turq_engine_menu VALUES (11200, 'STR_PERMISSONS', NULL, 2, -1, 11000);
+INSERT INTO turq_engine_menu VALUES (11201, 'STR_USER_PERMISSIONS', NULL, 3, 20, 11200);
+INSERT INTO turq_engine_menu VALUES (11202, 'STR_GROUP_PERMISSIONS', NULL, 3, 21, 11200);
+INSERT INTO turq_engine_menu VALUES (11300, 'STR_SEARCHING', NULL, 2, -1, 11000);
+INSERT INTO turq_engine_menu VALUES (11301, 'STR_USERS', NULL, 3, 17, 11300);
+INSERT INTO turq_engine_menu VALUES (11302, 'STR_GROUPS', NULL, 3, 19, 11300);
+INSERT INTO turq_engine_menu VALUES (11400, 'STR_PREFERENCES', NULL, 2, -1, 11000);
+INSERT INTO turq_engine_menu VALUES (11401, 'STR_COMPANY_INFO', NULL, 3, 48, 11400);
+INSERT INTO turq_engine_menu VALUES (11500, 'STR_CURRENCY_OPTIONS', NULL, 2, -1, 11000);
+INSERT INTO turq_engine_menu VALUES (11501, 'STR_CURRENCY_ADD', NULL, 3, 81, 11500);
+INSERT INTO turq_engine_menu VALUES (11502, 'STR_EXCHANGE_RATE_ADD', NULL, 3, 82, 11500);
+INSERT INTO turq_engine_menu VALUES (11503, 'STR_EXCHANGE_RATE_SEARCH', NULL, 3, 83, 11500);
+INSERT INTO turq_engine_menu VALUES (1000, 'STR_MODULE_INVENTORY', NULL, 0, -1, -1);
+INSERT INTO turq_engine_menu VALUES (10000, 'STR_MODULE_ACCOUNTING', ' ', 0, -1, -1);@

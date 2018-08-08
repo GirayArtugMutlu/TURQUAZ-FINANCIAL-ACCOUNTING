@@ -1,0 +1,121 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.51;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.bl;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author  Onsel Armagan
+ * @@version  $Id: EngBLPermissions.java,v 1.3 2005/06/29 11:03:08 onsel Exp $
+ */
+import java.util.*;
+
+
+/**
+ * @@author onsel
+ * @@version $Id: EngBLPermissions.java,v 1.3 2005/06/29 11:03:08 onsel Exp $ Here is the permissions layer. Other classes uses static
+ *          functions in this class.
+ */
+public class EngBLPermissions
+{
+
+	public Map compMap;
+	static EngBLPermissions _instance;
+
+	/**
+	 * Constructor
+	 * 
+	 * @@param username
+	 *             Current User of the system
+	 */
+	public EngBLPermissions(HashMap permissionMap)
+	{
+	 compMap = permissionMap;
+		
+	}
+
+	/**
+	 * @@param classname
+	 * @@return permission level
+	 */
+	public static synchronized int getPermission(String classname)throws Exception
+	{
+		if (_instance == null)
+		{
+			throw new Exception("Please initialize permmission map!");
+		}
+		return _instance.getPerm(classname);
+	}
+
+	/**
+	 * initiliaze the static EngBLPermission object
+	 */
+	public static synchronized void init(HashMap permMap)
+	{
+		if (_instance == null)
+		{
+			_instance = new EngBLPermissions(permMap);
+		}
+	}
+
+	/**
+	 * @@return the Map of classname and permission levels
+	 */
+	protected Map getPermissionMap()
+	{
+		return compMap;
+	}		
+	
+	/**
+	 * @@param classname
+	 *             Name of the class to check permission level
+	 * @@return the permission level for the classname
+	 */
+	public int getPerm(String classname)
+	{
+		if (compMap.get(classname) != null)
+		{
+			String level = compMap.get(classname).toString();
+			return Integer.parseInt(level);
+		}
+		else
+		{
+			System.err.println("You probably forgot to add a module component to database!");
+			System.err.println("Class name: " + classname);
+			return 0;
+		}
+	}
+}@

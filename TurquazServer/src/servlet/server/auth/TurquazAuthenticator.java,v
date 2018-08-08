@@ -1,0 +1,75 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.auth;
+
+import java.security.Principal;
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import server.interfaces.Service;
+
+public class TurquazAuthenticator extends AbstractAuthenticator {
+
+
+	Service service;
+
+	public TurquazAuthenticator(Service service) {
+		
+        this.service = service; 
+	}
+
+	public Principal getUser(HttpServletRequest request, HttpServletResponse response) {
+		
+		return null;
+	
+	}
+
+	public boolean login(HashMap argMap)
+			throws AuthenticationException {
+		try {		
+			
+			Boolean result = (Boolean)service.callService("authenticate",argMap);
+			
+            return result.booleanValue();
+		
+		} 
+		catch (Exception ex) {
+		
+			throw new AuthenticationException("Cannot login");
+		}
+	}
+
+	public boolean logout(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+		try {
+
+			return true;
+		
+		} catch (Exception ex) {
+			throw new AuthenticationException("Cannot logout");
+		}
+	}
+
+}
+@

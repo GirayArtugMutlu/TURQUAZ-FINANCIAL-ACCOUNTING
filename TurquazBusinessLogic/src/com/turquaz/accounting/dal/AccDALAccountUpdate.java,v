@@ -1,0 +1,172 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.accounting.dal;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Onsel Armagan
+ * @@version $Id: AccDALAccountUpdate.java,v 1.1 2005/07/02 16:07:08 onsel Exp $
+ */
+import java.util.List;
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import server.util.EngDALSessionFactory;
+
+import com.turquaz.engine.dal.TurqAccountingAccount;
+
+public class AccDALAccountUpdate
+{
+	public static List getSubAccounts(Integer parentId) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "from TurqAccountingAccount as accounts " + "where accounts.turqAccountingAccountByParentAccount.id ="
+					+ parentId;
+			Query q = session.createQuery(query);
+			List list = q.list();
+		
+			return list;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+	
+	public static boolean hasSubAccount(Integer parentId) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "Select account.id from TurqAccountingAccount as account " + "where account.turqAccountingAccountByParentAccount.id ="
+					+ parentId;
+			Query q = session.createQuery(query);
+			List list = q.list();
+			if (list.size() > 0)
+				return true;
+			else
+				return false;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static void updateAccountCodeOfSubAccs(TurqAccountingAccount parentAcc, String firstAccCode) throws Exception
+	{
+		try
+		{
+			List subAccounts = getSubAccounts(parentAcc.getId());
+			Session session = EngDALSessionFactory.getSession();
+			for (int k = 0; k < subAccounts.size(); k++)
+			{
+				
+				TurqAccountingAccount subAcc = (TurqAccountingAccount) subAccounts.get(k);
+				String remainingCode = subAcc.getAccountCode().substring(firstAccCode.length());
+				String firstSubAccCode = subAcc.getAccountCode();
+				subAcc.setAccountCode(parentAcc.getAccountCode().concat(remainingCode));
+				session.update(subAcc);
+				session.flush();
+				updateAccountCodeOfSubAccs(subAcc, firstSubAccCode);
+			}
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static List getAccountTransColumns(Integer accId) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "Select transColumns from TurqAccountingTransactionColumn as transColumns "
+					+ "where transColumns.turqAccountingAccount.id =" + accId;
+			Query q = session.createQuery(query);
+			List list = q.list();
+			
+			return list;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+	
+	public static boolean hasTransaction(Integer accId) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "Select transColumns.id from TurqAccountingTransactionColumn as transColumns "
+					+ "where transColumns.turqAccountingAccount.id =" + accId;
+			Query q = session.createQuery(query);
+			List list = q.list();
+			if (list.size() > 0)
+				return true;
+			else
+				return false;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static List getTotalDeptAndCredit(TurqAccountingAccount account) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "select sum(transaction.rowsDeptInBaseCurrency), sum(transaction.rowsCreditInBaseCurrency) from TurqAccountingTransactionColumn as transaction "
+					+ "where transaction.turqAccountingAccount= :account";
+			Query q = session.createQuery(query);
+			q.setParameter("account", account);
+			List list = q.list();
+		
+			return list;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+}@

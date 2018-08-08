@@ -1,0 +1,67 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.36;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.util;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class EngDALSessionFactory {
+	static EngDALSessionFactory _instance;
+	public SessionFactory factory;
+	Configuration cfg;
+
+	
+	public EngDALSessionFactory()
+	{
+		
+		cfg = new Configuration();
+		cfg.configure();
+		factory = cfg.buildSessionFactory();		
+	}
+	
+	public static Session getSession() throws Exception
+	{
+			if (_instance == null)
+			{
+				_instance = new EngDALSessionFactory();
+			}
+			return _instance.factory.getCurrentSession();
+			
+		
+	}
+	
+	public static String getDataSource()
+	{
+		if (_instance == null)
+		{
+			_instance = new EngDALSessionFactory();
+		}
+		return _instance.cfg.getProperties().get("hibernate.connection.datasource").toString();
+		
+	}
+	
+	
+
+}
+@

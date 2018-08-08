@@ -1,0 +1,49 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@b@;
+
+
+1.1
+date	2007.01.22.19.49.50;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+<archive name="turquaz-standalone.jar" destination="dist/lib" used="true" exploded="false">
+<file prefix="" project="TurquazServer" projectLocation="src/conf/hibernate.cfg.xml" name="hibernate.cfg.xml" location="../TurquazServer/src/conf/hibernate.cfg.xml" used="true"/>
+<folder prefix="com" includes="" excludes="" project="" projectLocation="bin/com" name="com" location="bin/com" used="true"/>
+<folder prefix="server" includes="" excludes="" project="" projectLocation="bin/server" name="server" location="bin/server" used="true"/>
+</archive>
+<archive name="turquaz-client.jar" destination="dist/lib" used="true" exploded="false">
+<folder prefix="" includes="" excludes="" project="TurquazClient" projectLocation="bin" name="bin" location="../TurquazClient/bin" used="true"/>
+</archive>
+<archive name="turquaz-common.jar" destination="dist/lib" used="true" exploded="false">
+<folder prefix="" includes="" excludes="" project="TurquazCommon" projectLocation="bin" name="bin" location="../TurquazCommon/bin" used="true"/>
+</archive>
+<archive name="turquaz-business.jar" destination="dist/lib" used="true" exploded="false">
+<folder prefix="" includes="" excludes="" project="TurquazBusinessLogic" projectLocation="bin" name="bin" location="../TurquazBusinessLogic/bin" used="true"/>
+</archive>
+<archive name="run.jar" destination="dist" used="true" exploded="false">
+<folder prefix="run" includes="" excludes="" project="" projectLocation="bin/run" name="run" location="bin/run" used="true"/>
+<file prefix="META-INF" project="" projectLocation="MANIFEST.MF" name="MANIFEST.MF" location="MANIFEST.MF" used="true"/>
+</archive>
+<archive name="dbgui.jar" destination="dist" used="true" exploded="false">
+<file prefix="server/util" project="" projectLocation="bin/server/util/DBGUI.class" name="DBGUI.class" location="bin/server/util/DBGUI.class" used="true"/>
+<file prefix="META-INF" project="" projectLocation="dbgui/MANIFEST.MF" name="MANIFEST.MF" location="dbgui/MANIFEST.MF" used="true"/>
+</archive>
+</configurations>
+@

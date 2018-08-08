@@ -1,0 +1,274 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.34;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.inventory.ui;
+import java.util.HashMap;
+import java.util.List;
+import com.cloudgarden.resource.SWTResourceManager;
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import com.turquaz.engine.lang.InvLangKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.EngUICommon;
+import com.turquaz.engine.ui.component.CurrencyTextAdvanced;
+
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import server.util.EngBLLogger;
+
+/**
+* This code was generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* *************************************
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED
+* for this machine, so Jigloo or this code cannot be used legally
+* for any corporate or commercial purpose.
+* *************************************
+*/
+public class InvUIPriceAddDialog extends org.eclipse.swt.widgets.Dialog {
+
+	private Shell dialogShell;
+	private ToolItem toolUpdate;
+	private CurrencyTextAdvanced txtPrice;
+	private CLabel lblPrice;
+	private CCombo comboCurrencyType;
+	private CLabel lblCurrency;
+	private CCombo comboType;
+	private CLabel lblType;
+	private Composite compDetails;
+	private ToolItem toolCancel;
+	private ToolBar toolBarTop;
+	private List allPrices;
+	private HashMap priceInfo=null;
+
+
+	public InvUIPriceAddDialog(Shell parent, int style) {
+		super(parent, style);
+	}
+
+	public HashMap open(List prices) {
+		try {
+			this.allPrices=prices;
+			Shell parent = getParent();
+			dialogShell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
+
+				{
+					//Register as a resource user - SWTResourceManager will
+					//handle the obtaining and disposing of resources
+					SWTResourceManager.registerResourceUser(dialogShell);
+				}
+
+
+			dialogShell.setLayout(new GridLayout());
+			dialogShell.layout();
+			dialogShell.pack();
+			dialogShell.setSize(368, 176);
+			{
+				GridData toolBarTopLData = new GridData();
+				toolBarTopLData.horizontalAlignment = GridData.FILL;
+				toolBarTopLData.grabExcessHorizontalSpace = true;
+				toolBarTop = new ToolBar(dialogShell, SWT.SHADOW_OUT);
+				toolBarTop.setLayoutData(toolBarTopLData);
+				{
+					toolUpdate = new ToolItem(toolBarTop, SWT.NONE);
+					toolUpdate.setEnabled(true);
+					toolUpdate.setImage(SWTResourceManager.getImage("icons/save_edit.gif"));
+					toolUpdate.setText(EngLangCommonKeys.STR_SAVE);
+					toolUpdate.addSelectionListener(new SelectionAdapter() {
+						public void widgetSelected(SelectionEvent evt) {
+							save();
+						}
+					});
+				}
+				{
+					toolCancel = new ToolItem(toolBarTop, SWT.NONE);
+					toolCancel.setImage(SWTResourceManager.getImage("icons/cancel.jpg"));
+					toolCancel.setText(EngLangCommonKeys.STR_CANCEL);
+					toolCancel.addSelectionListener(new SelectionAdapter() {
+						public void widgetSelected(SelectionEvent evt) {
+							dialogShell.close();
+						}
+					});
+				}
+			}
+			{
+				compDetails = new Composite(dialogShell, SWT.NONE);
+				GridLayout compDetailsLayout = new GridLayout();
+				compDetailsLayout.numColumns = 2;
+				GridData compDetailsLData = new GridData();
+				compDetailsLData.grabExcessHorizontalSpace = true;
+				compDetailsLData.grabExcessVerticalSpace = true;
+				compDetailsLData.horizontalAlignment = GridData.FILL;
+				compDetailsLData.verticalAlignment = GridData.FILL;
+				compDetails.setLayoutData(compDetailsLData);
+				compDetails.setLayout(compDetailsLayout);
+				{
+					lblType = new CLabel(compDetails, SWT.NONE);
+					lblType.setText(EngLangCommonKeys.STR_TYPE);
+				}
+				{
+					GridData comboTypeLData = new GridData();
+					comboTypeLData.widthHint = 89;
+					comboTypeLData.heightHint = 16;
+					comboType = new CCombo(compDetails, SWT.NONE);
+					comboType.setEditable(false);
+					comboType.setLayoutData(comboTypeLData);
+					comboType.setBackground(SWTResourceManager.getColor(255, 255, 255));
+				}
+				{
+					lblCurrency = new CLabel(compDetails, SWT.NONE);
+					lblCurrency.setText(EngLangCommonKeys.STR_CURRENCY);
+				}
+				{
+					comboCurrencyType = new CCombo(compDetails, SWT.NONE);
+					comboCurrencyType.setEditable(false);
+					GridData comboCurrencyLData = new GridData();
+					comboCurrencyLData.widthHint = 89;
+					comboCurrencyLData.heightHint = 14;
+					comboCurrencyType.setLayoutData(comboCurrencyLData);
+					comboCurrencyType.setBackground(SWTResourceManager.getColor(255, 255, 255));
+				}
+				{
+					lblPrice = new CLabel(compDetails, SWT.NONE);
+					lblPrice.setText(InvLangKeys.STR_PRICE);
+				}
+				{
+					GridData txtPriceLData = new GridData();
+					txtPriceLData.widthHint = 102;
+					txtPriceLData.heightHint = 15;
+					txtPrice = new CurrencyTextAdvanced(compDetails, SWT.NONE,4);
+					txtPrice.setLayoutData(txtPriceLData);
+				}
+			}
+			postInitGui();
+			dialogShell.open();
+			Display display = dialogShell.getDisplay();
+			while (!dialogShell.isDisposed()) {
+				if (!display.readAndDispatch())
+					display.sleep();
+			}
+			return priceInfo;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public void save()
+	{
+		if (verifyFields())
+		{
+			priceInfo=new HashMap();
+			priceInfo.put(EngKeys.TYPE,comboType.getData(comboType.getText()));
+			priceInfo.put(EngKeys.CURRENCY_ID,comboCurrencyType.getData(comboCurrencyType.getText()));
+			priceInfo.put(EngKeys.CURRENCY_ABBR,comboCurrencyType.getText());
+			priceInfo.put(EngKeys.PRICE,txtPrice.getBigDecimalValue());
+			dialogShell.close();
+		}
+		else
+		{
+			priceInfo=null;
+		}
+		
+	}
+	
+	public boolean verifyFields()
+	{
+		
+		Integer currencyId=(Integer)comboCurrencyType.getData(comboCurrencyType.getText());
+		Boolean type=(Boolean)comboType.getData(comboType.getText().trim());
+		for (int k=0; k<allPrices.size(); k++)
+		{
+			HashMap price=(HashMap)allPrices.get(k);
+			Integer curId=(Integer)price.get(EngKeys.CURRENCY_ID);
+			Boolean priceType=(Boolean)price.get(EngKeys.TYPE);
+			if (currencyId.intValue()==curId.intValue() && type.booleanValue()==priceType.booleanValue())
+			{
+				EngUICommon.showMessageBox(getParent(),InvLangKeys.MSG_YOU_CAN_ONLY_DEFINE_ONE_PRICE_PER_CURRENCY,SWT.ICON_WARNING);
+				return false;
+			}
+			
+		}
+		if (txtPrice.getBigDecimalValue().doubleValue() <= 0)
+		{
+			EngUICommon.showMessageBox(getParent(),InvLangKeys.MSG_ENTER_PRICE,SWT.ICON_INFORMATION);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public void postInitGui()
+	{
+		EngUICommon.centreWindow(dialogShell);
+		
+		comboType.add(EngLangCommonKeys.COMMON_BUY_STRING);
+		comboType.setData(EngLangCommonKeys.COMMON_BUY_STRING,new Boolean(false));
+		comboType.add(EngLangCommonKeys.COMMON_SELL_STRING);
+		comboType.setData(EngLangCommonKeys.COMMON_SELL_STRING,new Boolean(true));
+		
+		comboType.setText(EngLangCommonKeys.COMMON_SELL_STRING);
+		
+		fillCurrencyCombo();
+	}
+	
+	public void fillCurrencyCombo() 
+	{
+		try 
+		{
+			HashBag currencyBag = (HashBag) EngTXCommon.doSelectTX("Eng_getCurrencies", null);
+			HashMap currencies = (HashMap) currencyBag.get(EngKeys.CURRENCIES);
+
+			for (int k = 0; k < currencies.size(); k++) {
+				HashMap currencyMap = (HashMap) currencies.get(new Integer(k));
+
+				String abbr = (String) currencyMap.get(EngKeys.CURRENCY_ABBR);
+				comboCurrencyType.add(abbr);
+				comboCurrencyType.setData(abbr, currencyMap.get(EngKeys.CURRENCY_ID));
+
+				if (((Boolean) currencyMap.get(EngKeys.DEFAULT)).booleanValue()) {
+					comboCurrencyType.setText((String) currencyMap.get(EngKeys.CURRENCY_ABBR));
+				}
+			}
+		} catch (Exception ex) {
+			EngBLLogger.log(this.getClass(), ex, getParent());
+		}
+	}
+	
+}
+@

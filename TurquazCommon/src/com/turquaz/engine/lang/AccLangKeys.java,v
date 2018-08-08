@@ -1,0 +1,131 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.36.03;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@
+package com.turquaz.engine.lang;
+
+public class AccLangKeys {
+	public final static String MSG_ACCOUNT_CODE_SHOULD_START_WITH_PARENT_ACCOUNT  = Messages.getString("AccLangKeys.0"); //$NON-NLS-1$
+	public final static String MSG_DEFINE_RELATED_CURRENCY  = Messages.getString("AccLangKeys.1"); //$NON-NLS-1$
+	public final static String MSG_ENTER_AMOUNT  = Messages.getString("AccLangKeys.2"); //$NON-NLS-1$
+	public final static String MSG_ENTER_AT_LEAST_ONE_ROW  = Messages.getString("AccLangKeys.3"); //$NON-NLS-1$
+	public final static String MSG_ENTER_VOUCHER_DATE  = Messages.getString("AccLangKeys.4"); //$NON-NLS-1$
+	public final static String MSG_HAS_JOURNAL_ID_CANNOT_DELETE  = Messages.getString("AccLangKeys.5"); //$NON-NLS-1$
+	public final static String MSG_NOT_DELETE_ACCOUNT_WITH_SUBSIDIARY  = Messages.getString("AccLangKeys.6"); //$NON-NLS-1$
+	
+	public final static String MSG_NOT_DELETE_ACCOUNT_WITH_TRANSACTION  = Messages.getString("AccLangKeys.7"); //$NON-NLS-1$
+	public final static String MSG_NOT_DELETE_VOUCHER_FROM_HERE  = Messages.getString("AccLangKeys.8"); //$NON-NLS-1$
+	public final static String MSG_NOT_DELETE_VOUCHER_WITH_JOURNAL_ID  = Messages.getString("AccLangKeys.9"); //$NON-NLS-1$
+	public final static String MSG_NOT_ENTER_EXISTING_ACCOUNT_CODE  = Messages.getString("AccLangKeys.10"); //$NON-NLS-1$
+	public final static String MSG_NOT_ENTER_SUBSIDIARY_ACCOUNT_PARENT_HAS_TRANSACTION  = Messages.getString("AccLangKeys.11"); //$NON-NLS-1$
+	public final static String MSG_OPENING_VOUCHER_NOT_SAME_CREDIT_DEBIT  = Messages.getString("AccLangKeys.12"); //$NON-NLS-1$
+	public final static String MSG_PLEASE_ENTER_PARENT_ACCOUNT  = Messages.getString("AccLangKeys.13"); //$NON-NLS-1$
+	public final static String MSG_PLEASE_FILL_ACCOUNT_CODE  = Messages.getString("AccLangKeys.14"); //$NON-NLS-1$
+	public final static String MSG_SELECT_ACCOUNT_FIRST  = Messages.getString("AccLangKeys.15"); //$NON-NLS-1$
+	public final static String MSG_SELECT_ACCOUNTING_ACCOUNT=Messages.getString("AccLangKeys.16"); //$NON-NLS-1$
+	public final static String MSG_SELECT_AT_LEAST_ONE_ACCOUNT_FIRST  = Messages.getString("AccLangKeys.17"); //$NON-NLS-1$
+	public final static String MSG_SELECT_CREDITOR_ACCOUNT  = Messages.getString("AccLangKeys.18"); //$NON-NLS-1$
+	public final static String MSG_SELECT_CURRENY_TYPE  = Messages.getString("AccLangKeys.19"); //$NON-NLS-1$
+
+	public final static String MSG_TOTAL_CREDIT_SHOULD_EQUAL_DEBIT  = Messages.getString("AccLangKeys.20"); //$NON-NLS-1$
+	public final static String MSG_VOUCHER_AMOUNT_NOT_ZERO  = Messages.getString("AccLangKeys.21"); //$NON-NLS-1$
+	public final static String STR_ACC_CODE_END  = Messages.getString("AccLangKeys.22"); //$NON-NLS-1$
+	public final static String STR_ACC_CODE_START  = Messages.getString("AccLangKeys.23"); //$NON-NLS-1$
+	public final static String STR_ACCOUNT = Messages.getString("AccLangKeys.24"); //$NON-NLS-1$
+	public final static String STR_ACCOUNT_CLASS  = Messages.getString("AccLangKeys.25"); //$NON-NLS-1$
+	public final static String STR_REPORT_TITLE  = Messages.getString("AccLangKeys.26"); //$NON-NLS-1$
+	public final static String STR_JOURNAL  = Messages.getString("AccLangKeys.27"); //$NON-NLS-1$
+	
+	public final static String STR_ACCOUNT_CODE = Messages.getString("AccLangKeys.28"); //$NON-NLS-1$
+	public final static String STR_ACCOUNT_GROUP  = Messages.getString("AccLangKeys.29"); //$NON-NLS-1$
+	public final static String STR_ACCOUNT_LEDGER = Messages.getString("AccLangKeys.30"); //$NON-NLS-1$
+	public final static String STR_ACCOUNT_NAME  = Messages.getString("AccLangKeys.31"); //$NON-NLS-1$
+	public final static String STR_ACCOUNT_VOUCHERS  = Messages.getString("AccLangKeys.32"); //$NON-NLS-1$
+	public final static String STR_ACCOUNTING  = Messages.getString("AccLangKeys.33"); //$NON-NLS-1$
+	public final static String STR_ACCOUNTING_ACCOUNT=Messages.getString("AccLangKeys.34"); //$NON-NLS-1$
+	public final static String STR_ACCOUNTING_CODE=Messages.getString("AccLangKeys.35"); //$NON-NLS-1$
+	public final static String STR_ACCOUNTING_CODES=Messages.getString("AccLangKeys.36"); //$NON-NLS-1$
+	public final static String STR_ACCOUNTING_PLAN  = Messages.getString("AccLangKeys.37"); //$NON-NLS-1$
+	public final static String STR_ACCOUNTING_TYPE=Messages.getString("AccLangKeys.38"); //$NON-NLS-1$
+	public final static String STR_ADD_COLLECT_VOUCHER  = Messages.getString("AccLangKeys.39"); //$NON-NLS-1$
+	public final static String STR_ADD_JOURNAL_ID  = Messages.getString("AccLangKeys.40"); //$NON-NLS-1$
+	public final static String STR_ADD_NEW_ACCOUNT  = Messages.getString("AccLangKeys.41"); //$NON-NLS-1$
+	public final static String STR_ADD_PAYMENT_VOUCHER  = Messages.getString("AccLangKeys.42"); //$NON-NLS-1$
+	public final static String STR_ADD_VOUCHER  = Messages.getString("AccLangKeys.43"); //$NON-NLS-1$
+	public final static String STR_AMOUNT  = Messages.getString("AccLangKeys.44"); //$NON-NLS-1$
+	public final static String STR_BALANCE  = Messages.getString("AccLangKeys.45"); //$NON-NLS-1$
+	public final static String STR_BALANCE_CALC_METHOD  = Messages.getString("AccLangKeys.46"); //$NON-NLS-1$
+	public final static String STR_BALANCE_CREDIT  = Messages.getString("AccLangKeys.47"); //$NON-NLS-1$
+	public final static String STR_BALANCE_DEBIT  = Messages.getString("AccLangKeys.48"); //$NON-NLS-1$
+	public final static String STR_BALANCE_SUMS  = Messages.getString("AccLangKeys.49"); //$NON-NLS-1$
+	public final static String STR_BALANCES  = Messages.getString("AccLangKeys.50"); //$NON-NLS-1$
+	public final static String STR_CHOOSE_LOGO  = Messages.getString("AccLangKeys.51"); //$NON-NLS-1$
+	public final static String STR_COLLECT_VOUCHER  = Messages.getString("AccLangKeys.52"); //$NON-NLS-1$
+	public final static String STR_COUNTER_ACCOUNTING_ACCOUNT=Messages.getString("AccLangKeys.53"); //$NON-NLS-1$
+	public final static String STR_CREDIT  = Messages.getString("AccLangKeys.54"); //$NON-NLS-1$
+	public final static String STR_CREDITOR_ACCOUNT  = Messages.getString("AccLangKeys.55"); //$NON-NLS-1$
+	public final static String STR_CURRENCY_TYPE  = Messages.getString("AccLangKeys.56"); //$NON-NLS-1$
+	public final static String STR_DEBIT  = Messages.getString("AccLangKeys.57"); //$NON-NLS-1$
+	public final static String STR_DEBIT_CREDIT  = Messages.getString("AccLangKeys.58"); //$NON-NLS-1$
+	public final static String STR_DEBIT_RECEIVE  = Messages.getString("AccLangKeys.59");  //$NON-NLS-1$
+	public final static String STR_DEBTOR_ACCOUNT  = Messages.getString("AccLangKeys.60"); //$NON-NLS-1$
+	public final static String STR_DIFF_LEDGER_ACCOUNTS  = Messages.getString("AccLangKeys.61"); //$NON-NLS-1$
+	public final static String STR_DOCUMENT_NO  = Messages.getString("AccLangKeys.62"); //$NON-NLS-1$
+	public final static String STR_DOCUMENT_NUMBER  = Messages.getString("AccLangKeys.63"); //$NON-NLS-1$
+	public final static String STR_END_ACCOUNT  = Messages.getString("AccLangKeys.64"); //$NON-NLS-1$
+	public final static String STR_END_DATE  = Messages.getString("AccLangKeys.65"); //$NON-NLS-1$
+	public final static String STR_INCLUDE_CLOSING_VOUCHER  = Messages.getString("AccLangKeys.66"); //$NON-NLS-1$
+	public final static String STR_INCLUDE_OPENING_VOUCHER  = Messages.getString("AccLangKeys.67"); //$NON-NLS-1$
+	public final static String STR_JOURNAL_DATE  = Messages.getString("AccLangKeys.68"); //$NON-NLS-1$
+	public final static String STR_JOURNAL_VOUCHER  = Messages.getString("AccLangKeys.69"); //$NON-NLS-1$
+	public final static String STR_LOGO  = Messages.getString("AccLangKeys.70"); //$NON-NLS-1$
+	public final static String STR_MONTHLY_TRIAL_BALANCE  = Messages.getString("AccLangKeys.71"); //$NON-NLS-1$
+	public final static String STR_NEW_ACCOUNT  = Messages.getString("AccLangKeys.72"); //$NON-NLS-1$
+	public final static String STR_PARENT_ACCOUNT  = Messages.getString("AccLangKeys.73"); //$NON-NLS-1$
+	public final static String STR_PAYMENT_VOUCHER  = Messages.getString("AccLangKeys.74"); //$NON-NLS-1$
+	public final static String STR_PRICE  = Messages.getString("AccLangKeys.75"); //$NON-NLS-1$
+	public final static String STR_SEARCH_VOUCHER  = Messages.getString("AccLangKeys.76"); //$NON-NLS-1$
+	public final static String STR_SELECT_DATE_RANGE  = Messages.getString("AccLangKeys.77"); //$NON-NLS-1$
+	public final static String STR_SELECT_MONTH  = Messages.getString("AccLangKeys.78"); //$NON-NLS-1$
+	public final static String STR_SHOW_ONLY_APPROVED  = Messages.getString("AccLangKeys.79"); //$NON-NLS-1$
+	public final static String STR_SHOW_ONLY_WITH_TRANSACTIONS  = Messages.getString("AccLangKeys.80"); //$NON-NLS-1$
+	public final static String STR_SHOW_REPORT  = Messages.getString("AccLangKeys.81"); //$NON-NLS-1$
+	public final static String STR_SHOW_SUBSIDIARY_ACCOUNTS  = Messages.getString("AccLangKeys.82"); //$NON-NLS-1$
+	public final static String STR_START_ACCOUNT  = Messages.getString("AccLangKeys.83"); //$NON-NLS-1$
+	public final static String STR_START_DATE  = Messages.getString("AccLangKeys.84"); //$NON-NLS-1$
+	public final static String STR_TOTAL  = Messages.getString("AccLangKeys.85"); //$NON-NLS-1$
+	public final static String STR_TOTAL_AMOUNT_YTL  = Messages.getString("AccLangKeys.86"); //$NON-NLS-1$
+	public final static String STR_TOTAL_CREDIT  = Messages.getString("AccLangKeys.87"); //$NON-NLS-1$
+	public final static String STR_TOTAL_DEBIT  = Messages.getString("AccLangKeys.88"); //$NON-NLS-1$
+	public final static String STR_TOTAL_PRICE  = Messages.getString("AccLangKeys.89"); //$NON-NLS-1$
+	public final static String STR_TRANSACTION_MODULE  = Messages.getString("AccLangKeys.90"); //$NON-NLS-1$
+	public final static String STR_TRIAL_BALANCE_WITH_DATE_RANGE  = Messages.getString("AccLangKeys.91"); //$NON-NLS-1$
+	public final static String STR_UPDATE_ACCOUNT_VOUCHER  = Messages.getString("AccLangKeys.92"); //$NON-NLS-1$
+	public final static String STR_UPDATE_PAYMENT_VOUCHER  = Messages.getString("AccLangKeys.93"); //$NON-NLS-1$
+	public final static String STR_VOUCHER_NO  = Messages.getString("AccLangKeys.94"); //$NON-NLS-1$
+	public final static String STR_VOUCHER_TYPE  = Messages.getString("AccLangKeys.95"); //$NON-NLS-1$
+	public final static String STR_GIVEN_CHEQUES_ACCOUNT=Messages.getString("AccLangKeys.96"); //$NON-NLS-1$
+	public final static String STR_COLLECTED_CHEQUES_ACCOUNT=Messages.getString("AccLangKeys.97"); //$NON-NLS-1$
+	public final static String STR_ACCOUNT_PLAN_CAPITAL=Messages.getString("AccLangKeys.98"); //$NON-NLS-1$
+	public final static String MSG_SELECT_DEPTOR_ACCOUNT = Messages.getString("AccLangKeys.99"); //$NON-NLS-1$
+}
+@

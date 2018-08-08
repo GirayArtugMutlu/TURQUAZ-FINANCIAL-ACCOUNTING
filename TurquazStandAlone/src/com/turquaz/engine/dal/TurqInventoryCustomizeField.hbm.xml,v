@@ -1,0 +1,80 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.43;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqInventoryCustomizeField" 
+    table="turq_inventory_customize_fields"
+>
+
+    <composite-id>
+        <key-property 
+            name="id" 
+            column="id" 
+            type="int"
+            length="4"
+        />
+        <key-property 
+            name="fieldValue" 
+            column="field_value" 
+            type="java.lang.String"
+            length="50"
+        />
+    </composite-id>    
+
+
+    <!-- Associations -->
+    <!-- derived association(s) for compound key -->
+    <!-- end of derived association(s) -->
+  
+    <!-- bi-directional many-to-one association to TurqInventoryCustomizeType -->
+    <many-to-one
+        name="turqInventoryCustomizeType"
+        class="com.turquaz.engine.dal.TurqInventoryCustomizeType"
+        not-null="true"
+    >
+        <column name="customize_type_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqInventoryCard -->
+    <many-to-one
+        name="turqInventoryCard"
+        class="com.turquaz.engine.dal.TurqInventoryCard"
+        not-null="true"
+    >
+        <column name="inventory_card_id" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>
+@

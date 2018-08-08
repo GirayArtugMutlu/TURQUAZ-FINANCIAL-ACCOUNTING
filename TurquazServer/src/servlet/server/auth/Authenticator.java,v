@@ -1,0 +1,47 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.auth;
+
+import java.security.Principal;
+import java.util.HashMap;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+	public interface Authenticator 
+	{
+	    public final String DEFAULT_AUTHENTICATOR = "com.turquaz.auth.TurquazAuthenticator";
+		
+		
+		public Principal getUser(HttpServletRequest request, HttpServletResponse response);
+		
+	    public boolean login(HashMap argMap) throws AuthenticationException;
+
+	    public boolean logout(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException;
+	
+	}
+
+	
+
+@

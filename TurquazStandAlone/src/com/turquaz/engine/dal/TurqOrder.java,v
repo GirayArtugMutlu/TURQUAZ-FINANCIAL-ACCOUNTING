@@ -1,0 +1,301 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.44;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqOrder implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private int ordersDocumentNo;
+
+    /** persistent field */
+    private Date ordersDate;
+
+    /** persistent field */
+    private String ordersDefinition;
+
+    /** persistent field */
+    private int ordersDiscountRate;
+
+    /** persistent field */
+    private int ordersVat;
+
+    /** persistent field */
+    private BigDecimal ordersDiscountAmount;
+
+    /** persistent field */
+    private BigDecimal ordersCharges;
+
+    /** persistent field */
+    private BigDecimal ordersVatAmount;
+
+    /** persistent field */
+    private BigDecimal ordersTotalAmount;
+
+    /** persistent field */
+    private Date ordersDueDate;
+
+    /** persistent field */
+    private Date ordersDeliverDate;
+
+    /** persistent field */
+    private int ordersDelivered;
+
+    /** persistent field */
+    private int ordersType;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqBill turqBill;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard;
+
+    /** persistent field */
+    private Set turqOrderInGroups;
+
+    /** full constructor */
+    public TurqOrder(int ordersDocumentNo, Date ordersDate, String ordersDefinition, int ordersDiscountRate, int ordersVat, BigDecimal ordersDiscountAmount, BigDecimal ordersCharges, BigDecimal ordersVatAmount, BigDecimal ordersTotalAmount, Date ordersDueDate, Date ordersDeliverDate, int ordersDelivered, int ordersType, String createdBy, Date creationDate, String updatedBy, Date lastModified, com.turquaz.engine.dal.TurqBill turqBill, com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard, Set turqOrderInGroups) {
+        this.ordersDocumentNo = ordersDocumentNo;
+        this.ordersDate = ordersDate;
+        this.ordersDefinition = ordersDefinition;
+        this.ordersDiscountRate = ordersDiscountRate;
+        this.ordersVat = ordersVat;
+        this.ordersDiscountAmount = ordersDiscountAmount;
+        this.ordersCharges = ordersCharges;
+        this.ordersVatAmount = ordersVatAmount;
+        this.ordersTotalAmount = ordersTotalAmount;
+        this.ordersDueDate = ordersDueDate;
+        this.ordersDeliverDate = ordersDeliverDate;
+        this.ordersDelivered = ordersDelivered;
+        this.ordersType = ordersType;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.turqBill = turqBill;
+        this.turqCurrentCard = turqCurrentCard;
+        this.turqOrderInGroups = turqOrderInGroups;
+    }
+
+    /** default constructor */
+    public TurqOrder() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public int getOrdersDocumentNo() {
+        return this.ordersDocumentNo;
+    }
+
+    public void setOrdersDocumentNo(int ordersDocumentNo) {
+        this.ordersDocumentNo = ordersDocumentNo;
+    }
+
+    public Date getOrdersDate() {
+        return this.ordersDate;
+    }
+
+    public void setOrdersDate(Date ordersDate) {
+        this.ordersDate = ordersDate;
+    }
+
+    public String getOrdersDefinition() {
+        return this.ordersDefinition;
+    }
+
+    public void setOrdersDefinition(String ordersDefinition) {
+        this.ordersDefinition = ordersDefinition;
+    }
+
+    public int getOrdersDiscountRate() {
+        return this.ordersDiscountRate;
+    }
+
+    public void setOrdersDiscountRate(int ordersDiscountRate) {
+        this.ordersDiscountRate = ordersDiscountRate;
+    }
+
+    public int getOrdersVat() {
+        return this.ordersVat;
+    }
+
+    public void setOrdersVat(int ordersVat) {
+        this.ordersVat = ordersVat;
+    }
+
+    public BigDecimal getOrdersDiscountAmount() {
+        return this.ordersDiscountAmount;
+    }
+
+    public void setOrdersDiscountAmount(BigDecimal ordersDiscountAmount) {
+        this.ordersDiscountAmount = ordersDiscountAmount;
+    }
+
+    public BigDecimal getOrdersCharges() {
+        return this.ordersCharges;
+    }
+
+    public void setOrdersCharges(BigDecimal ordersCharges) {
+        this.ordersCharges = ordersCharges;
+    }
+
+    public BigDecimal getOrdersVatAmount() {
+        return this.ordersVatAmount;
+    }
+
+    public void setOrdersVatAmount(BigDecimal ordersVatAmount) {
+        this.ordersVatAmount = ordersVatAmount;
+    }
+
+    public BigDecimal getOrdersTotalAmount() {
+        return this.ordersTotalAmount;
+    }
+
+    public void setOrdersTotalAmount(BigDecimal ordersTotalAmount) {
+        this.ordersTotalAmount = ordersTotalAmount;
+    }
+
+    public Date getOrdersDueDate() {
+        return this.ordersDueDate;
+    }
+
+    public void setOrdersDueDate(Date ordersDueDate) {
+        this.ordersDueDate = ordersDueDate;
+    }
+
+    public Date getOrdersDeliverDate() {
+        return this.ordersDeliverDate;
+    }
+
+    public void setOrdersDeliverDate(Date ordersDeliverDate) {
+        this.ordersDeliverDate = ordersDeliverDate;
+    }
+
+    public int getOrdersDelivered() {
+        return this.ordersDelivered;
+    }
+
+    public void setOrdersDelivered(int ordersDelivered) {
+        this.ordersDelivered = ordersDelivered;
+    }
+
+    public int getOrdersType() {
+        return this.ordersType;
+    }
+
+    public void setOrdersType(int ordersType) {
+        this.ordersType = ordersType;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public com.turquaz.engine.dal.TurqBill getTurqBill() {
+        return this.turqBill;
+    }
+
+    public void setTurqBill(com.turquaz.engine.dal.TurqBill turqBill) {
+        this.turqBill = turqBill;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrentCard getTurqCurrentCard() {
+        return this.turqCurrentCard;
+    }
+
+    public void setTurqCurrentCard(com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    public Set getTurqOrderInGroups() {
+        return this.turqOrderInGroups;
+    }
+
+    public void setTurqOrderInGroups(Set turqOrderInGroups) {
+        this.turqOrderInGroups = turqOrderInGroups;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

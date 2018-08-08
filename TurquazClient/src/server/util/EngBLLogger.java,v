@@ -1,0 +1,153 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.03.03;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.util;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import com.turquaz.engine.exceptions.TurquazException;
+import com.turquaz.engine.ui.EngUICommon;
+
+public class EngBLLogger {
+	
+	
+	public static void log(Class cls,Exception ex)
+	{
+		try
+		{
+			if (ex instanceof TurquazException)
+			{
+				TurquazException tex=(TurquazException)ex;
+				File logFile=new File(System.getProperty("user.home")+ "/.turquaz/error.log");
+				FileWriter fw=new FileWriter(logFile, true);
+				
+				if (tex.getStackTraceStr() != null)
+				{
+					fw.write(tex.getStackTraceStr());
+					System.err.println(tex.getStackTraceStr());
+				}
+			}
+			else
+			{
+				OutputStream out = new FileOutputStream(System.getProperty("user.home")
+						+ "/.turquaz/error.log", true);
+				PrintStream ps = new PrintStream(out, true);
+				ex.printStackTrace(ps);
+				ex.printStackTrace();
+			}
+		}
+		catch (Exception e)
+		{
+		}
+	}
+	
+	public static void log(Class cls,Exception ex,Shell shell)
+	{
+		try
+		{
+			if (ex instanceof TurquazException)
+			{
+				TurquazException tex = (TurquazException) ex;
+				File logFile = new File(System.getProperty("user.home") + "/.turquaz/error.log");
+				FileWriter fw = new FileWriter(logFile, true);
+				if (tex.getStackTraceStr()!=null)
+				{
+					fw.write(tex.getStackTraceStr());
+					System.err.println(tex.getStackTraceStr());
+				}
+				
+				if (tex.getMessage()==null)
+				{
+					if (tex.getCause() == null)
+					{
+						EngUICommon.showMessageBox(shell,tex.toString());
+					}
+					else
+					{
+						if (tex.getCause().getMessage()== null)
+						{
+							EngUICommon.showMessageBox(shell,tex.getCause().toString());
+						}
+						else
+						{
+							EngUICommon.showMessageBox(shell,tex.getCause().getMessage());
+						}
+					}
+				}
+				else
+				{
+					EngUICommon.showMessageBox(shell,tex.getMessage());
+				}
+			}
+			else
+			{
+				ex.printStackTrace();
+				MessageBox msg = new MessageBox(shell, SWT.NULL);
+				if (ex.getMessage() == null)
+				{
+					if (ex.getCause() == null)
+					{
+						msg.setMessage(ex.toString());
+					}
+					else
+					{
+						if (ex.getCause().getMessage() == null)
+							msg.setMessage(ex.getCause().toString());
+						else
+							msg.setMessage(ex.getCause().getMessage());
+					}
+				}
+				else
+				{
+					msg.setMessage(ex.getMessage());
+				}
+				msg.open();
+				if (ex instanceof TurquazException)
+				{
+				}
+				else
+				{
+					OutputStream out = new FileOutputStream(System.getProperty("user.home")
+							+ "/.turquaz/error.log", true);
+					PrintStream ps = new PrintStream(out, true);
+					ex.printStackTrace(ps);
+					ex.printStackTrace();
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+
+}
+@

@@ -1,0 +1,158 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.38;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqAccountingTransaction" 
+    table="turq_accounting_transactions"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="native" />
+    </id>
+
+    <property
+        name="transactionsDate"
+        type="java.sql.Date"
+        column="transactions_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="transactionDocumentNo"
+        type="java.lang.String"
+        column="transaction_document_no"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="transactionDescription"
+        type="java.lang.String"
+        column="transaction_description"
+        not-null="true"
+        length="250"
+    />
+    <property
+        name="createdBy"
+        type="java.lang.String"
+        column="created_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="creationDate"
+        type="java.sql.Date"
+        column="creation_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="updatedBy"
+        type="java.lang.String"
+        column="updated_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="lastModified"
+        type="java.sql.Date"
+        column="last_modified"
+        not-null="true"
+        length="4"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TurqAccountingJournal -->
+    <many-to-one
+        name="turqAccountingJournal"
+        class="com.turquaz.engine.dal.TurqAccountingJournal"
+        not-null="true"
+    >
+        <column name="accounting_journal_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqCurrencyExchangeRate -->
+    <many-to-one
+        name="turqCurrencyExchangeRate"
+        class="com.turquaz.engine.dal.TurqCurrencyExchangeRate"
+        not-null="true"
+    >
+        <column name="exchange_rate_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqAccountingTransactionType -->
+    <many-to-one
+        name="turqAccountingTransactionType"
+        class="com.turquaz.engine.dal.TurqAccountingTransactionType"
+        not-null="true"
+    >
+        <column name="accounting_transaction_types_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqModule -->
+    <many-to-one
+        name="turqModule"
+        class="com.turquaz.engine.dal.TurqModule"
+        not-null="true"
+    >
+        <column name="module_id" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to TurqAccountingTransactionColumn -->
+    <set
+        name="turqAccountingTransactionColumns"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="accounting_transactions_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqAccountingTransactionColumn"
+        />
+    </set>
+    <!-- bi-directional many-to-one association to TurqEngineSequence -->
+    <many-to-one
+        name="turqEngineSequence"
+        class="com.turquaz.engine.dal.TurqEngineSequence"
+        not-null="true"
+    >
+        <column name="engine_sequences_id" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>
+@

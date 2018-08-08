@@ -1,0 +1,100 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.31;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqChequeTransactionTypeGroup implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** nullable persistent field */
+    private String groupName;
+
+    /** nullable persistent field */
+    private String definition;
+
+    /** persistent field */
+    private Set turqChequeTransactionTypes;
+
+    /** full constructor */
+    public TurqChequeTransactionTypeGroup(String groupName, String definition, Set turqChequeTransactionTypes) {
+        this.groupName = groupName;
+        this.definition = definition;
+        this.turqChequeTransactionTypes = turqChequeTransactionTypes;
+    }
+
+    /** default constructor */
+    public TurqChequeTransactionTypeGroup() {
+    }
+
+    /** minimal constructor */
+    public TurqChequeTransactionTypeGroup(Set turqChequeTransactionTypes) {
+        this.turqChequeTransactionTypes = turqChequeTransactionTypes;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getGroupName() {
+        return this.groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getDefinition() {
+        return this.definition;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
+    }
+
+    public Set getTurqChequeTransactionTypes() {
+        return this.turqChequeTransactionTypes;
+    }
+
+    public void setTurqChequeTransactionTypes(Set turqChequeTransactionTypes) {
+        this.turqChequeTransactionTypes = turqChequeTransactionTypes;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

@@ -1,0 +1,349 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.39;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.current.ui;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.layout.GridData;
+
+import com.turquaz.admin.AdmKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.current.ui.comp.CurrentCodePicker;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.component.CurrencyText;
+import com.turquaz.current.CurKeys;
+import org.eclipse.swt.custom.CCombo;
+import com.turquaz.engine.ui.component.CurrencyTextAdvanced;
+import com.turquaz.engine.interfaces.SearchComposite;
+import com.turquaz.engine.lang.CurLangKeys;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import org.eclipse.swt.custom.CLabel;
+import com.turquaz.engine.ui.component.DatePicker;
+import com.jasperassistant.designer.viewer.ViewerComposite;
+import org.eclipse.swt.widgets.Text;
+
+import server.util.EngBLLogger;
+
+
+/**
+* This code was generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* *************************************
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED
+* for this machine, so Jigloo or this code cannot be used legally
+* for any corporate or commercial purpose.
+* *************************************
+*/
+public class CurUICurrentCardAbstract extends org.eclipse.swt.widgets.Composite implements SearchComposite
+{
+	private Composite compSearch;
+	private CurrentCodePicker txtCurrentCard2;
+	private CLabel lblCurCard2;
+	private CLabel lblCurrentCard;
+	private CurrentCodePicker txtCurrentCard;
+	private DatePicker datePickerEndDate;
+	private CurrencyText txtTransAmount;
+	private CLabel lblAmount;
+	private Text txtDefinition;
+	private ViewerComposite viewer;
+	private CurrencyTextAdvanced txtAmountBalance;
+	private CLabel lblAmountBalance;
+	private CLabel lvlCurrentGroup;
+	private CCombo comboCurGroup;
+	private Composite compReport;
+	private CLabel lblDefinition;
+	private CLabel lblEndDate;
+	private DatePicker datePickerStartDate;
+	private CLabel lblStartDate;
+
+	private Integer curCardStartId= null;
+	private Integer curCardEndId = null;
+
+
+	public CurUICurrentCardAbstract(org.eclipse.swt.widgets.Composite parent, int style)
+	{
+		super(parent, style);
+		initGUI();
+	}
+
+	private void initGUI()
+	{
+		try
+		{
+			this.setLayout(new GridLayout());
+			this.setSize(880, 283);
+			{
+				compSearch = new Composite(this, SWT.NONE);
+				GridLayout compSearchLayout = new GridLayout();
+				GridData compSearchLData = new GridData();
+				compSearchLData.grabExcessHorizontalSpace = true;
+				compSearchLData.horizontalAlignment = GridData.FILL;
+				compSearchLData.heightHint = 109;
+				compSearch.setLayoutData(compSearchLData);
+				compSearchLayout.numColumns = 4;
+				compSearch.setLayout(compSearchLayout);
+				{
+					lblCurrentCard = new CLabel(compSearch, SWT.NONE);
+					lblCurrentCard.setText(CurLangKeys.STR_CUR_CARD_START); //$NON-NLS-1$
+					GridData lblCurrentCardLData = new GridData();
+					lblCurrentCardLData.widthHint = 120;
+					lblCurrentCardLData.heightHint = 18;
+					lblCurrentCard.setLayoutData(lblCurrentCardLData);
+				}
+				{
+					txtCurrentCard = new CurrentCodePicker(compSearch, SWT.NONE);
+					GridData txtCurrentCardLData = new GridData();
+					txtCurrentCardLData.widthHint = 157;
+					txtCurrentCardLData.heightHint = 17;
+					txtCurrentCard.setLayoutData(txtCurrentCardLData);
+				}
+				{
+					lblCurCard2 = new CLabel(compSearch, SWT.NONE);
+					lblCurCard2.setText(CurLangKeys.STR_CUR_CARD_END); //$NON-NLS-1$
+				}
+				{
+					txtCurrentCard2 = new CurrentCodePicker(compSearch, SWT.NONE);
+					GridData txtCurrentCard2LData = new GridData();
+					txtCurrentCard2LData.widthHint = 157;
+					txtCurrentCard2LData.heightHint = 17;
+					txtCurrentCard2.setLayoutData(txtCurrentCard2LData);
+				}
+				{
+					lblStartDate = new CLabel(compSearch, SWT.NONE);
+					lblStartDate.setText(EngLangCommonKeys.STR_START_DATE); //$NON-NLS-1$
+					GridData lblStartDateLData = new GridData();
+					lblStartDateLData.widthHint = 96;
+					lblStartDateLData.heightHint = 18;
+					lblStartDate.setLayoutData(lblStartDateLData);
+				}
+				{
+					datePickerStartDate = new DatePicker(compSearch, SWT.NONE);
+					GridData datePickerStartDateLData = new GridData();
+					datePickerStartDateLData.widthHint = 157;
+					datePickerStartDateLData.heightHint = 23;
+					datePickerStartDate.setLayoutData(datePickerStartDateLData);
+				}
+				{
+					lblEndDate = new CLabel(compSearch, SWT.NONE);
+					lblEndDate.setText(EngLangCommonKeys.STR_END_DATE); //$NON-NLS-1$
+					GridData lblEndDateLData = new GridData();
+					lblEndDateLData.widthHint = 77;
+					lblEndDateLData.heightHint = 20;
+					lblEndDate.setLayoutData(lblEndDateLData);
+				}
+				{
+					datePickerEndDate = new DatePicker(compSearch, SWT.NONE);
+					GridData datePickerEndDateLData = new GridData();
+					datePickerEndDateLData.widthHint = 157;
+					datePickerEndDateLData.heightHint = 23;
+					datePickerEndDate.setLayoutData(datePickerEndDateLData);
+				}
+				{
+					lblAmountBalance = new CLabel(compSearch, SWT.NONE);
+					lblAmountBalance.setText(CurLangKeys.STR_AMOUNT_AT_LEAST_BALANCE);
+				}
+				{
+					txtAmountBalance = new CurrencyTextAdvanced(compSearch, SWT.NONE);
+					GridData txtAmountBalanceLData = new GridData();
+					txtAmountBalanceLData.widthHint = 150;
+					txtAmountBalanceLData.heightHint = 17;
+					txtAmountBalance.setLayoutData(txtAmountBalanceLData);
+				}
+				//START >> lblAmount
+				lblAmount = new CLabel(compSearch, SWT.NONE);
+				lblAmount.setText(CurLangKeys.STR_AMOUNT_AT_LEAST_TRANSACTION);
+				//END << lblAmount
+				//START >> txtTransAmount
+				txtTransAmount = new CurrencyText(compSearch, SWT.NONE);
+				GridData txtTransAmountLData = new GridData();
+				txtTransAmountLData.widthHint = 150;
+				txtTransAmountLData.heightHint = 17;
+				txtTransAmount.setLayoutData(txtTransAmountLData);
+				//END << txtTransAmount
+				//START >>  lvlCurrentGroup
+				lvlCurrentGroup = new CLabel(compSearch, SWT.NONE);
+				lvlCurrentGroup.setText("Cari Grup");
+				//END <<  lvlCurrentGroup
+				//START >>  comboCurGroup
+				comboCurGroup = new CCombo(compSearch, SWT.NONE);
+				GridData comboCurGroupLData = new GridData();
+				comboCurGroupLData.widthHint = 135;
+				comboCurGroupLData.heightHint = 17;
+				comboCurGroup.setLayoutData(comboCurGroupLData);
+				//END <<  comboCurGroup
+				{
+					lblDefinition = new CLabel(compSearch, SWT.NONE);
+					lblDefinition.setText(EngLangCommonKeys.STR_DESCRIPTION); //$NON-NLS-1$
+				}
+				{
+					txtDefinition = new Text(compSearch, SWT.WRAP | SWT.V_SCROLL);
+					GridData txtDefinitionLData = new GridData();
+					txtDefinitionLData.widthHint = 379;
+					txtDefinitionLData.heightHint = 21;
+					txtDefinition.setLayoutData(txtDefinitionLData);
+					txtDefinition.addListener(SWT.Traverse,new Listener(){
+
+						public void handleEvent(Event arg0) {
+							if ( arg0.detail == SWT.TRAVERSE_TAB_NEXT )
+								arg0.doit = true;
+							
+						}
+						
+					});
+				}
+			}
+			//START >>  compReport
+			compReport = new Composite(this, SWT.NONE);
+			GridLayout compReportLayout = new GridLayout();
+			GridData compReportLData = new GridData();
+			compReportLData.horizontalAlignment = GridData.FILL;
+			compReportLData.verticalAlignment = GridData.FILL;
+			compReportLData.grabExcessHorizontalSpace = true;
+			compReportLData.grabExcessVerticalSpace = true;
+			compReport.setLayoutData(compReportLData);
+			compReportLayout.makeColumnsEqualWidth = true;
+			compReport.setLayout(compReportLayout);
+			{
+				GridData viewerLData = new GridData();
+				viewerLData.grabExcessHorizontalSpace = true;
+				viewerLData.grabExcessVerticalSpace = true;
+				viewerLData.horizontalAlignment = GridData.FILL;
+				viewerLData.verticalAlignment = GridData.FILL;
+				viewer = new ViewerComposite(compReport, SWT.NONE);
+				viewer.setLayoutData(viewerLData);
+			}
+			//END <<  compReport
+			postInitGui();
+			this.layout();
+		}
+		catch (Exception e)
+		{
+
+            EngBLLogger.log(this.getClass(),e,getShell());
+		}
+	}
+
+	public void postInitGui()
+	{
+		try
+		{
+			Calendar cal=Calendar.getInstance();
+			cal.set(cal.get(Calendar.YEAR), 0, 1);
+			datePickerStartDate.setDate(cal.getTime());
+			HashBag groupBag = (HashBag)EngTXCommon.doSelectTX("Cur_getCurrentGroups",null);
+			
+			HashMap groupMap = (HashMap)groupBag.get(AdmKeys.ADM_GROUPS);
+	
+			for (int k = 0; k < groupMap.size(); k++)
+			{
+				HashMap groupInfo = (HashMap) groupMap.get(new Integer(k));
+				comboCurGroup.add(groupInfo.get(AdmKeys.ADM_GROUP_NAME).toString());
+				comboCurGroup.setData(groupInfo.get(AdmKeys.ADM_GROUP_NAME).toString(), groupInfo.get(AdmKeys.ADM_GROUP_ID));
+			}
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+
+	public void exportToExcel()
+	{
+	}
+
+	public void delete()
+	{
+	}
+
+	public void search()
+	{
+		try
+		{
+			curCardStartId = null;
+			curCardEndId = null;
+			if (txtCurrentCard.getCardId()!= null)
+			{
+				curCardStartId =  txtCurrentCard.getCardId();
+				
+				if (txtCurrentCard2.getCardId() != null)
+				{
+					curCardEndId=txtCurrentCard2.getCardId();
+				}
+			}
+			SimpleDateFormat dformat = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
+			
+			HashMap argMap = new HashMap();
+			
+			argMap.put(CurKeys.CUR_CARD_START_ID,curCardStartId);
+			argMap.put(CurKeys.CUR_CARD_END_ID,curCardEndId);
+			argMap.put(EngKeys.DATE_START,datePickerStartDate.getDate());
+			argMap.put(EngKeys.DATE_END,datePickerEndDate.getDate());
+			argMap.put(EngKeys.DEFINITION,txtDefinition.getText().trim());
+			argMap.put(EngKeys.MIN_VALUE_TRANSACTION,txtTransAmount.getBigDecimalValue());
+			argMap.put(EngKeys.MIN_VALUE_BALANCE,txtAmountBalance.getBigDecimalValue());
+			argMap.put(CurKeys.CUR_GROUP_ID, comboCurGroup.getData(comboCurGroup.getText()));
+			
+			HashBag abstractBag=(HashBag)EngTXCommon.doSelectTX("Cur_getCurrentCardAbstract",argMap);
+			JasperPrint jasperPrint=(JasperPrint)abstractBag.get(EngKeys.REPORT);
+	
+			viewer.getReportViewer().setDocument(jasperPrint);
+		}
+		catch (Exception ex)
+		{
+
+            EngBLLogger.log(this.getClass(),ex,getShell());
+		}
+	}
+	
+	public void printTable()
+	{
+	}
+}@

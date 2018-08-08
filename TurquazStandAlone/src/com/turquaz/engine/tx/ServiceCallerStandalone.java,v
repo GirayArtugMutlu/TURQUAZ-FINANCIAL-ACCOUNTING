@@ -1,0 +1,128 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.50;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.tx;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import server.util.EngDALSessionFactory;
+import server.util.Service;
+import server.util.ServiceList;
+
+public class ServiceCallerStandalone implements ServiceCaller {
+
+	public Object doSelect(String serviceName, HashMap argMap) throws Exception {
+		
+		
+		
+		Session session=null;
+		Transaction tx=null;
+		try
+		{			
+			session=EngDALSessionFactory.openSession();	
+			tx=session.beginTransaction();
+			
+			Service service = ServiceList.getService(serviceName);
+			if (service == null)
+			{
+				throw new Exception("No such service is available: " + serviceName);
+			}			
+			
+			Class cls=Class.forName(service.getClassName());
+			Class[] classList=null;
+			Object[] argList=null;
+			if (argMap != null)
+			{
+				classList=new Class[]{argMap.getClass()};
+				argList=new Object[]{argMap};
+			}
+			Method method=cls.getMethod(service.getMethodName(),classList);
+			Object retVal=method.invoke(null,argList);
+			tx.commit();
+			return retVal;
+		}
+		catch(Exception ex)
+		{
+			if (tx != null)
+				tx.rollback();
+			throw ex;
+		}
+		finally
+		{
+			if (session != null)
+			{
+				session.close();
+			}
+		}
+	}
+
+	public Object doTransaction(String serviceName, HashMap argMap)
+			throws Exception {
+		Session session=null;
+		Transaction tx=null;
+		try
+		{			
+			session=EngDALSessionFactory.openSession();	
+			tx=session.beginTransaction();
+			
+
+			Service service = ServiceList.getService(serviceName);
+			if (service == null)
+			{
+				throw new Exception("No such service is available: " + serviceName);
+			}
+			
+			
+			Class cls=Class.forName(service.getClassName());
+			Class[] classList=null;
+			Object[] argList=null;
+			if (argMap != null)
+			{
+				classList=new Class[]{argMap.getClass()};
+				argList=new Object[]{argMap};
+			}
+			Method method=cls.getMethod(service.getMethodName(),classList);
+			Object retVal=method.invoke(null,argList);
+			tx.commit();
+			return retVal;
+		}
+		catch(Exception ex)
+		{
+			if (tx != null)
+				tx.rollback();
+			throw ex;
+		}
+		finally
+		{
+			if (session != null)
+			{
+				session.close();
+			}
+		}
+	}
+
+}
+@

@@ -1,0 +1,131 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.30;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Date;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqTradebillTradebillsRoll implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqTradebillTradebill turqTradebillTradebill;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqTradebillRoll turqTradebillRoll;
+
+    /** full constructor */
+    public TurqTradebillTradebillsRoll(String createdBy, Date creationDate, String updatedBy, Date lastModified, com.turquaz.engine.dal.TurqTradebillTradebill turqTradebillTradebill, com.turquaz.engine.dal.TurqTradebillRoll turqTradebillRoll) {
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.turqTradebillTradebill = turqTradebillTradebill;
+        this.turqTradebillRoll = turqTradebillRoll;
+    }
+
+    /** default constructor */
+    public TurqTradebillTradebillsRoll() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public com.turquaz.engine.dal.TurqTradebillTradebill getTurqTradebillTradebill() {
+        return this.turqTradebillTradebill;
+    }
+
+    public void setTurqTradebillTradebill(com.turquaz.engine.dal.TurqTradebillTradebill turqTradebillTradebill) {
+        this.turqTradebillTradebill = turqTradebillTradebill;
+    }
+
+    public com.turquaz.engine.dal.TurqTradebillRoll getTurqTradebillRoll() {
+        return this.turqTradebillRoll;
+    }
+
+    public void setTurqTradebillRoll(com.turquaz.engine.dal.TurqTradebillRoll turqTradebillRoll) {
+        this.turqTradebillRoll = turqTradebillRoll;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

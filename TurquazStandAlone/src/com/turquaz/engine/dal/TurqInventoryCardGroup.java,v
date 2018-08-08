@@ -1,0 +1,131 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.44;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.util.Date;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqInventoryCardGroup implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqInventoryGroup turqInventoryGroup;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqInventoryCard turqInventoryCard;
+
+    /** full constructor */
+    public TurqInventoryCardGroup(String createdBy, Date creationDate, String updatedBy, Date lastModified, com.turquaz.engine.dal.TurqInventoryGroup turqInventoryGroup, com.turquaz.engine.dal.TurqInventoryCard turqInventoryCard) {
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.turqInventoryGroup = turqInventoryGroup;
+        this.turqInventoryCard = turqInventoryCard;
+    }
+
+    /** default constructor */
+    public TurqInventoryCardGroup() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public com.turquaz.engine.dal.TurqInventoryGroup getTurqInventoryGroup() {
+        return this.turqInventoryGroup;
+    }
+
+    public void setTurqInventoryGroup(com.turquaz.engine.dal.TurqInventoryGroup turqInventoryGroup) {
+        this.turqInventoryGroup = turqInventoryGroup;
+    }
+
+    public com.turquaz.engine.dal.TurqInventoryCard getTurqInventoryCard() {
+        return this.turqInventoryCard;
+    }
+
+    public void setTurqInventoryCard(com.turquaz.engine.dal.TurqInventoryCard turqInventoryCard) {
+        this.turqInventoryCard = turqInventoryCard;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

@@ -1,0 +1,149 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.32;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqInventoryWarehous" 
+    table="turq_inventory_warehouses"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="native" />
+    </id>
+
+    <property
+        name="warehousesName"
+        type="java.lang.String"
+        column="warehouses_name"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="warehousesAddress"
+        type="java.lang.String"
+        column="warehouses_address"
+        length="250"
+    />
+    <property
+        name="warehousesDescription"
+        type="java.lang.String"
+        column="warehouses_description"
+        length="250"
+    />
+    <property
+        name="warehousesCity"
+        type="java.lang.String"
+        column="warehouses_city"
+        length="25"
+    />
+    <property
+        name="warehousesTelephone"
+        type="java.lang.String"
+        column="warehouses_telephone"
+        length="25"
+    />
+    <property
+        name="warehousesCode"
+        type="java.lang.String"
+        column="warehouses_code"
+        not-null="true"
+        length="25"
+    />
+    <property
+        name="createdBy"
+        type="java.lang.String"
+        column="created_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="creationDate"
+        type="java.sql.Date"
+        column="creation_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="updatedBy"
+        type="java.lang.String"
+        column="updated_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="lastModified"
+        type="java.sql.Date"
+        column="last_modified"
+        not-null="true"
+        length="4"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to TurqInventoryTransaction -->
+    <set
+        name="turqInventoryTransactions"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="inventory_warehouses_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqInventoryTransaction"
+        />
+    </set>
+    <!-- bi-directional one-to-many association to TurqInventoryTransactionBill -->
+    <set
+        name="turqInventoryTransactionBills"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="warehouse_in" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqInventoryTransactionBill"
+        />
+    </set>
+
+</class>
+</hibernate-mapping>
+@

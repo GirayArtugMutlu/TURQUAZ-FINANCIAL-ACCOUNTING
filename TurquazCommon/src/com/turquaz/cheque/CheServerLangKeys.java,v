@@ -1,0 +1,34 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.36.03;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.cheque;
+
+public class CheServerLangKeys
+{
+
+   public static String PORTFOLIO_NO ="Portfoy No:";
+   public static String ROLL_NO ="Bordro No :";
+   public static String ENTRY_ROLL ="Çek Giriþ Bordrosu:";
+   public static String COLLECT_FROM_CURRENT ="Cariden Tahsil Bordrosu:";
+
+}
+@

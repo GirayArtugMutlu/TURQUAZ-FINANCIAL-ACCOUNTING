@@ -1,0 +1,417 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.37;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.ui.component;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+
+import server.util.EngBLLogger;
+
+import com.cloudgarden.resource.SWTResourceManager;
+import com.turquaz.engine.bl.EngBLKeyEvents;
+import com.turquaz.engine.bl.EngBLPermissions;
+import com.turquaz.engine.interfaces.SaveDialogInterface;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+
+/**
+ * This code was generated using CloudGarden's Jigloo SWT/Swing GUI Builder,
+ * which is free for non-commercial use. If Jigloo is being used commercially
+ * (ie, by a corporation, company or business for any purpose whatever) then you
+ * should purchase a license for each developer using Jigloo. Please visit
+ * www.cloudgarden.com for details. Use of Jigloo implies acceptance of these
+ * licensing terms. ************************************* A COMMERCIAL LICENSE
+ * HAS NOT BEEN PURCHASED for this machine, so Jigloo or this code cannot be
+ * used legally for any corporate or commercial purpose.
+ * *************************************
+ */
+public class SaveDialogMenu extends org.eclipse.swt.widgets.Composite {
+
+	{
+		// Register as a resource user - SWTResourceManager will
+		// handle the obtaining and disposing of resources
+		SWTResourceManager.registerResourceUser(this);
+	}
+
+	private Menu menuActions;
+
+	private MenuItem menuItem1;
+
+	private Menu menu1;
+
+	/**
+	 * hakan
+	 */
+	private ToolItem toolSave;
+
+	private ToolItem toolDelete;
+
+	private ToolItem toolCancel;
+
+	private ToolItem toolPrint;
+
+	private MenuItem menuItemSave;
+
+	private MenuItem menuItemDelete;
+
+	private MenuItem menuItemCancel;
+
+	private MenuItem menuItemPrint;
+
+	private boolean isPrintable;
+
+	private boolean isDeletable;
+
+	/** ******** Bitti *********** */
+
+	private ToolBar toolBar1;
+
+	private SaveDialogInterface dialogInterface;
+
+	public SaveDialogMenu(org.eclipse.swt.widgets.Composite parent, int style) {
+		super(parent, style);
+		initGUI();
+	}
+
+	public SaveDialogMenu(org.eclipse.swt.widgets.Composite parent, int style,
+			SaveDialogInterface dialogMenu) {
+		super(parent, style);
+		this.dialogInterface = dialogMenu;
+		this.isPrintable = false;
+		this.isDeletable = true;
+		initGUI();
+	}
+
+	public SaveDialogMenu(org.eclipse.swt.widgets.Composite parent, int style,
+			SaveDialogInterface dialogMenu, boolean isPrintable,
+			boolean isDeletable) {
+		super(parent, style);
+		this.dialogInterface = dialogMenu;
+		this.isPrintable = isPrintable;
+		this.isDeletable = isDeletable;
+		initGUI();
+	}
+
+	private void initGUI() {
+		try {
+			{
+				menuActions = new Menu(getShell(), SWT.BAR);
+				getShell().setMenuBar(menuActions);
+
+				{
+					menuItem1 = new MenuItem(menuActions, SWT.CASCADE);
+					menuItem1.setText("\u0130\u015flemler");
+					{
+						menu1 = new Menu(menuItem1);
+						menuItem1.setMenu(menu1);
+						{
+							if (this.isDeletable) {
+								menuItemDelete = new MenuItem(menu1, SWT.PUSH);
+
+								TurqKeyEvent event = (TurqKeyEvent) EngBLKeyEvents.turqKeyEvents
+										.get(EngBLKeyEvents.DELETE);
+
+								menuItemDelete.setAccelerator(event.stateMask
+										| event.keyCode);
+								// menuItemDelete.setText("Ara\t"+EngBLKeyEvents.getStringValue(event));
+								// Hakan
+
+								menuItemDelete.setText("Sil "
+										+ EngBLKeyEvents.getStringValue(event));
+
+								menuItemDelete
+										.addSelectionListener(new SelectionAdapter() {
+											public void widgetSelected(
+													SelectionEvent evt) {
+
+												delete();
+
+											}
+										});
+							}
+						}
+						{
+							menuItemSave = new MenuItem(menu1, SWT.PUSH);
+
+							// menuItemSave.setText("Seç\tENTER");
+							// Hakan
+							menuItemSave.setText(EngLangCommonKeys.STR_UPDATE);
+
+							TurqKeyEvent event = (TurqKeyEvent) EngBLKeyEvents.turqKeyEvents
+									.get(EngBLKeyEvents.SAVE);
+
+							menuItemSave.setAccelerator(event.stateMask
+									| event.keyCode);
+							//							
+
+							menuItemSave
+									.addSelectionListener(new SelectionAdapter() {
+										public void widgetSelected(
+												SelectionEvent evt) {
+
+											save();
+
+										}
+									});
+						}
+						{
+							menuItemCancel = new MenuItem(menu1, SWT.PUSH);
+
+							// menuItemCancel.setText("Seç\tENTER");
+							// Hakan
+							menuItemCancel
+									.setText(EngLangCommonKeys.STR_CANCEL);
+							menuItemCancel.setAccelerator(SWT.ESC);
+							menuItemCancel
+									.addSelectionListener(new SelectionAdapter() {
+										public void widgetSelected(
+												SelectionEvent evt) {
+
+											cancel();
+
+										}
+									});
+						}
+
+						{
+							if (this.isPrintable) {
+
+								menuItemPrint = new MenuItem(menu1, SWT.PUSH);
+
+								// menuItemCancel.setText("Seç\tENTER");
+								// Hakan
+								menuItemPrint
+										.setText(EngLangCommonKeys.STR_PRINT);
+
+								TurqKeyEvent event = (TurqKeyEvent) EngBLKeyEvents.turqKeyEvents
+										.get(EngBLKeyEvents.PRINT);
+								menuItemPrint.setAccelerator(event.stateMask
+										| event.keyCode);
+
+								menuItemPrint
+										.addSelectionListener(new SelectionAdapter() {
+											public void widgetSelected(
+													SelectionEvent evt) {
+
+												print();
+
+											}
+										});
+
+							}
+						}
+					}
+				}
+			}
+			FillLayout thisLayout = new FillLayout(
+				org.eclipse.swt.SWT.HORIZONTAL);
+			this.setLayout(thisLayout);
+			this.setSize(449, 43);
+			{
+				
+				toolBar1 = new ToolBar(this, SWT.NONE);
+				
+				{
+					toolSave = new ToolItem(toolBar1, SWT.NONE);
+					toolSave.setImage(SWTResourceManager
+							.getImage("icons/save_edit.gif"));
+
+					toolSave.setText(EngLangCommonKeys.STR_SAVE);
+					toolSave.addSelectionListener(new SelectionAdapter() {
+						public void widgetSelected(SelectionEvent evt) {
+
+							save();
+
+						}
+					});
+				}
+				{
+					if (this.isDeletable) {
+						toolDelete = new ToolItem(toolBar1, SWT.NONE);
+						toolDelete.setImage(SWTResourceManager
+								.getImage("icons/Delete16.gif"));
+
+						toolDelete.setText(EngLangCommonKeys.STR_DELETE);
+						toolDelete.addSelectionListener(new SelectionAdapter() {
+							public void widgetSelected(SelectionEvent evt) {
+
+								delete();
+							}
+						});
+					}
+				}
+				{
+					toolCancel = new ToolItem(toolBar1, SWT.NONE);
+					toolCancel.setImage(SWTResourceManager
+							.getImage("icons/cancel.jpg"));
+
+					toolCancel.setText("Iptal");
+					toolCancel.addSelectionListener(new SelectionAdapter() {
+						public void widgetSelected(SelectionEvent evt) {
+
+							cancel();
+						}
+					});
+				}
+				{
+					if (this.isPrintable) {
+						toolPrint = new ToolItem(toolBar1, SWT.NONE);
+						toolPrint.setImage(SWTResourceManager
+								.getImage("icons/Print16.gif"));
+
+						toolPrint.setText("Print");
+						toolPrint.addSelectionListener(new SelectionAdapter() {
+							public void widgetSelected(SelectionEvent evt) {
+
+								print();
+							}
+						});
+
+					}
+				}
+			}
+			menuActions.setVisible(false);
+			postInitGUI();
+			this.layout();
+		} catch (Exception e) {
+			EngBLLogger.log(this.getClass(), e);
+		}
+	}
+
+	public void postInitGUI() {
+		toolSave.setEnabled(false);
+	
+		menuItemSave.setEnabled(false);
+	
+		if(isDeletable)
+		{
+			toolDelete.setEnabled(false);
+			menuItemDelete.setEnabled(false);
+		}
+		
+
+		if (dialogInterface.getSaveComposite() != null) {
+			try {
+				if (EngBLPermissions.getPermission(dialogInterface
+						.getSaveComposite()) == 2) {
+					toolSave.setEnabled(true);
+					menuItemSave.setEnabled(true);
+				} else if (EngBLPermissions.getPermission(dialogInterface
+						.getSaveComposite()) == 3) {
+				
+					toolSave.setEnabled(true);
+					menuItemSave.setEnabled(true);
+			
+					if(isDeletable)
+					{
+						toolDelete.setEnabled(true);
+						menuItemDelete.setEnabled(true);
+						
+					}
+				}
+
+			} catch (Exception ex) {
+				EngBLLogger.log(this.getClass(), ex, getShell());
+			}
+		} else {
+
+			toolSave.setEnabled(true);
+			menuItemSave.setEnabled(true);
+		
+			if(isDeletable)
+			{
+				toolDelete.setEnabled(true);
+				menuItemDelete.setEnabled(true);
+				
+			}
+		}
+
+	}
+
+	public void save() {
+		if (this.dialogInterface != null)
+			this.dialogInterface.save();
+	}
+
+	public void delete() {
+		if (this.dialogInterface != null)
+			this.dialogInterface.delete();
+	}
+
+	public void cancel() {
+		if (this.dialogInterface != null)
+			this.dialogInterface.cancel();
+	}
+
+	public void print() {
+		if (this.dialogInterface != null)
+			this.dialogInterface.print();
+	}
+
+	public ToolBar getToolBar1() {
+		return toolBar1;
+	}
+
+	public void setToolBar1(ToolBar toolBar1) {
+		this.toolBar1 = toolBar1;
+	}
+
+	public ToolItem getToolCancel() {
+		return toolCancel;
+	}
+
+	public void setToolCancel(ToolItem toolCancel) {
+		this.toolCancel = toolCancel;
+	}
+
+	public ToolItem getToolDelete() {
+		return toolDelete;
+	}
+
+	public void setToolDelete(ToolItem toolDelete) {
+		this.toolDelete = toolDelete;
+	}
+
+	public ToolItem getToolPrint() {
+		return toolPrint;
+	}
+
+	public void setToolPrint(ToolItem toolPrint) {
+		this.toolPrint = toolPrint;
+	}
+
+	public ToolItem getToolSave() {
+		return toolSave;
+	}
+
+	public void setToolSave(ToolItem toolSave) {
+		this.toolSave = toolSave;
+	}
+	
+}
+@

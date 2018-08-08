@@ -1,0 +1,57 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.36;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@
+package com.turquaz.engine.dal;
+
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import server.util.EngDALSessionFactory;
+
+
+public class EngDalMenuFactory {
+
+	public static List getAllMenu() throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			
+			String query = "select menu from TurqEngineMenu as menu where menu.id > -1 order by menu.id" ;
+			
+			Query q = session.createQuery(query);
+			
+			List list = q.list();
+		
+			return list;
+		}
+	
+		catch (Exception e)
+		{
+			throw e;
+		}
+	}
+}
+@

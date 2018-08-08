@@ -1,0 +1,599 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+expand	@b@;
+
+
+1.1
+date	2007.01.22.19.49.49;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using an evaluation version of JasperAssistant (http://www.jasperassistant.com) -->
+<!DOCTYPE jasperReport PUBLIC "-//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+
+<jasperReport name="AccountingSubsidiaryLedger" language="java" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30">
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.DataSource" value="turquaz"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="false"/>
+	<property name="com.jasperassistant.designer.VGuides.Title" value="0"/>
+	<property name="com.jasperassistant.designer.Grid" value="false"/>
+	<reportFont name="pdffont" isDefault="true" fontName="sansserif" size="10" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="fonts/ARIAL.TTF" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+	<parameter name="sqlparam" class="java.lang.String">
+	</parameter>
+	<parameter name="beginDate" class="java.lang.String">
+	</parameter>
+	<parameter name="endDate" class="java.lang.String">
+	</parameter>
+	<parameter name="account1" class="java.lang.String">
+	</parameter>
+	<parameter name="account2" class="java.lang.String">
+	</parameter>
+	<parameter name="currentDate" class="java.lang.String">
+	</parameter>
+	<parameter name="formatter" class="com.turquaz.engine.ui.component.TurkishCurrencyFormat">
+	</parameter>
+	<parameter name="page" class="java.lang.String">
+	</parameter>
+	<parameter name="companyName" class="java.lang.String">
+	</parameter>
+	<queryString><![CDATA[$P!{sqlparam}]]></queryString>
+	<field name="accName" class="java.lang.String">
+	</field>
+	<field name="accCode" class="java.lang.String">
+	</field>
+	<field name="topAccName" class="java.lang.String">
+	</field>
+	<field name="topAccCode" class="java.lang.String">
+	</field>
+	<field name="rows_dept_in_base_currency" class="java.math.BigDecimal">
+	</field>
+	<field name="rows_credit_in_base_currency" class="java.math.BigDecimal">
+	</field>
+	<field name="transaction_definition" class="java.lang.String">
+	</field>
+	<field name="transactions_date" class="java.util.Date">
+	</field>
+	<field name="transaction_document_no" class="java.lang.String">
+	</field>
+	<field name="columnId" class="java.lang.Integer">
+	</field>
+	<variable name="initialDept" class="java.math.BigDecimal" resetType="None">
+		<variableExpression><![CDATA[(((Object[])((HashMap)$P{REPORT_PARAMETERS_MAP}.get("balanceList")).get($F{accCode}))==null)? new BigDecimal(0) : ((BigDecimal)(((Object[])((HashMap) $P{REPORT_PARAMETERS_MAP}.get("balanceList")).get($F{accCode}))[1]))]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="initialCredit" class="java.math.BigDecimal" resetType="None">
+		<variableExpression><![CDATA[(((Object[])((HashMap)$P{REPORT_PARAMETERS_MAP}.get("balanceList")).get($F{accCode}))==null)? new BigDecimal(0) : ((BigDecimal)(((Object[])((HashMap) $P{REPORT_PARAMETERS_MAP}.get("balanceList")).get($F{accCode}))[2]))]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="initialBalance" class="java.math.BigDecimal" resetType="None">
+		<variableExpression><![CDATA[$V{initialCredit}.subtract($V{initialDept})]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="totalDept" class="java.math.BigDecimal" resetType="Group" resetGroup="account" calculation="Sum">
+		<variableExpression><![CDATA[($F{rows_dept_in_base_currency}==null) ? new BigDecimal(0) : $F{rows_dept_in_base_currency}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="totalCredit" class="java.math.BigDecimal" resetType="Group" resetGroup="account" calculation="Sum">
+		<variableExpression><![CDATA[($F{rows_credit_in_base_currency}==null) ? new BigDecimal(0) : $F{rows_credit_in_base_currency}]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<variable name="Balance" class="java.math.BigDecimal" resetType="Group" resetGroup="account" calculation="Sum">
+		<variableExpression><![CDATA[$F{rows_credit_in_base_currency}.subtract($F{rows_dept_in_base_currency})]]></variableExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
+	</variable>
+	<group name="design">
+	</group>
+	<group name="account">
+		<groupExpression><![CDATA[$F{accCode}]]></groupExpression>
+		<groupHeader>
+		<band height="73">
+			<printWhenExpression><![CDATA[($F{columnId}==null && $V{initialDept}.doubleValue() == 0 && $V{initialCredit}.doubleValue() == 0)? Boolean.FALSE : Boolean.TRUE]]></printWhenExpression>
+			<rectangle>
+				<reportElement positionType="Float" x="0" y="39" width="555" height="20"/>
+				<graphicElement/>
+			</rectangle>
+			<textField>
+				<reportElement positionType="Float" x="74" y="3" width="132" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{accCode}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="3" width="64" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hesap Kodu:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="2" y="22" width="63" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Hesap Adı:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="74" y="22" width="131" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{accName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="213" y="3" width="89" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ana Hesap Kodu:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="213" y="22" width="89" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ana Hesap Adı:]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="307" y="3" width="132" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{topAccCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="307" y="22" width="132" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{topAccName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="1" y="42" width="66" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Tarih]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="69" y="42" width="52" height="14"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Fiş No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="123" y="42" width="116" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Açıklama]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="241" y="42" width="75" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Borç]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="318" y="42" width="75" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Alacak]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="395" y="42" width="75" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Borç Bakiye]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="472" y="42" width="75" height="14"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Alacak Bakiye]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="68" y="39" width="1" height="20"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="122" y="39" width="1" height="20"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="238" y="39" width="1" height="20"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="316" y="39" width="1" height="20"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="394" y="39" width="1" height="20"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="472" y="39" width="1" height="20"/>
+				<graphicElement/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="123" y="60" width="116" height="11"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[DEVREDEN]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="241" y="60" width="75" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{initialDept})+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="318" y="60" width="75" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{initialCredit})+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="395" y="60" width="75" height="12">
+					<printWhenExpression><![CDATA[($V{initialBalance}.doubleValue() <= 0 ) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{initialBalance}.negate())+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="472" y="60" width="75" height="12">
+					<printWhenExpression><![CDATA[($V{initialBalance}.doubleValue() > 0 ) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{initialBalance})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="122" y="59" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="238" y="59" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="316" y="59" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="394" y="59" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="472" y="59" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="554" y="59" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="68" y="59" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="0" y="59" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+		</band>
+		</groupHeader>
+		<groupFooter>
+		<band height="58">
+			<printWhenExpression><![CDATA[($F{columnId}==null && $V{initialDept}.doubleValue() == 0 && $V{initialCredit}.doubleValue() == 0)? Boolean.FALSE : Boolean.TRUE]]></printWhenExpression>
+			<rectangle>
+				<reportElement positionType="Float" x="0" y="18" width="555" height="19"/>
+				<graphicElement/>
+			</rectangle>
+			<rectangle>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="19"/>
+				<graphicElement/>
+			</rectangle>
+			<staticText>
+				<reportElement positionType="Float" x="124" y="3" width="115" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EKSTRE TOPLAMI]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="241" y="3" width="75" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{totalDept})+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="318" y="3" width="75" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{totalCredit})+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="395" y="3" width="75" height="12">
+					<printWhenExpression><![CDATA[(($V{totalCredit}.subtract($V{totalDept})).doubleValue() <= 0 ) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format(($V{totalCredit}.subtract($V{totalDept}).abs()))+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="472" y="3" width="75" height="12">
+					<printWhenExpression><![CDATA[(($V{totalCredit}.subtract($V{totalDept})).doubleValue() > 0 ) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{totalCredit}.subtract($V{totalDept}))]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="238" y="0" width="1" height="38"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="316" y="1" width="1" height="38"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="394" y="1" width="1" height="38"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="472" y="0" width="1" height="38"/>
+				<graphicElement/>
+			</line>
+			<staticText>
+				<reportElement positionType="Float" x="124" y="22" width="115" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GENEL TOPLAM]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="241" y="22" width="75" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{totalDept}.add($V{initialDept}))+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="318" y="22" width="75" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{totalCredit}.add($V{initialCredit}))+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="395" y="22" width="75" height="12">
+					<printWhenExpression><![CDATA[(($V{Balance}.add($V{initialBalance})).doubleValue() <= 0 ) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{Balance}.add($V{initialBalance}).abs())+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="472" y="22" width="75" height="12">
+					<printWhenExpression><![CDATA[(($V{Balance}.add($V{initialBalance})).doubleValue() > 0 ) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{Balance}.add($V{initialBalance}))+" "]]></textFieldExpression>
+			</textField>
+		</band>
+		</groupFooter>
+	</group>
+	<group name="transCol">
+		<groupExpression><![CDATA[$F{columnId}]]></groupExpression>
+		<groupHeader>
+		<band height="13">
+			<printWhenExpression><![CDATA[($F{columnId}==null && $V{initialDept}.doubleValue() == 0 && $V{initialCredit}.doubleValue() == 0)? Boolean.FALSE : Boolean.TRUE]]></printWhenExpression>
+			<textField>
+				<reportElement positionType="Float" x="2" y="1" width="66" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[((SimpleDateFormat)$P{REPORT_PARAMETERS_MAP}.get("dformat")).format($F{transactions_date})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="69" y="1" width="52" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{transaction_document_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="123" y="1" width="116" height="12"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{transaction_definition}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="241" y="1" width="75" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($F{rows_dept_in_base_currency})+" "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="318" y="1" width="75" height="12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($F{rows_credit_in_base_currency})+" "]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="Float" x="68" y="-1" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="122" y="-1" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="238" y="-1" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="316" y="-1" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="394" y="-1" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="472" y="-1" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="0" y="-1" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="554" y="-1" width="1" height="14"/>
+				<graphicElement/>
+			</line>
+			<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="transCol">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="395" y="1" width="75" height="12" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[($V{Balance}.add($V{initialBalance}).add($F{rows_credit_in_base_currency}.subtract($F{rows_dept_in_base_currency})).doubleValue() <= 0 ) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{Balance}.add($V{initialBalance}).negate())+" "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Group" evaluationGroup="transCol">
+				<reportElement positionType="Float" x="472" y="1" width="75" height="12">
+					<printWhenExpression><![CDATA[($V{Balance}.add($V{initialBalance}).add($F{rows_credit_in_base_currency}.subtract($F{rows_dept_in_base_currency})).doubleValue() > 0 ) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{formatter}.format($V{Balance}.add($V{initialBalance}))]]></textFieldExpression>
+			</textField>
+		</band>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="58">
+			<staticText>
+				<reportElement positionType="Float" x="3" y="31" width="178" height="16"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MUAVİN DEFTERİ- HESAP ARALIĞI :]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="183" y="31" width="163" height="16"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[($P{account2}.equals("")) ?$P{account1} : $P{account1}+" - "+$P{account2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="3" y="3" width="415" height="14"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{companyName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="501" y="16" width="52" height="13"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{currentDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="501" y="29" width="52" height="13"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{beginDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="424" y="42" width="76" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bitiş Tarihi :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="424" y="16" width="76" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rapor Tarihi :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="415" y="29" width="85" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Başlangıç Tarihi :]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="501" y="42" width="52" height="13"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{endDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageFooter>
+		<band height="31">
+			<textField>
+				<reportElement positionType="Float" x="239" y="6" width="54" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{page}+ String.valueOf($V{PAGE_NUMBER}) + "/"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement positionType="Float" x="293" y="6" width="78" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
+@

@@ -1,0 +1,37 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package server.auth;
+
+public class AuthenticationException extends Exception{
+	
+	    public AuthenticationException()
+	    {
+	    }
+
+	    public AuthenticationException(String s)
+	    {
+	        super(s);
+	    }
+	
+}
+@

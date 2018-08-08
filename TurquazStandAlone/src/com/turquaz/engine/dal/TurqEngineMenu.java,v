@@ -1,0 +1,128 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.43;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqEngineMenu implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private String menuName;
+
+    /** nullable persistent field */
+    private String menuImage;
+
+    /** persistent field */
+    private int menuType;
+
+    /** persistent field */
+    private int parentId;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqModuleComponent turqModuleComponent;
+
+    /** full constructor */
+    public TurqEngineMenu(Integer id, String menuName, String menuImage, int menuType, int parentId, com.turquaz.engine.dal.TurqModuleComponent turqModuleComponent) {
+        this.id = id;
+        this.menuName = menuName;
+        this.menuImage = menuImage;
+        this.menuType = menuType;
+        this.parentId = parentId;
+        this.turqModuleComponent = turqModuleComponent;
+    }
+
+    /** default constructor */
+    public TurqEngineMenu() {
+    }
+
+    /** minimal constructor */
+    public TurqEngineMenu(Integer id, String menuName, int menuType, int parentId, com.turquaz.engine.dal.TurqModuleComponent turqModuleComponent) {
+        this.id = id;
+        this.menuName = menuName;
+        this.menuType = menuType;
+        this.parentId = parentId;
+        this.turqModuleComponent = turqModuleComponent;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getMenuName() {
+        return this.menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public String getMenuImage() {
+        return this.menuImage;
+    }
+
+    public void setMenuImage(String menuImage) {
+        this.menuImage = menuImage;
+    }
+
+    public int getMenuType() {
+        return this.menuType;
+    }
+
+    public void setMenuType(int menuType) {
+        this.menuType = menuType;
+    }
+
+    public int getParentId() {
+        return this.parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
+    public com.turquaz.engine.dal.TurqModuleComponent getTurqModuleComponent() {
+        return this.turqModuleComponent;
+    }
+
+    public void setTurqModuleComponent(com.turquaz.engine.dal.TurqModuleComponent turqModuleComponent) {
+        this.turqModuleComponent = turqModuleComponent;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

@@ -1,0 +1,120 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.32;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version='1.0' encoding='utf-8'?>
+ <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+ "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+    
+      <mapping resource="com/turquaz/engine/dal/TurqAccountingAccount.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqAccountingJournal.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqAccountingTransaction.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqAccountingTransactionType.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqBankCardsSecondaryAccount.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqBanksCard.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqBankSecondaryAccount.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqBanksTransaction.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqBanksTransactionBill.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqBanksTransactionType.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqBill.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqBillGroup.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqBillInGroup.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqChequeCheque.hbm.xml"/>
+	  <mapping resource="com/turquaz/engine/dal/TurqChequeChequeInRoll.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqChequeRoll.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqChequeTransactionType.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCompany.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqConsignment.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqConsignmentGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqConsignmentsInGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCurrency.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCurrentCard.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCurrentCardsGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCurrentCardsPhone.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCurrentContact.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCurrentGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCurrentTransaction.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCurrentTransactionBill.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqCurrentTransactionType.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqGroupPermission.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryCard.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryCardUnit.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryPrice.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryCardGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryTransaction.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryUnit.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryWarehous.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqModule.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqModuleComponent.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqOrder.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqOrderGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqOrderInGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqTradebillRoll.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqTradebillTradebill.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqTradebillTradebillsRoll.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqTradebillTransactionType.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqUser.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqUserGroup.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqUserPermission.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqAccountingTransactionColumn.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqEngineSequence.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqViewInventoryAmountTotal.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqViewCurrentAmountTotal.hbm.xml"/>	
+<mapping resource="com/turquaz/engine/dal/TurqViewAccTransTotalAmount.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqViewInventoryTotal.hbm.xml"/>											
+ <mapping resource="com/turquaz/engine/dal/TurqCashCard.hbm.xml"/>
+  <mapping resource="com/turquaz/engine/dal/TurqCashTransaction.hbm.xml"/>	
+   <mapping resource="com/turquaz/engine/dal/TurqCashTransactionType.hbm.xml"/>       
+     <mapping resource="com/turquaz/engine/dal/TurqCashTransactionRow.hbm.xml"/>  
+   <mapping resource="com/turquaz/engine/dal/TurqViewChequeStatus.hbm.xml"/> 
+ <mapping resource="com/turquaz/engine/dal/TurqChequeRollAccountingAccount.hbm.xml"/> 
+ <mapping resource="com/turquaz/engine/dal/TurqAccountingAccountClass.hbm.xml"/> 
+     <mapping resource="com/turquaz/engine/dal/TurqAccountingAccountType.hbm.xml"/> 
+     <mapping resource="com/turquaz/engine/dal/TurqCurrencyExchangeRate.hbm.xml"/>
+     <mapping resource="com/turquaz/engine/dal/TurqCurrentAccountingAccount.hbm.xml"/>
+     <mapping resource="com/turquaz/engine/dal/TurqCurrentAccountingType.hbm.xml"/>
+     <mapping resource="com/turquaz/engine/dal/TurqViewAccTotal.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqBankAccountingAccount.hbm.xml"/>
+         <mapping resource="com/turquaz/engine/dal/TurqBankAccountingType.hbm.xml"/>
+         <mapping resource="com/turquaz/engine/dal/TurqInventoryAccountingAccount.hbm.xml"/>
+         <mapping resource="com/turquaz/engine/dal/TurqInventoryAccountingType.hbm.xml"/>
+     <mapping resource="com/turquaz/engine/dal/TurqChequeTransactionTypeGroup.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqInventoryTransactionType.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqBillInEngineSequence.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqViewInvPriceTotal.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqViewBillTransTotal.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqUserPermissionLevel.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqSetting.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqEngineMenu.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqService.hbm.xml"/>
+       <mapping resource="com/turquaz/engine/dal/TurqInventoryTransactionBill.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryCustomizeField.hbm.xml"/>
+<mapping resource="com/turquaz/engine/dal/TurqInventoryCustomizeType.hbm.xml"/>
+       </session-factory>
+    
+</hibernate-configuration>
+@

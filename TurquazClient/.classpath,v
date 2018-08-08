@@ -1,0 +1,52 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.51;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/TurquazCommon"/>
+	<classpathentry kind="lib" path="lib/jface/activation.jar"/>
+	<classpathentry kind="lib" path="lib/jface/boot.jar"/>
+	<classpathentry kind="lib" path="lib/jface/cglib2.jar"/>
+	<classpathentry kind="lib" path="lib/jface/jface.jar"/>
+	<classpathentry kind="lib" path="lib/jface/jfacetext.jar"/>
+	<classpathentry kind="lib" path="lib/jface/jta.jar"/>
+	<classpathentry kind="lib" path="lib/jface/odmg.jar"/>
+	<classpathentry kind="lib" path="lib/jface/osgi.jar"/>
+	<classpathentry kind="lib" path="lib/jface/runtime.jar"/>
+	<classpathentry kind="lib" path="lib/jface/swtcalendar.jar"/>
+	<classpathentry kind="lib" path="lib/jface/swtjasperviewer.jar"/>
+	<classpathentry kind="lib" path="lib/jface/swt-nl.jar"/>
+	<classpathentry kind="lib" path="lib/jface/text.jar"/>
+	<classpathentry kind="lib" path="lib/jdom.jar"/>
+	<classpathentry kind="lib" path="lib/poi/poi.jar"/>
+	<classpathentry kind="lib" path="lib/poi/poi-contrib.jar"/>
+	<classpathentry kind="lib" path="lib/poi/poi-scratchpad.jar"/>
+	<classpathentry kind="lib" path="lib/jasperreport/jasperreports.jar"/>
+	<classpathentry kind="lib" path="lib/windows/org.eclipse.swt.win32.win32.x86_3.1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TurquazBusinessLogic"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/TurquazStandAlone"/>
+	<classpathentry kind="lib" path="lib/jasperreport/itext-1.02b.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
+@

@@ -1,0 +1,32 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.36.04;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.tx;
+
+import java.util.HashMap;
+
+public interface ServiceCaller {
+	public Object doSelect(String serviceName, HashMap argMap)throws Exception;
+	public Object doTransaction(String serviceName, HashMap argMap)throws Exception;
+
+}
+@

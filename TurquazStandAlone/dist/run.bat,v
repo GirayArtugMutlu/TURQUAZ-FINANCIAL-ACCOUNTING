@@ -1,0 +1,44 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@:: @;
+expand	@b@;
+
+
+1.2
+date	2009.01.14.00.16.18;	author huseyiner;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.22.19.49.49;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@kdv iskonto eklendi
+@
+text
+@D:\Java\Java\jdk_1_6_0\bin\java -jar run.jar
+
+
+@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@d1 1
+a1 1
+..\..\java\bin\javaw -jar run.jar
+@
+

@@ -1,0 +1,198 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.51;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.bl;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Onsel Armagan
+ * @@version $Id: EngBLInventoryCards.java,v 1.7 2005/08/26 14:30:02 cem Exp $
+ */
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.contentassist.TurquazContentAssistant;
+import com.turquaz.inventory.InvKeys;
+
+public class EngBLInventoryCards
+{
+	public HashMap cardList;
+	public HashMap cardListByName;
+	public HashMap cardPrices;
+	static EngBLInventoryCards _instance;
+
+	public EngBLInventoryCards() throws Exception
+	{
+		try
+		{
+			fillInventoryList();
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public void fillInventoryList() throws Exception
+	{
+		try
+		{
+			HashBag result = (HashBag)EngTXCommon.doSelectTX("Inv_getInventoryCards",null);
+			
+			HashMap cards = (HashMap)result.get(InvKeys.INV_CARDS);
+			
+			cardList=new HashMap();
+			cardListByName=new HashMap();
+			cardPrices=(HashMap)result.get(InvKeys.INV_CARD_PRICES);
+			
+			
+			for(int k=0; k<cards.size(); k++)
+			{
+				HashMap card=(HashMap)cards.get(new Integer(k));
+				String invCode=(String)card.get(InvKeys.INV_CARD_CODE);
+				
+				cardList.put(invCode,card);
+				cardListByName.put(card.get(InvKeys.INV_CARD_NAME),invCode);
+			}
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	/**
+	 * @@return
+	 * @@throws Exception
+	 */
+	public static HashMap getInventoryCards() throws Exception
+	{
+		try
+		{
+			if (_instance == null)
+			{
+				_instance = new EngBLInventoryCards();
+			}
+			return _instance.cardList;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static HashMap getInvCard(String accountCode) throws Exception
+	{
+		try
+		{
+			if (_instance == null)
+			{
+				_instance = new EngBLInventoryCards();
+			}
+			return (HashMap)_instance.cardList.get(accountCode);
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+	
+	public static BigDecimal getCardValue(Integer cardId,Integer currencyId, int type)
+	{
+		String hashValue=cardId.toString()+"+"+currencyId.toString()+"+"+type;
+		BigDecimal cardValue=(BigDecimal)_instance.cardPrices.get(hashValue);
+		if (cardValue==null)
+			cardValue=new BigDecimal(0);
+		
+		return cardValue;
+	}
+	public static HashMap getInvFromCardName(String cardName) throws Exception
+	{
+		try
+		{
+			if (_instance == null)
+			{
+				_instance = new EngBLInventoryCards();
+			}
+			String invCode=(String)_instance.cardListByName.get(cardName);
+			if (invCode==null)
+				return null;
+			else
+				return (HashMap)_instance.cardList.get(invCode);
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public HashMap getCard(String invCode) throws Exception
+	{
+		try
+		{
+			HashMap argMap=new HashMap();
+			argMap.put(InvKeys.INV_CARD_CODE,invCode);
+			HashBag cardBag=(HashBag)EngTXCommon.doSelectTX("Inv_getInventoryCard",argMap);
+			return (HashMap)cardBag.get(InvKeys.INV_CARD);
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+	
+
+	public static void RefreshContentAsistantMap() throws Exception
+	{
+		try
+		{
+			if (_instance == null)
+			{
+				_instance = new EngBLInventoryCards();
+				return;
+			}
+			_instance.fillInventoryList();
+			TurquazContentAssistant.refreshContentAssistant(EngBLCommon.CONTENT_ASSIST_INVENTORY);
+			
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+}@

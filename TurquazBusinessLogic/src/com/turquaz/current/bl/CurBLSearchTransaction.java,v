@@ -1,0 +1,316 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.33;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.current.bl;
+
+/************************************************************************/
+/* TURQUAZ: Higly Modular Accounting/ERP Program                        */
+/* ============================================                         */
+/* Copyright (c) 2004 by Turquaz Software Development Group			    */
+/*																		*/
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License, or    */
+/* (at your option) any later version.       							*/
+/* 																		*/
+/* This program is distributed in the hope that it will be useful,		*/
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of		*/
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the		*/
+/* GNU General Public License for more details.         				*/
+/************************************************************************/
+/**
+ * @@author Onsel Armagan
+ * @@version $Id: CurBLSearchTransaction.java,v 1.9 2005/08/29 11:49:07 onsel Exp $
+ */
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import net.sf.jasperreports.engine.JasperPrint;
+import org.hibernate.Session;
+import server.util.EngDALSessionFactory;
+import com.turquaz.bank.BankKeys;
+import com.turquaz.bill.BillKeys;
+import com.turquaz.cash.CashKeys;
+import com.turquaz.cheque.CheKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.current.CurKeys;
+import com.turquaz.current.dal.CurDALSearchTransaction;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.dal.EngDALCommon;
+import com.turquaz.engine.dal.TurqCurrentCard;
+import com.turquaz.engine.dal.TurqCurrentTransaction;
+import com.turquaz.engine.ui.component.TurkishCurrencyFormat;
+import com.turquaz.utility.reporting.ReportGenerator;
+
+public class CurBLSearchTransaction
+{
+	
+	private static void deleteInitialTransactions(TurqCurrentCard curCard) throws Exception
+	{
+		try
+		{
+			CurDALSearchTransaction.deleteInitialTransactions(curCard);
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static HashBag getBankTransaction(HashMap argMap) throws Exception
+	{
+		
+		Integer curTransId = (Integer)argMap.get(CurKeys.CUR_TRANSACTION_ID);
+		TurqCurrentTransaction trans = (TurqCurrentTransaction)EngDALSessionFactory.getSession().load(TurqCurrentTransaction.class,curTransId);
+		
+		Object[] bankTrans = EngDALCommon.getBankTransaction(trans.getTurqEngineSequence());
+		HashBag result = new HashBag();
+		result.put(BankKeys.BANK_TRANS_BILL_ID,bankTrans[0]);
+		result.put(EngKeys.TYPE_ID,bankTrans[1]);
+		return result;
+	}
+
+	public static HashBag getBillofCurrentTrans(HashMap argMap) throws Exception
+	{
+		HashBag result = new HashBag();
+		Integer curTransId = (Integer)argMap.get(CurKeys.CUR_TRANSACTION_ID);
+		TurqCurrentTransaction trans = (TurqCurrentTransaction)EngDALSessionFactory.getSession().load(TurqCurrentTransaction.class,curTransId);
+		
+		result.put(BillKeys.BILL_ID,EngDALCommon.getBillOfCurrentTrans(trans.getTurqEngineSequence()));
+		return result;
+	}
+
+	public static HashBag getCashTransaction(HashMap argMap) throws Exception
+	{
+		HashBag result = new HashBag();
+		Integer curTransId = (Integer)argMap.get(CurKeys.CUR_TRANSACTION_ID);
+		TurqCurrentTransaction trans = (TurqCurrentTransaction)EngDALSessionFactory.getSession().load(TurqCurrentTransaction.class,curTransId);
+		
+		result.put(CashKeys.CASH_TRANSACTION_ID,EngDALCommon.getCashTransaction(trans.getTurqEngineSequence()));
+		return result;
+	}
+
+	public static HashBag getCheqeuTransaction(HashMap argMap) throws Exception
+	{
+		HashBag result = new HashBag();
+		Integer curTransId = (Integer)argMap.get(CurKeys.CUR_TRANSACTION_ID);
+		TurqCurrentTransaction trans = (TurqCurrentTransaction)EngDALSessionFactory.getSession().load(TurqCurrentTransaction.class,curTransId);
+		
+		result.put(CheKeys.CHE_CHEQUE_ROLL_ID,EngDALCommon.getCheqeuTransaction(trans.getTurqEngineSequence())[0]);
+		result.put(EngKeys.TYPE_ID,EngDALCommon.getCheqeuTransaction(trans.getTurqEngineSequence())[01]);
+		return result;
+	}
+
+	private static List getCurrentBalances(HashMap argMap) throws Exception
+	{
+		
+		TurqCurrentCard curCardStart = (TurqCurrentCard)argMap.get(CurKeys.CURRENT_CARD_START);
+		TurqCurrentCard curCardEnd = (TurqCurrentCard)argMap.get(CurKeys.CURRENT_CARD_END);
+		Date startDate = (Date)argMap.get(EngKeys.DATE_START);
+		return CurDALSearchTransaction.getCurrentBalances(curCardStart, curCardEnd, startDate);
+		
+	}
+	
+	public static HashBag getCurrentCardAbstract(HashMap argMap) throws Exception
+	{
+		try
+		{
+			Integer curCardStartId=(Integer)argMap.get(CurKeys.CUR_CARD_START_ID);
+			Integer curCardEndId=(Integer)argMap.get(CurKeys.CUR_CARD_END_ID);
+			Date startDate=(Date)argMap.get(EngKeys.DATE_START);
+			Date endDate=(Date)argMap.get(EngKeys.DATE_END);
+			String definition=(String)argMap.get(EngKeys.DEFINITION);
+			BigDecimal minAmountTrans=(BigDecimal)argMap.get(EngKeys.MIN_VALUE_TRANSACTION);	
+			BigDecimal minAmountBalance=(BigDecimal)argMap.get(EngKeys.MIN_VALUE_BALANCE);	
+			
+			Integer curGroupId = (Integer)argMap.get(CurKeys.CUR_GROUP_ID);
+			
+			TurqCurrentCard curCardStart=null;
+			TurqCurrentCard curCardEnd=null;
+			
+			Session session=EngDALSessionFactory.getSession();
+			if (curCardStartId != null)
+			{
+				curCardStart=(TurqCurrentCard)session.load(TurqCurrentCard.class,curCardStartId);
+			}
+			if (curCardEndId != null)
+			{
+				curCardEnd=(TurqCurrentCard)session.load(TurqCurrentCard.class,curCardEndId);
+			}
+			
+			List cards=CurDALSearchTransaction.getCurrentCardAbstract(curCardStart,curCardEnd, startDate, endDate, definition,minAmountTrans,minAmountBalance,curGroupId);
+		
+			Map parameters = new HashMap();
+			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			parameters.put("startDate", df.format(startDate)); 
+			parameters.put("endDate", df.format(endDate)); 
+			parameters.put("dformat", df);
+			parameters.put("currentCard1", (curCardStart == null) ? "" : curCardStart.getCardsCurrentCode()); 
+			parameters.put("currentCard2", (curCardEnd == null) ? "" : curCardEnd.getCardsCurrentCode()); 
+			parameters.put("formatter", new TurkishCurrencyFormat(2)); 
+			parameters.put("currency", new TurkishCurrencyFormat(2)); 
+			parameters.put("currentDate", df.format(Calendar.getInstance().getTime())); 
+			parameters.put("showGeneralTotal", new Boolean(true));
+			
+			
+			argMap.put(CurKeys.CUR_CARD_START,curCardStart);
+			argMap.put(CurKeys.CUR_CARD_END,curCardEnd);
+			
+			List balances =CurBLSearchTransaction.getCurrentBalances(argMap);
+						
+			HashMap balanceList = new HashMap();
+			for (int k = 0; k < balances.size(); k++)
+			{
+				Object[] balanceArr = (Object[]) balances.get(k);
+				balanceList.put((String) balanceArr[0], balanceArr);
+			}
+			parameters.put("balanceList", balanceList); 
+			
+			
+			String[] fields = new String[]{"cards_current_code", "cards_name", "transaction_type_name", "transactions_date",
+					"transactions_document_no", "transactions_total_credit", "transactions_total_dept", "current_transactions_id",
+					"transactions_definition"};
+			
+			JasperPrint jasperPrint=ReportGenerator.generateReport("/reports/current/CurrentCardAbstract.jrxml",cards,fields,parameters);
+			
+			HashBag abstractBag=new HashBag();
+			
+			abstractBag.put(EngKeys.REPORT,jasperPrint);			
+			
+			return abstractBag;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static HashBag getCurrentTransactions(HashMap argMap) throws Exception
+	{
+		
+        HashBag returnBag = new HashBag();
+		
+		
+		
+		Integer curCardId = (Integer)argMap.get(CurKeys.CUR_CARD_ID);
+		TurqCurrentCard card=null;
+		if(curCardId!=null)
+		{
+			card=(TurqCurrentCard)EngDALSessionFactory.getSession().load(TurqCurrentCard.class,curCardId);
+		};
+		
+		returnBag.put(CurKeys.CUR_CURRENT_CODE,card.getCardsCurrentCode());
+		
+		Date startDate = (Date)argMap.get(EngKeys.DATE_START);
+		Date endDate = (Date)argMap.get(EngKeys.DATE_END);
+		
+		
+		List list = CurDALSearchTransaction.getCurrentTransactions(card, startDate, endDate);
+		returnBag.put(CurKeys.CUR_TRANSACTIONS,new HashMap());
+		for(int i=0;i<list.size();i++)
+		{
+			TurqCurrentTransaction trans = (TurqCurrentTransaction)list.get(i);
+			
+			returnBag.put(CurKeys.CUR_TRANSACTIONS,i,EngKeys.DATE,trans.getTransactionsDate());
+			returnBag.put(CurKeys.CUR_TRANSACTIONS,i,CurKeys.CUR_TRANSACTION_ID,trans.getId());
+			returnBag.put(CurKeys.CUR_TRANSACTIONS,i,EngKeys.TYPE_NAME,trans.getTurqCurrentTransactionType().getTransactionTypeName());
+			returnBag.put(CurKeys.CUR_TRANSACTIONS,i,EngKeys.DOCUMENT_NO,trans.getTransactionsDocumentNo());
+			returnBag.put(CurKeys.CUR_TRANSACTIONS,i,EngKeys.CREDIT_AMOUNT,trans.getTransactionsTotalCredit());
+			returnBag.put(CurKeys.CUR_TRANSACTIONS,i,EngKeys.DEPT_AMOUNT,trans.getTransactionsTotalDept());
+						
+		}
+		
+		return returnBag;
+		
+	}
+
+	public static TurqCurrentTransaction getCurTransByTransId(HashMap argMap) throws Exception
+	{
+		
+		Integer transId = (Integer)argMap.get(EngKeys.TRANS_ID);		
+		return CurDALSearchTransaction.getCurTransByTransId(transId);
+		
+	}
+
+	public static HashBag getInitialTransactions() throws Exception
+	{
+		
+		
+		List list = CurDALSearchTransaction.getInitialTransactions();
+		HashBag transBag = new HashBag();
+		transBag.put(CurKeys.CUR_TRANSACTIONS,new HashMap());
+		for(int i=0;i<list.size();i++)
+		{
+			TurqCurrentTransaction curTrans = (TurqCurrentTransaction)list.get(i);
+			transBag.put(CurKeys.CUR_TRANSACTIONS,i,CurKeys.CUR_CARD_ID,curTrans.getTurqCurrentCard().getId());
+			transBag.put(CurKeys.CUR_TRANSACTIONS,i,CurKeys.CUR_CURRENT_NAME,curTrans.getTurqCurrentCard().getCardsName());
+			transBag.put(CurKeys.CUR_TRANSACTIONS,i,CurKeys.CUR_CURRENT_CODE,curTrans.getTurqCurrentCard().getCardsCurrentCode());
+			transBag.put(CurKeys.CUR_TRANSACTIONS,i,EngKeys.DEPT_AMOUNT,curTrans.getTransactionsTotalDept());
+			transBag.put(CurKeys.CUR_TRANSACTIONS,i,EngKeys.CREDIT_AMOUNT,curTrans.getTransactionsTotalCredit());
+			
+			
+		}
+		
+		return transBag;
+		
+		
+	}
+
+	public static HashBag searchCurrentTransaction(HashMap argMap) throws Exception
+	{
+		Integer curCardId = (Integer) argMap.get(CurKeys.CUR_CARD_ID);
+		Integer typeId = (Integer) argMap.get(EngKeys.TYPE_ID);
+		String docNo = (String) argMap.get(EngKeys.DOCUMENT_NO);
+		String definition = (String) argMap.get(EngKeys.DEFINITION);
+		Date startDate = (Date) argMap.get(EngKeys.DATE_START);
+		Date endDate = (Date) argMap.get(EngKeys.DATE_END);
+        Integer transType = (Integer) argMap.get(CurKeys.CUR_TRANS_TYPE);
+		
+		List list = CurDALSearchTransaction.searchTransaction(curCardId, typeId, docNo, definition,
+				startDate, endDate,transType);
+		 
+		
+		HashBag returnBag = new HashBag();
+		returnBag.put(CurKeys.CUR_TRANSACTIONS, new HashMap());
+		
+		for (int i = 0; i < list.size(); i++)
+		{
+			Object[] transInfo = (Object[]) list.get(i);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, CurKeys.CUR_TRANSACTION_ID, transInfo[0]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, EngKeys.DATE, transInfo[1]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, EngKeys.DOCUMENT_NO, transInfo[2]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, CurKeys.CUR_CURRENT_CODE, transInfo[3]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, CurKeys.CUR_CURRENT_NAME, transInfo[4]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, EngKeys.TYPE_NAME, transInfo[5]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, EngKeys.TYPE_ID, transInfo[6]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, EngKeys.DEFINITION, transInfo[7]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, EngKeys.DEPT_AMOUNT, transInfo[8]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, EngKeys.CREDIT_AMOUNT, transInfo[9]);
+			returnBag.put(CurKeys.CUR_TRANSACTIONS, i, EngKeys.CURRENCY_ABBR, transInfo[10]);
+		}
+		return returnBag;
+	}
+}@

@@ -1,0 +1,51 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2009.09.28.12.05.00;	author huseyiner;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2007.01.22.19.49.51;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@0.8 beta 7 ytl tl change
+@
+text
+@dbType=Turquaz HSQLDB
+serverAddress=
+serverPort=
+dbName=
+dbUsername=sa
+dbPassword=
+@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@d1 6
+a6 6
+dbType=Postgresql
+serverAddress=kulup.sabanciuniv.edu
+serverPort=5432
+dbName=turqtest
+dbUsername=turquaz
+dbPassword=turq34
+@
+

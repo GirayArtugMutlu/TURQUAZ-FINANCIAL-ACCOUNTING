@@ -1,0 +1,257 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.39;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.current.ui;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import com.cloudgarden.resource.SWTResourceManager;
+import com.turquaz.accounting.AccKeys;
+import com.turquaz.admin.AdmKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.current.CurKeys;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.bl.EngBLCommon;
+import com.turquaz.engine.interfaces.SaveDialogInterface;
+import com.turquaz.engine.lang.CurLangKeys;
+import com.turquaz.engine.lang.EngLangCommonKeys;
+import com.turquaz.engine.tx.EngTXCommon;
+import com.turquaz.engine.ui.EngUICommon;
+import com.turquaz.engine.ui.component.SaveDialogMenu;
+import org.eclipse.swt.layout.GridData;
+
+
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.SWT;
+
+import server.util.EngBLLogger;
+
+
+
+/**
+* This code was generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* *************************************
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED
+* for this machine, so Jigloo or this code cannot be used legally
+* for any corporate or commercial purpose.
+* *************************************
+*/
+public class CurUIVoucherUpdate extends org.eclipse.swt.widgets.Dialog implements SaveDialogInterface
+{
+	private Shell dialogShell;
+	private CurUICurrentCardVoucher compVoucher;
+	private SaveDialogMenu saveDialogMenu1;
+	Integer currentTransId =null;
+	
+	private boolean updated = false;
+
+	public CurUIVoucherUpdate(Shell parent, int style, Integer curTransId)
+	{
+		super(parent, style);
+		this.currentTransId = curTransId;
+	}
+
+	public boolean open()
+	{
+		try
+		{
+			Shell parent = getParent();
+			dialogShell = new Shell(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.MAX);
+			{
+				//Register as a resource user - SWTResourceManager will
+				//handle the obtaining and disposing of resources
+				SWTResourceManager.registerResourceUser(dialogShell);
+			}
+			dialogShell.setLayout(new GridLayout());
+			dialogShell.layout();
+			dialogShell.setText(CurLangKeys.TITLE_CUR_VOUCHER_UPDATE); //$NON-NLS-1$
+			dialogShell.setSize(588, 370);
+			{
+				GridData saveDialogMenu1LData = new GridData();
+				saveDialogMenu1LData.grabExcessHorizontalSpace = true;
+				saveDialogMenu1LData.horizontalAlignment = GridData.FILL;
+				saveDialogMenu1 = new SaveDialogMenu(dialogShell, SWT.NONE,this,true,true);
+				saveDialogMenu1.setLayoutData(saveDialogMenu1LData);
+			}
+			{
+				
+					compVoucher = new CurUICurrentCardVoucher(dialogShell, SWT.NONE);
+				GridData compVoucherLData = new GridData();
+				compVoucherLData.horizontalAlignment = GridData.FILL;
+				compVoucherLData.grabExcessHorizontalSpace = true;
+				compVoucherLData.verticalAlignment = GridData.FILL;
+				compVoucherLData.grabExcessVerticalSpace = true;
+				compVoucher.setLayoutData(compVoucherLData);
+			}
+			postInitGUI();
+			dialogShell.open();
+			Display display = dialogShell.getDisplay();
+			while (!dialogShell.isDisposed())
+			{
+				if (!display.readAndDispatch())
+					display.sleep();
+			}
+			return updated;
+		}
+		catch (Exception e)
+		{
+            EngBLLogger.log(this.getClass(),e,getParent());
+			return true;
+		}
+	}
+
+	public void postInitGUI()
+	{
+		EngUICommon.centreWindow(dialogShell);
+		try
+		{
+			HashMap argMap = new HashMap();
+			argMap.put(CurKeys.CUR_TRANSACTION_ID, currentTransId);
+			HashBag transInfo = (HashBag) EngTXCommon.doSelectTX("Cur_getVoucherInfo", argMap);
+			BigDecimal creditAmount = (BigDecimal) transInfo.get(EngKeys.CREDIT_AMOUNT);
+			BigDecimal deptAmount = (BigDecimal) transInfo.get(EngKeys.DEPT_AMOUNT);
+			Date transDate = (Date) transInfo.get(EngKeys.DATE);
+			String currentCode = (String) transInfo.get(CurKeys.CUR_CURRENT_CODE);
+			String currentName = (String) transInfo.get(CurKeys.CUR_CURRENT_NAME);
+			String definition = (String) transInfo.get(EngKeys.DEFINITION);
+			String docNo = (String) transInfo.get(EngKeys.DOCUMENT_NO);
+			String abbr = (String) transInfo.get(AdmKeys.ADM_CURRENCY_ABBR);
+			String accountCode = (String) transInfo.get(AccKeys.ACC_ACCOUNT_CODE);
+			if (deptAmount.doubleValue() > 0)
+			{
+				compVoucher.getComboType().setText(EngLangCommonKeys.COMMON_DEPT_STRING);
+				compVoucher.getTxtCredit().setText(deptAmount);
+			}
+			else
+			{
+				compVoucher.getComboType().setText(EngLangCommonKeys.COMMON_CREDIT_STRING);
+				compVoucher.getTxtCredit().setText(creditAmount);
+			}
+			compVoucher.getDateTransDate().setDate(transDate);
+			compVoucher.getTxtCurrentCard().setText(currentName + " {" + currentCode + "}"); //$NON-NLS-1$ //$NON-NLS-2$
+			compVoucher.getTxtDefinition().setText(definition);
+			compVoucher.getComboCurrencyType().setText(abbr);
+			if (accountCode != null)
+			{
+				compVoucher.getAccountPicker().setText(accountCode);
+			}
+		}
+		catch (Exception ex)
+		{
+			EngBLLogger.log(this.getClass(), ex, getParent());
+		}
+	}
+
+	public void save()
+	{
+		if (compVoucher.verifyFields())
+		{
+			updated = true;
+			
+			try
+			{				
+				BigDecimal credit = compVoucher.getTxtCredit().getBigDecimalValue();
+				boolean isCredit = false;
+				if (compVoucher.getComboType().getText().equals(EngLangCommonKeys.COMMON_CREDIT_STRING))
+				{
+					isCredit = true;
+				}				
+				 
+				HashMap argMap = new HashMap();
+				
+				argMap.put(CurKeys.CUR_TRANSACTION_ID,currentTransId);
+				argMap.put(CurKeys.CUR_CARD_ID,compVoucher.getTxtCurrentCard().getCardId());
+				argMap.put(AccKeys.ACC_ACCOUNT_ID, compVoucher.getAccountPicker().getId());
+				argMap.put(EngKeys.DATE,compVoucher.getDateTransDate().getDate());
+				argMap.put(EngKeys.DOCUMENT_NO,"");
+				argMap.put(CurKeys.CUR_IS_CREDIT,new Boolean(isCredit));
+				argMap.put(CurKeys.CUR_TRANS_AMOUNT,credit);
+				argMap.put(CurKeys.CUR_DISCOUNT_PAYMENT,new BigDecimal(0));
+				argMap.put(EngKeys.TYPE,new Integer(EngBLCommon.CURRENT_TRANS_OTHERS));
+				argMap.put(EngKeys.ENG_SEQ_ID,null);
+				argMap.put(EngKeys.DEFINITION, compVoucher.getTxtDefinition().getText());
+				argMap.put(EngKeys.CURRENCY_ID,compVoucher.getComboCurrencyType().getData(compVoucher.getComboCurrencyType().getText().trim()));
+				
+				EngTXCommon.doTransactionTX("Cur_updateOtherCurrentTransaction",argMap);
+				
+				EngUICommon.showUpdatedSuccesfullyMessage(getParent());
+				dialogShell.close();
+			}
+			catch (Exception ex)
+			{
+                EngBLLogger.log(this.getClass(),ex,getParent());
+			}
+		}
+	}
+
+	public void delete()
+	{
+		try
+		{
+			if (EngUICommon.okToDelete(getParent()))
+			{
+				
+				updated = true;
+				HashMap argMap = new HashMap();
+				argMap.put(CurKeys.CUR_TRANSACTION_ID,currentTransId);
+				EngTXCommon.doTransactionTX("Cur_deleteCurTrans",argMap);
+				EngUICommon.showDeletedSuccesfullyMessage(getParent());
+				dialogShell.close();
+				
+			}
+		}
+		catch (Exception ex)
+		{
+            EngBLLogger.log(this.getClass(),ex,getParent());
+		}
+	}
+
+	
+
+	public void cancel() {
+		
+		dialogShell.close();
+		
+		
+	}
+
+	public String getSaveComposite() {
+		
+		return CurUICurrentCardCreditVoucher.class.getName();
+		
+	
+	}
+
+	public void print() {
+		// TODO print eklenicek
+		
+	}
+}@

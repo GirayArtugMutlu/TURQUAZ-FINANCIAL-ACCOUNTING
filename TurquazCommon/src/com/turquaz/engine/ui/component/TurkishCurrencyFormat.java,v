@@ -1,0 +1,99 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.36.03;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.ui.component;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
+/**
+ * @@author onsel
+ */
+public class TurkishCurrencyFormat extends DecimalFormat
+{
+	static TurkishCurrencyFormat _instance;
+
+	public TurkishCurrencyFormat()
+	{
+		super();
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+		dfs.setCurrencySymbol("YTL");
+		dfs.setGroupingSeparator('.');
+		dfs.setDecimalSeparator(',');
+		dfs.setInternationalCurrencySymbol("YTL");
+		this.setDecimalFormatSymbols(dfs);
+		this.setGroupingSize(3);
+		this.setMinimumFractionDigits(2);
+		this.setMaximumFractionDigits(2);
+		this.setGroupingUsed(true);
+	}
+
+	public TurkishCurrencyFormat(int minFraction)
+	{
+		super();
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+		dfs.setCurrencySymbol("YTL");
+		dfs.setGroupingSeparator('.');
+		dfs.setDecimalSeparator(',');
+		dfs.setInternationalCurrencySymbol("YTL");
+		this.setDecimalFormatSymbols(dfs);
+		this.setGroupingSize(3);
+		this.setMinimumFractionDigits(minFraction);
+		this.setMaximumFractionDigits(minFraction);
+		this.setGroupingUsed(true);
+	}
+
+	public TurkishCurrencyFormat(int minFraction, String currencySymbol)
+	{
+		super();
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols();
+		dfs.setCurrencySymbol(currencySymbol);
+		dfs.setGroupingSeparator('.');
+		dfs.setDecimalSeparator(',');
+		dfs.setInternationalCurrencySymbol(currencySymbol);
+		this.setDecimalFormatSymbols(dfs);
+		this.setGroupingSize(3);
+		this.setMinimumFractionDigits(minFraction);
+		this.setMaximumFractionDigits(minFraction);
+		this.setGroupingUsed(true);
+	}
+
+	public String formatCurrency(BigDecimal dc)
+	{
+		String formatted = super.format(dc);
+		return formatted.concat(" " + this.getDecimalFormatSymbols().getCurrencySymbol());
+	}
+
+	public String formatCurrency(BigDecimal dc, String currencySymbol)
+	{
+		String formatted = super.format(dc);
+		return formatted.concat(" " + currencySymbol);
+	}
+
+	public BigDecimal getBigDecimal(String str)
+	{
+		str = str.replaceAll("\\.", "");
+		str = str.replace(',', '.');
+		return new BigDecimal(str);
+	}
+}@

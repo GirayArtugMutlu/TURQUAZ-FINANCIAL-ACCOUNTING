@@ -1,0 +1,293 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.44;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqInventoryTransaction" 
+    table="turq_inventory_transactions"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="native" />
+    </id>
+
+    <property
+        name="amountIn"
+        type="java.math.BigDecimal"
+        column="amount_in"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="unitPrice"
+        type="java.math.BigDecimal"
+        column="unit_price"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="totalPrice"
+        type="java.math.BigDecimal"
+        column="total_price"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="discountRate"
+        type="java.math.BigDecimal"
+        column="discount_rate"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="discountAmount"
+        type="java.math.BigDecimal"
+        column="discount_amount"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="vatAmount"
+        type="java.math.BigDecimal"
+        column="vat_amount"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="vatSpecialUnitPrice"
+        type="java.math.BigDecimal"
+        column="vat_special_unit_price"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="vatSpecialRate"
+        type="java.math.BigDecimal"
+        column="vat_special_rate"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="vatSpecialAmount"
+        type="java.math.BigDecimal"
+        column="vat_special_amount"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="cumilativePrice"
+        type="java.math.BigDecimal"
+        column="cumilative_price"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="amountOut"
+        type="java.math.BigDecimal"
+        column="amount_out"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="createdBy"
+        type="java.lang.String"
+        column="created_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="creationDate"
+        type="java.sql.Date"
+        column="creation_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="updatedBy"
+        type="java.lang.String"
+        column="updated_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="lastModified"
+        type="java.sql.Date"
+        column="last_modified"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="transactionsDate"
+        type="java.sql.Date"
+        column="transactions_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="documentNo"
+        type="java.lang.String"
+        column="document_no"
+        not-null="true"
+        length="100"
+    />
+    <property
+        name="definition"
+        type="java.lang.String"
+        column="definition"
+        not-null="true"
+        length="250"
+    />
+    <property
+        name="vatRate"
+        type="java.math.BigDecimal"
+        column="vat_rate"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="unitPriceInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="unit_price_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="totalPriceInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="total_price_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="discountAmountInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="discount_amount_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="vatAmountInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="vat_amount_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="vatSpecialUnitPriceInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="vat_special_unit_price_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="vatSpecialAmountInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="vat_special_amount_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+    <property
+        name="cumilativePriceInForeignCurrency"
+        type="java.math.BigDecimal"
+        column="cumilative_price_in_foreign_currency"
+        not-null="true"
+        length="65535"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TurqInventoryWarehous -->
+    <many-to-one
+        name="turqInventoryWarehous"
+        class="com.turquaz.engine.dal.TurqInventoryWarehous"
+        not-null="true"
+    >
+        <column name="inventory_warehouses_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqInventoryTransactionType -->
+    <many-to-one
+        name="turqInventoryTransactionType"
+        class="com.turquaz.engine.dal.TurqInventoryTransactionType"
+        not-null="true"
+    >
+        <column name="transaction_type" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqCurrencyExchangeRate -->
+    <many-to-one
+        name="turqCurrencyExchangeRate"
+        class="com.turquaz.engine.dal.TurqCurrencyExchangeRate"
+        not-null="true"
+    >
+        <column name="exchange_rate_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqInventoryUnit -->
+    <many-to-one
+        name="turqInventoryUnit"
+        class="com.turquaz.engine.dal.TurqInventoryUnit"
+        not-null="true"
+    >
+        <column name="inventory_units_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqEngineSequence -->
+    <many-to-one
+        name="turqEngineSequence"
+        class="com.turquaz.engine.dal.TurqEngineSequence"
+        not-null="true"
+    >
+        <column name="engine_sequences_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqInventoryCard -->
+    <many-to-one
+        name="turqInventoryCard"
+        class="com.turquaz.engine.dal.TurqInventoryCard"
+        not-null="true"
+    >
+        <column name="inventory_cards_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqCurrentCard -->
+    <many-to-one
+        name="turqCurrentCard"
+        class="com.turquaz.engine.dal.TurqCurrentCard"
+        not-null="true"
+    >
+        <column name="current_cards_id" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>
+@

@@ -1,0 +1,217 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.44;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Set;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqTradebillTradebill implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private String tradebillsPortfolioNo;
+
+    /** persistent field */
+    private Date tradebillDueDate;
+
+    /** persistent field */
+    private String tradebillDebtor;
+
+    /** persistent field */
+    private String tradebillGuarantor;
+
+    /** persistent field */
+    private String tradebillPaymentPlace;
+
+    /** persistent field */
+    private int tradebillValueDate;
+
+    /** persistent field */
+    private BigDecimal tradebillAmount;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrency turqCurrency;
+
+    /** persistent field */
+    private Set turqTradebillTradebillsRolls;
+
+    /** full constructor */
+    public TurqTradebillTradebill(String tradebillsPortfolioNo, Date tradebillDueDate, String tradebillDebtor, String tradebillGuarantor, String tradebillPaymentPlace, int tradebillValueDate, BigDecimal tradebillAmount, String createdBy, Date creationDate, String updatedBy, Date lastModified, com.turquaz.engine.dal.TurqCurrency turqCurrency, Set turqTradebillTradebillsRolls) {
+        this.tradebillsPortfolioNo = tradebillsPortfolioNo;
+        this.tradebillDueDate = tradebillDueDate;
+        this.tradebillDebtor = tradebillDebtor;
+        this.tradebillGuarantor = tradebillGuarantor;
+        this.tradebillPaymentPlace = tradebillPaymentPlace;
+        this.tradebillValueDate = tradebillValueDate;
+        this.tradebillAmount = tradebillAmount;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.turqCurrency = turqCurrency;
+        this.turqTradebillTradebillsRolls = turqTradebillTradebillsRolls;
+    }
+
+    /** default constructor */
+    public TurqTradebillTradebill() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTradebillsPortfolioNo() {
+        return this.tradebillsPortfolioNo;
+    }
+
+    public void setTradebillsPortfolioNo(String tradebillsPortfolioNo) {
+        this.tradebillsPortfolioNo = tradebillsPortfolioNo;
+    }
+
+    public Date getTradebillDueDate() {
+        return this.tradebillDueDate;
+    }
+
+    public void setTradebillDueDate(Date tradebillDueDate) {
+        this.tradebillDueDate = tradebillDueDate;
+    }
+
+    public String getTradebillDebtor() {
+        return this.tradebillDebtor;
+    }
+
+    public void setTradebillDebtor(String tradebillDebtor) {
+        this.tradebillDebtor = tradebillDebtor;
+    }
+
+    public String getTradebillGuarantor() {
+        return this.tradebillGuarantor;
+    }
+
+    public void setTradebillGuarantor(String tradebillGuarantor) {
+        this.tradebillGuarantor = tradebillGuarantor;
+    }
+
+    public String getTradebillPaymentPlace() {
+        return this.tradebillPaymentPlace;
+    }
+
+    public void setTradebillPaymentPlace(String tradebillPaymentPlace) {
+        this.tradebillPaymentPlace = tradebillPaymentPlace;
+    }
+
+    public int getTradebillValueDate() {
+        return this.tradebillValueDate;
+    }
+
+    public void setTradebillValueDate(int tradebillValueDate) {
+        this.tradebillValueDate = tradebillValueDate;
+    }
+
+    public BigDecimal getTradebillAmount() {
+        return this.tradebillAmount;
+    }
+
+    public void setTradebillAmount(BigDecimal tradebillAmount) {
+        this.tradebillAmount = tradebillAmount;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrency getTurqCurrency() {
+        return this.turqCurrency;
+    }
+
+    public void setTurqCurrency(com.turquaz.engine.dal.TurqCurrency turqCurrency) {
+        this.turqCurrency = turqCurrency;
+    }
+
+    public Set getTurqTradebillTradebillsRolls() {
+        return this.turqTradebillTradebillsRolls;
+    }
+
+    public void setTurqTradebillTradebillsRolls(Set turqTradebillTradebillsRolls) {
+        this.turqTradebillTradebillsRolls = turqTradebillTradebillsRolls;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

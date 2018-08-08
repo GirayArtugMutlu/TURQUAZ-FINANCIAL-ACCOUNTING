@@ -1,0 +1,159 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.34;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.bl;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.EngKeys;
+import com.turquaz.engine.dal.EngDALCommon;
+import com.turquaz.engine.dal.EngDALUserPerms;
+import com.turquaz.engine.dal.EngDalMenuFactory;
+import com.turquaz.engine.dal.TurqCurrency;
+import com.turquaz.engine.dal.TurqEngineMenu;
+import com.turquaz.engine.dal.TurqEngineSequence;
+import com.turquaz.engine.dal.TurqModule;
+import com.turquaz.engine.dal.TurqSetting;
+
+public class EngBLServer {
+
+	public static HashBag getCurrencies() throws Exception
+	{
+		try
+		{
+			HashBag currencyBag=new HashBag();
+			List list= EngDALCommon.getCurrencies();
+			currencyBag.put(EngKeys.CURRENCIES,new HashMap());
+			
+			for(int k=0; k<list.size(); k++)
+			{
+				TurqCurrency currency=(TurqCurrency)list.get(k);
+				
+				currencyBag.put(EngKeys.CURRENCIES,k,EngKeys.CURRENCY_ID,currency.getId());
+				currencyBag.put(EngKeys.CURRENCIES,k,EngKeys.CURRENCY_ABBR,currency.getCurrenciesAbbreviation());
+				currencyBag.put(EngKeys.CURRENCIES,k,EngKeys.DEFAULT, new Boolean(currency.isDefaultCurrency()));
+				currencyBag.put(EngKeys.CURRENCIES,k,EngKeys.CONSTANT, currency.getConstant());
+			}
+			
+			return currencyBag;
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static HashBag getBaseCurrency()throws Exception
+	{
+		TurqCurrency currency = EngDALCommon.getBaseCurrency();
+		HashBag curBag = new HashBag();
+		curBag.put(EngKeys.CURRENCY_ID,currency.getId());
+		return curBag;
+		
+	}
+	public static TurqEngineSequence saveEngineSequence(int moduleId) throws Exception
+	{
+		TurqEngineSequence seq = new TurqEngineSequence();
+		TurqModule module = new TurqModule();
+		module.setId(new Integer(moduleId));
+		seq.setTurqModule(module);
+		EngDALCommon.saveObject(seq);
+		return seq;
+	}
+
+	public static Boolean checkUserPass(HashMap argMap) throws Exception
+	{
+		
+		String user = (String)argMap.get(EngKeys.USER);
+		String pass = (String)argMap.get(EngKeys.PASSWORD);
+		
+		return new Boolean(EngDALCommon.checkUserPass(user, pass));
+		
+	}
+
+	public static TurqSetting getTurqSetting()throws Exception
+	{
+		return EngDALCommon.getTurqSetting();
+	}
+	
+	public static HashBag getApplicationMenus()throws Exception
+	{	
+		
+		HashBag menuBag = new HashBag();
+		menuBag.put(EngKeys.MENUS,new HashMap());
+		
+		HashMap permissionMap = EngDALUserPerms.getPermissionMap();
+		menuBag.put(EngKeys.PERMISSION_MAP,permissionMap);
+		
+		List list = EngDalMenuFactory.getAllMenu();
+		
+		Iterator it = list.iterator();
+		int i=0;
+		while(it.hasNext())
+		{
+			
+			TurqEngineMenu menu = (TurqEngineMenu)it.next();
+			if(menu.getMenuType()==2||menu.getMenuType()==0)
+			{
+				menuBag.put(EngKeys.MENUS,i,EngKeys.MENU_NAME,menu.getMenuName());
+				menuBag.put(EngKeys.MENUS,i,EngKeys.MENU_TYPE,new Integer(menu.getMenuType()));
+				menuBag.put(EngKeys.MENUS,i,EngKeys.MODULE_COMPONENT_CLASS,null);
+				i++;
+
+			}
+			
+			else if(menu.getMenuType()==3)
+			{
+				Integer perm_level = (Integer)permissionMap.get(menu.getTurqModuleComponent().getComponentsName());
+				if(perm_level!=null)
+				{
+					if(perm_level.intValue()>0)
+					{
+						menuBag.put(EngKeys.MENUS,i,EngKeys.MENU_NAME,menu.getMenuName());
+						menuBag.put(EngKeys.MENUS,i,EngKeys.MENU_TYPE,new Integer(menu.getMenuType()));
+						menuBag.put(EngKeys.MENUS,i,EngKeys.MODULE_COMPONENT_CLASS,menu.getTurqModuleComponent().getComponentsName());
+						i++;
+					}
+					
+				}
+				else
+				{
+					
+				}
+			}
+			
+			
+			
+		
+		}
+		
+		return menuBag;
+		
+		
+	}
+
+}
+@

@@ -1,0 +1,144 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.30;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqInventoryCardUnit implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private BigDecimal cardUnitsFactor;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqInventoryUnit turqInventoryUnit;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqInventoryCard turqInventoryCard;
+
+    /** full constructor */
+    public TurqInventoryCardUnit(BigDecimal cardUnitsFactor, String createdBy, Date creationDate, String updatedBy, Date lastModified, com.turquaz.engine.dal.TurqInventoryUnit turqInventoryUnit, com.turquaz.engine.dal.TurqInventoryCard turqInventoryCard) {
+        this.cardUnitsFactor = cardUnitsFactor;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.turqInventoryUnit = turqInventoryUnit;
+        this.turqInventoryCard = turqInventoryCard;
+    }
+
+    /** default constructor */
+    public TurqInventoryCardUnit() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public BigDecimal getCardUnitsFactor() {
+        return this.cardUnitsFactor;
+    }
+
+    public void setCardUnitsFactor(BigDecimal cardUnitsFactor) {
+        this.cardUnitsFactor = cardUnitsFactor;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public com.turquaz.engine.dal.TurqInventoryUnit getTurqInventoryUnit() {
+        return this.turqInventoryUnit;
+    }
+
+    public void setTurqInventoryUnit(com.turquaz.engine.dal.TurqInventoryUnit turqInventoryUnit) {
+        this.turqInventoryUnit = turqInventoryUnit;
+    }
+
+    public com.turquaz.engine.dal.TurqInventoryCard getTurqInventoryCard() {
+        return this.turqInventoryCard;
+    }
+
+    public void setTurqInventoryCard(com.turquaz.engine.dal.TurqInventoryCard turqInventoryCard) {
+        this.turqInventoryCard = turqInventoryCard;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

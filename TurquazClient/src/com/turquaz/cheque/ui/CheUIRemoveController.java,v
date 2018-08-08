@@ -1,0 +1,77 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.17.02.46;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.cheque.ui;
+
+import java.util.HashMap;
+
+import com.turquaz.cheque.CheKeys;
+import com.turquaz.common.HashBag;
+import com.turquaz.engine.tx.EngTXCommon;
+
+
+public class CheUIRemoveController {
+	
+	
+	public static boolean canBeRemoved(Integer chequeRollId,HashMap chequeInfo)throws Exception
+	{
+		
+		if(chequeRollId==null)
+		{
+			return false;
+		}
+		
+		if(chequeInfo.get(CheKeys.CHE_CHEQUE_ID)==null)
+		{
+			return true;
+		}
+		if(chequeInfo.get(CheKeys.CHE_ALREADY_IN_ROLL)==null)
+		{
+			return true;
+		}
+		
+			HashMap argMap = new HashMap();
+			System.out.println(chequeInfo.get(CheKeys.CHE_CHEQUE_ID));
+			argMap.put(CheKeys.CHE_CHEQUE_ID,chequeInfo.get(CheKeys.CHE_CHEQUE_ID));
+			HashBag result = (HashBag)EngTXCommon.doTransactionTX("Che_getChequeStatus",argMap);
+			
+			Integer rollId =(Integer)result.get(CheKeys.CHE_CHEQUE_ROLL_ID);
+			System.out.println(rollId+" "+chequeRollId);
+			
+			if(rollId.equals(chequeRollId))
+			{
+				
+				return true;
+				
+			}
+			else
+			{
+				return false;
+			}
+			
+			
+		
+		
+	}
+
+}
+@

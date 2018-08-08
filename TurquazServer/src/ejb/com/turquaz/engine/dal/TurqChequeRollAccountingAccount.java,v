@@ -1,0 +1,89 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.30;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqChequeRollAccountingAccount implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** nullable persistent field */
+    private com.turquaz.engine.dal.TurqChequeRoll turqChequeRoll;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqAccountingAccount turqAccountingAccount;
+
+    /** full constructor */
+    public TurqChequeRollAccountingAccount(Integer id, com.turquaz.engine.dal.TurqChequeRoll turqChequeRoll, com.turquaz.engine.dal.TurqAccountingAccount turqAccountingAccount) {
+        this.id = id;
+        this.turqChequeRoll = turqChequeRoll;
+        this.turqAccountingAccount = turqAccountingAccount;
+    }
+
+    /** default constructor */
+    public TurqChequeRollAccountingAccount() {
+    }
+
+    /** minimal constructor */
+    public TurqChequeRollAccountingAccount(Integer id, com.turquaz.engine.dal.TurqAccountingAccount turqAccountingAccount) {
+        this.id = id;
+        this.turqAccountingAccount = turqAccountingAccount;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public com.turquaz.engine.dal.TurqChequeRoll getTurqChequeRoll() {
+        return this.turqChequeRoll;
+    }
+
+    public void setTurqChequeRoll(com.turquaz.engine.dal.TurqChequeRoll turqChequeRoll) {
+        this.turqChequeRoll = turqChequeRoll;
+    }
+
+    public com.turquaz.engine.dal.TurqAccountingAccount getTurqAccountingAccount() {
+        return this.turqAccountingAccount;
+    }
+
+    public void setTurqAccountingAccount(com.turquaz.engine.dal.TurqAccountingAccount turqAccountingAccount) {
+        this.turqAccountingAccount = turqAccountingAccount;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

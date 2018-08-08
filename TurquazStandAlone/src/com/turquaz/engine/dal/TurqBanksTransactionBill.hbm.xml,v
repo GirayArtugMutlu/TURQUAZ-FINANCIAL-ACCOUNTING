@@ -1,0 +1,134 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.19.49.43;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial remaining
+@
+text
+@<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.turquaz.engine.dal.TurqBanksTransactionBill" 
+    table="turq_banks_transaction_bills"
+>
+
+    <id
+        name="id"
+        type="int"
+        column="id"
+    >
+        <generator class="native" />
+    </id>
+
+    <property
+        name="transactionBillDate"
+        type="java.sql.Date"
+        column="transaction_bill_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="createdBy"
+        type="java.lang.String"
+        column="created_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="creationDate"
+        type="java.sql.Date"
+        column="creation_date"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="updatedBy"
+        type="java.lang.String"
+        column="updated_by"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="lastModified"
+        type="java.sql.Date"
+        column="last_modified"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="transactionBillDefinition"
+        type="java.lang.String"
+        column="transaction_bill_definition"
+        not-null="true"
+        length="250"
+    />
+    <property
+        name="transactionBillNo"
+        type="java.lang.String"
+        column="transaction_bill_no"
+        not-null="true"
+        length="100"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to TurqBanksTransaction -->
+    <set
+        name="turqBanksTransactions"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+        <key>
+            <column name="bank_transactions_bills_id" />
+        </key>
+        <one-to-many 
+            class="com.turquaz.engine.dal.TurqBanksTransaction"
+        />
+    </set>
+    <!-- bi-directional many-to-one association to TurqEngineSequence -->
+    <many-to-one
+        name="turqEngineSequence"
+        class="com.turquaz.engine.dal.TurqEngineSequence"
+        not-null="true"
+    >
+        <column name="engine_sequences_id" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TurqBanksTransactionType -->
+    <many-to-one
+        name="turqBanksTransactionType"
+        class="com.turquaz.engine.dal.TurqBanksTransactionType"
+        not-null="true"
+    >
+        <column name="banks_transaction_types_id" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>
+@

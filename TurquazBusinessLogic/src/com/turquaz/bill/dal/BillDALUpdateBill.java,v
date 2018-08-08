@@ -1,0 +1,114 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.16.36.36;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.bill.dal;
+
+import java.util.Iterator;
+import java.util.List;
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import server.util.EngDALSessionFactory;
+
+import com.turquaz.engine.dal.TurqAccountingTransaction;
+import com.turquaz.engine.dal.TurqBill;
+
+/**
+ * @@author onsel Window - Preferences - Java - Code Style - Code Templates
+ */
+public class BillDALUpdateBill
+{
+	public static void deleteAccountingTransactions(TurqBill bill) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+		
+			Iterator iter = bill.getTurqEngineSequence().getTurqAccountingTransactions().iterator();
+			while (iter.hasNext())
+			{
+				TurqAccountingTransaction trans = (TurqAccountingTransaction) iter.next();
+				Iterator it = trans.getTurqAccountingTransactionColumns().iterator();
+				while (it.hasNext())
+				{
+					session.delete(it.next());
+				}
+				session.delete(trans);
+			}
+			session.flush();
+		
+			
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+
+	public static void deleteCurrentTransactions(TurqBill bill) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			
+			Iterator iter = bill.getTurqEngineSequence().getTurqCurrentTransactions().iterator();
+			while (iter.hasNext())
+			{
+				session.delete(iter.next());
+			}
+			session.flush();
+		
+			
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+	
+
+	public static Boolean canUpdateBill(Integer billId) throws Exception
+	{
+		try
+		{
+			Session session = EngDALSessionFactory.getSession();
+			String query = "Select accTrans.id from TurqAccountingTransaction as accTrans,"
+					+ " TurqBill as bill where "
+					+ " accTrans.turqAccountingJournal.id <>-1"
+					+ " and bill.id ="
+					+ billId
+					+ " and accTrans.turqEngineSequence.id=bill.turqEngineSequence.id";
+			Query q = session.createQuery(query);
+			List list = q.list();
+			if (list.size() == 0)
+			{
+				return new Boolean(true);
+			}
+			else
+				return new Boolean(false);
+		}
+		catch (Exception ex)
+		{
+			throw ex;
+		}
+	}
+}@

@@ -1,0 +1,456 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.28;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@package com.turquaz.engine.dal;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+
+/** @@author Hibernate CodeGenerator */
+public class TurqInventoryTransaction implements Serializable {
+
+    /** identifier field */
+    private Integer id;
+
+    /** persistent field */
+    private BigDecimal amountIn;
+
+    /** persistent field */
+    private BigDecimal unitPrice;
+
+    /** persistent field */
+    private BigDecimal totalPrice;
+
+    /** persistent field */
+    private BigDecimal discountRate;
+
+    /** persistent field */
+    private BigDecimal discountAmount;
+
+    /** persistent field */
+    private BigDecimal vatAmount;
+
+    /** persistent field */
+    private BigDecimal vatSpecialUnitPrice;
+
+    /** persistent field */
+    private BigDecimal vatSpecialRate;
+
+    /** persistent field */
+    private BigDecimal vatSpecialAmount;
+
+    /** persistent field */
+    private BigDecimal cumilativePrice;
+
+    /** persistent field */
+    private BigDecimal amountOut;
+
+    /** persistent field */
+    private String createdBy;
+
+    /** persistent field */
+    private Date creationDate;
+
+    /** persistent field */
+    private String updatedBy;
+
+    /** persistent field */
+    private Date lastModified;
+
+    /** persistent field */
+    private Date transactionsDate;
+
+    /** persistent field */
+    private String documentNo;
+
+    /** persistent field */
+    private String definition;
+
+    /** persistent field */
+    private BigDecimal vatRate;
+
+    /** persistent field */
+    private BigDecimal unitPriceInForeignCurrency;
+
+    /** persistent field */
+    private BigDecimal totalPriceInForeignCurrency;
+
+    /** persistent field */
+    private BigDecimal discountAmountInForeignCurrency;
+
+    /** persistent field */
+    private BigDecimal vatAmountInForeignCurrency;
+
+    /** persistent field */
+    private BigDecimal vatSpecialUnitPriceInForeignCurrency;
+
+    /** persistent field */
+    private BigDecimal vatSpecialAmountInForeignCurrency;
+
+    /** persistent field */
+    private BigDecimal cumilativePriceInForeignCurrency;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqInventoryWarehous turqInventoryWarehous;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqInventoryTransactionType turqInventoryTransactionType;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqInventoryUnit turqInventoryUnit;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqInventoryCard turqInventoryCard;
+
+    /** persistent field */
+    private com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard;
+
+    /** full constructor */
+    public TurqInventoryTransaction(BigDecimal amountIn, BigDecimal unitPrice, BigDecimal totalPrice, BigDecimal discountRate, BigDecimal discountAmount, BigDecimal vatAmount, BigDecimal vatSpecialUnitPrice, BigDecimal vatSpecialRate, BigDecimal vatSpecialAmount, BigDecimal cumilativePrice, BigDecimal amountOut, String createdBy, Date creationDate, String updatedBy, Date lastModified, Date transactionsDate, String documentNo, String definition, BigDecimal vatRate, BigDecimal unitPriceInForeignCurrency, BigDecimal totalPriceInForeignCurrency, BigDecimal discountAmountInForeignCurrency, BigDecimal vatAmountInForeignCurrency, BigDecimal vatSpecialUnitPriceInForeignCurrency, BigDecimal vatSpecialAmountInForeignCurrency, BigDecimal cumilativePriceInForeignCurrency, com.turquaz.engine.dal.TurqInventoryWarehous turqInventoryWarehous, com.turquaz.engine.dal.TurqInventoryTransactionType turqInventoryTransactionType, com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate, com.turquaz.engine.dal.TurqInventoryUnit turqInventoryUnit, com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence, com.turquaz.engine.dal.TurqInventoryCard turqInventoryCard, com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.amountIn = amountIn;
+        this.unitPrice = unitPrice;
+        this.totalPrice = totalPrice;
+        this.discountRate = discountRate;
+        this.discountAmount = discountAmount;
+        this.vatAmount = vatAmount;
+        this.vatSpecialUnitPrice = vatSpecialUnitPrice;
+        this.vatSpecialRate = vatSpecialRate;
+        this.vatSpecialAmount = vatSpecialAmount;
+        this.cumilativePrice = cumilativePrice;
+        this.amountOut = amountOut;
+        this.createdBy = createdBy;
+        this.creationDate = creationDate;
+        this.updatedBy = updatedBy;
+        this.lastModified = lastModified;
+        this.transactionsDate = transactionsDate;
+        this.documentNo = documentNo;
+        this.definition = definition;
+        this.vatRate = vatRate;
+        this.unitPriceInForeignCurrency = unitPriceInForeignCurrency;
+        this.totalPriceInForeignCurrency = totalPriceInForeignCurrency;
+        this.discountAmountInForeignCurrency = discountAmountInForeignCurrency;
+        this.vatAmountInForeignCurrency = vatAmountInForeignCurrency;
+        this.vatSpecialUnitPriceInForeignCurrency = vatSpecialUnitPriceInForeignCurrency;
+        this.vatSpecialAmountInForeignCurrency = vatSpecialAmountInForeignCurrency;
+        this.cumilativePriceInForeignCurrency = cumilativePriceInForeignCurrency;
+        this.turqInventoryWarehous = turqInventoryWarehous;
+        this.turqInventoryTransactionType = turqInventoryTransactionType;
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+        this.turqInventoryUnit = turqInventoryUnit;
+        this.turqEngineSequence = turqEngineSequence;
+        this.turqInventoryCard = turqInventoryCard;
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    /** default constructor */
+    public TurqInventoryTransaction() {
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public BigDecimal getAmountIn() {
+        return this.amountIn;
+    }
+
+    public void setAmountIn(BigDecimal amountIn) {
+        this.amountIn = amountIn;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return this.unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return this.totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public BigDecimal getDiscountRate() {
+        return this.discountRate;
+    }
+
+    public void setDiscountRate(BigDecimal discountRate) {
+        this.discountRate = discountRate;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return this.discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public BigDecimal getVatAmount() {
+        return this.vatAmount;
+    }
+
+    public void setVatAmount(BigDecimal vatAmount) {
+        this.vatAmount = vatAmount;
+    }
+
+    public BigDecimal getVatSpecialUnitPrice() {
+        return this.vatSpecialUnitPrice;
+    }
+
+    public void setVatSpecialUnitPrice(BigDecimal vatSpecialUnitPrice) {
+        this.vatSpecialUnitPrice = vatSpecialUnitPrice;
+    }
+
+    public BigDecimal getVatSpecialRate() {
+        return this.vatSpecialRate;
+    }
+
+    public void setVatSpecialRate(BigDecimal vatSpecialRate) {
+        this.vatSpecialRate = vatSpecialRate;
+    }
+
+    public BigDecimal getVatSpecialAmount() {
+        return this.vatSpecialAmount;
+    }
+
+    public void setVatSpecialAmount(BigDecimal vatSpecialAmount) {
+        this.vatSpecialAmount = vatSpecialAmount;
+    }
+
+    public BigDecimal getCumilativePrice() {
+        return this.cumilativePrice;
+    }
+
+    public void setCumilativePrice(BigDecimal cumilativePrice) {
+        this.cumilativePrice = cumilativePrice;
+    }
+
+    public BigDecimal getAmountOut() {
+        return this.amountOut;
+    }
+
+    public void setAmountOut(BigDecimal amountOut) {
+        this.amountOut = amountOut;
+    }
+
+    public String getCreatedBy() {
+        return this.createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUpdatedBy() {
+        return this.updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getLastModified() {
+        return this.lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    public Date getTransactionsDate() {
+        return this.transactionsDate;
+    }
+
+    public void setTransactionsDate(Date transactionsDate) {
+        this.transactionsDate = transactionsDate;
+    }
+
+    public String getDocumentNo() {
+        return this.documentNo;
+    }
+
+    public void setDocumentNo(String documentNo) {
+        this.documentNo = documentNo;
+    }
+
+    public String getDefinition() {
+        return this.definition;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
+    }
+
+    public BigDecimal getVatRate() {
+        return this.vatRate;
+    }
+
+    public void setVatRate(BigDecimal vatRate) {
+        this.vatRate = vatRate;
+    }
+
+    public BigDecimal getUnitPriceInForeignCurrency() {
+        return this.unitPriceInForeignCurrency;
+    }
+
+    public void setUnitPriceInForeignCurrency(BigDecimal unitPriceInForeignCurrency) {
+        this.unitPriceInForeignCurrency = unitPriceInForeignCurrency;
+    }
+
+    public BigDecimal getTotalPriceInForeignCurrency() {
+        return this.totalPriceInForeignCurrency;
+    }
+
+    public void setTotalPriceInForeignCurrency(BigDecimal totalPriceInForeignCurrency) {
+        this.totalPriceInForeignCurrency = totalPriceInForeignCurrency;
+    }
+
+    public BigDecimal getDiscountAmountInForeignCurrency() {
+        return this.discountAmountInForeignCurrency;
+    }
+
+    public void setDiscountAmountInForeignCurrency(BigDecimal discountAmountInForeignCurrency) {
+        this.discountAmountInForeignCurrency = discountAmountInForeignCurrency;
+    }
+
+    public BigDecimal getVatAmountInForeignCurrency() {
+        return this.vatAmountInForeignCurrency;
+    }
+
+    public void setVatAmountInForeignCurrency(BigDecimal vatAmountInForeignCurrency) {
+        this.vatAmountInForeignCurrency = vatAmountInForeignCurrency;
+    }
+
+    public BigDecimal getVatSpecialUnitPriceInForeignCurrency() {
+        return this.vatSpecialUnitPriceInForeignCurrency;
+    }
+
+    public void setVatSpecialUnitPriceInForeignCurrency(BigDecimal vatSpecialUnitPriceInForeignCurrency) {
+        this.vatSpecialUnitPriceInForeignCurrency = vatSpecialUnitPriceInForeignCurrency;
+    }
+
+    public BigDecimal getVatSpecialAmountInForeignCurrency() {
+        return this.vatSpecialAmountInForeignCurrency;
+    }
+
+    public void setVatSpecialAmountInForeignCurrency(BigDecimal vatSpecialAmountInForeignCurrency) {
+        this.vatSpecialAmountInForeignCurrency = vatSpecialAmountInForeignCurrency;
+    }
+
+    public BigDecimal getCumilativePriceInForeignCurrency() {
+        return this.cumilativePriceInForeignCurrency;
+    }
+
+    public void setCumilativePriceInForeignCurrency(BigDecimal cumilativePriceInForeignCurrency) {
+        this.cumilativePriceInForeignCurrency = cumilativePriceInForeignCurrency;
+    }
+
+    public com.turquaz.engine.dal.TurqInventoryWarehous getTurqInventoryWarehous() {
+        return this.turqInventoryWarehous;
+    }
+
+    public void setTurqInventoryWarehous(com.turquaz.engine.dal.TurqInventoryWarehous turqInventoryWarehous) {
+        this.turqInventoryWarehous = turqInventoryWarehous;
+    }
+
+    public com.turquaz.engine.dal.TurqInventoryTransactionType getTurqInventoryTransactionType() {
+        return this.turqInventoryTransactionType;
+    }
+
+    public void setTurqInventoryTransactionType(com.turquaz.engine.dal.TurqInventoryTransactionType turqInventoryTransactionType) {
+        this.turqInventoryTransactionType = turqInventoryTransactionType;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrencyExchangeRate getTurqCurrencyExchangeRate() {
+        return this.turqCurrencyExchangeRate;
+    }
+
+    public void setTurqCurrencyExchangeRate(com.turquaz.engine.dal.TurqCurrencyExchangeRate turqCurrencyExchangeRate) {
+        this.turqCurrencyExchangeRate = turqCurrencyExchangeRate;
+    }
+
+    public com.turquaz.engine.dal.TurqInventoryUnit getTurqInventoryUnit() {
+        return this.turqInventoryUnit;
+    }
+
+    public void setTurqInventoryUnit(com.turquaz.engine.dal.TurqInventoryUnit turqInventoryUnit) {
+        this.turqInventoryUnit = turqInventoryUnit;
+    }
+
+    public com.turquaz.engine.dal.TurqEngineSequence getTurqEngineSequence() {
+        return this.turqEngineSequence;
+    }
+
+    public void setTurqEngineSequence(com.turquaz.engine.dal.TurqEngineSequence turqEngineSequence) {
+        this.turqEngineSequence = turqEngineSequence;
+    }
+
+    public com.turquaz.engine.dal.TurqInventoryCard getTurqInventoryCard() {
+        return this.turqInventoryCard;
+    }
+
+    public void setTurqInventoryCard(com.turquaz.engine.dal.TurqInventoryCard turqInventoryCard) {
+        this.turqInventoryCard = turqInventoryCard;
+    }
+
+    public com.turquaz.engine.dal.TurqCurrentCard getTurqCurrentCard() {
+        return this.turqCurrentCard;
+    }
+
+    public void setTurqCurrentCard(com.turquaz.engine.dal.TurqCurrentCard turqCurrentCard) {
+        this.turqCurrentCard = turqCurrentCard;
+    }
+
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", getId())
+            .toString();
+    }
+
+}
+@

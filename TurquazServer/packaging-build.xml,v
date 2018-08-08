@@ -1,0 +1,86 @@
+head	1.1;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.1
+date	2007.01.22.18.42.35;	author huseyiner;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@initial commit
+@
+text
+@<?xml version="1.0" encoding="UTF-8"?>
+<project default="_packaging_generation_" name="Packaging Generator">
+<target name="_packaging_generation_" depends="N10004,N10015,N10026,N10055,N10066,N1007D"/>
+<target name="N10004" description="turquaz-server.jar">
+<mkdir dir="lib/turquaz"/>
+<jar destfile="lib/turquaz/turquaz-server.jar">
+<zipfileset dir="../TurquazBusinessLogic/bin"/>
+</jar>
+</target>
+<target name="N10015" description="turquaz-commons.jar">
+<mkdir dir="lib/turquaz"/>
+<jar destfile="lib/turquaz/turquaz-commons.jar">
+<zipfileset dir="../TurquazCommon/bin"/>
+</jar>
+</target>
+<target name="N10026" description="TurquazEJB.jar">
+<jar destfile="TurquazEJB.jar">
+<zipfileset dir="src/ejb/META-INF" prefix="META-INF">
+<include name="ejb-jar.xml"/>
+</zipfileset>
+<zipfileset dir="src/ejb/META-INF" prefix="META-INF">
+<include name="jboss.xml"/>
+</zipfileset>
+<zipfileset dir="src/conf">
+<include name="hibernate.properties"/>
+</zipfileset>
+<zipfileset dir="src/conf">
+<include name="hibernate.cfg.xml"/>
+</zipfileset>
+<zipfileset dir="src/conf">
+<include name="log4j.properties"/>
+</zipfileset>
+</jar>
+</target>
+<target name="N10055" description="TurquazEJB-client.jar">
+<jar destfile="TurquazEJB-client.jar">
+<zipfileset dir="bin" includes="server/interfaces/*.class"/>
+</jar>
+</target>
+<target name="N10066" description="TurquazServer.war">
+<jar destfile="TurquazServer.war">
+<zipfileset dir="src/servlet/WEB-INF" prefix="WEB-INF">
+<include name="web.xml"/>
+</zipfileset>
+<zipfileset dir="src/servlet/WEB-INF" prefix="WEB-INF">
+<include name="jboss-web.xml"/>
+</zipfileset>
+</jar>
+</target>
+<target name="N1007D" description="TurquazApp.ear">
+<jar destfile="TurquazApp.ear">
+<zipfileset dir="src/ejb/META-INF" prefix="META-INF">
+<include name="application.xml"/>
+</zipfileset>
+<zipfileset dir=".">
+<include name="TurquazEJB.jar"/>
+</zipfileset>
+<zipfileset dir=".">
+<include name="TurquazServer.war"/>
+</zipfileset>
+</jar>
+</target>
+</project>
+@
